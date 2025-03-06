@@ -1,0 +1,696 @@
+:root {
+    --white: #fff;
+    --black: #000;
+    --text-color: #333;
+    --red: indianred;
+}
+
+ul,
+li {
+    list-style: none;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+body::-webkit-scrollbar {
+    width: 3px;
+    /* height:50px; */
+}
+
+.home-service::-webkit-scrollbar, .menu-list::-webkit-scrollbar {
+    height: 4px;
+    max-width: 10px;
+}
+
+.home-service::-webkit-scrollbar-track, .menu-list::-webkit-scrollbar-track, body::-webkit-scrollbar-track {
+    background-color: #fafafa;
+}
+
+
+.home-service::-webkit-scrollbar-thumb, .menu-list::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb {
+    /* background: rgba(0, 0, 0, 0); */
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    -webkit-box-shadow: rgba(255, 255, 255, 0.3) 0 0 0 1px;
+    box-shadow: rgba(255, 255, 255, 0.3) 0 0 0 1px;
+}
+
+/* body:hover::-webkit-scrollbar-thumb{
+    background: rgba(0, 0, 0, 0.45);
+} */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    background-color: #fff;
+    position: relative;
+}
+
+body, input, button, textarea, pre {
+    font-family: SFProDisplay, sans-serif;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Custom radio buttons */
+input[type="radio"] + label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px;
+    margin-right: 15px;
+}
+
+input[type="radio"] + label:before {
+    content: "";
+    display: block;
+    width: 22px;
+    height: 22px;
+    margin-right: 14px;
+    position: absolute;
+    top: -3px;
+    left: 0;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
+input[type="radio"] {
+    display: none !important;
+}
+
+input[type="radio"]:checked + label:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--red);
+}
+
+input[type="radio"]:checked + label:before {
+    border: 1px solid var(--red);
+}
+
+/* Custom checkbox */
+input[type="checkbox"] + label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px;
+    margin-right: 15px;
+    font-size: 13px;
+}
+
+
+input[type="checkbox"] + label:before {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin-right: 14px;
+    position: absolute;
+    top: -3px;
+    left: 0;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+input[type="checkbox"] {
+    display: none !important;
+}
+
+input[type="checkbox"]:checked + label:after {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Pro";
+    font-size: 15px;
+    line-height: 16px;
+    color: var(--white);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 4px;
+    width: 16px;
+    height: 16px;
+}
+
+input[type="checkbox"]:checked + label:before {
+    border: 1px solid var(--red);
+    background-color: var(--red);
+}
+
+.container {
+    max-width: 1130px;
+    padding: 0 10px;
+    margin: 0 auto;
+}
+
+.dnone {
+    display: none !important;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fef6e4; /* Màu nền */
+}
+
+header {
+    background: var(--red); /* Màu đỏ tươi cho tiêu đề */
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+main {
+    padding: 20px;
+}
+
+.voucher-banner {
+    background-color: #0b7dda; /* Màu nền đen */
+    border: 5px solid #f2f2f2; /* Viền cam */
+    border-radius: 10px; /* Bo góc */
+    padding: 10px 20px; /* Khoảng cách bên trong */
+    position: relative; /* Để định vị các phần tử con */
+    text-align: center;
+}
+
+.voucher-banner h2 {
+    font-size: 24px; /* Kích thước chữ */
+    color: whitesmoke; /* Màu chữ vàng */
+    font-weight: bold; /* Chữ đậm */
+    text-shadow: 2px 2px 4px red; /* Hiệu ứng nổi bật */
+    margin: 0; /* Loại bỏ margin mặc định */
+}
+
+
+.icon {
+    background-color: #FF6F61; /* Màu biểu tượng */
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.voucher p {
+    margin: 5px 0;
+}
+
+.btn {
+    background-color: #FF6F61; /* Màu nút */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #FF3D3D; /* Thay đổi màu khi hover */
+}
+
+.conditions-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #1976D2; /* Màu link tương tự màu voucher banner */
+}
+
+.conditions-link:hover {
+    text-decoration: underline; /* Gạch chân khi hover */
+    color: #0b7dda; /* Màu sắc khi hover */
+}
+
+
+/* Container cho Slider */
+.home-slider {
+    position: relative;
+    width: 100%; /* Chiếm toàn bộ chiều rộng của container */
+    overflow: hidden; /* Ngăn không cho hình ảnh tràn ra ngoài */
+}
+
+/* Flexbox cho các hình ảnh */
+.slider-images {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Hiệu ứng chuyển động */
+    height: 100%;
+    width: 100%; /* Chiếm toàn bộ chiều rộng của phần cha */
+}
+
+.slider-image {
+    min-width: 100%; /* Mỗi hình ảnh chiếm toàn bộ chiều rộng của slider */
+    height: auto; /* Để chiều cao tự động theo tỉ lệ */
+    object-fit: cover; /* Đảm bảo hình ảnh fill trong khung */
+}
+
+/* Các điều khiển */
+.slider-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    z-index: 10;
+    transform: translateY(-50%);
+}
+
+.slider-controls button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.slider-controls button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+/* Container tổng */
+.voucher-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8em; /* Giảm khoảng cách giữa các voucher */
+    justify-content: center;
+    padding: 1.5em; /* Giảm padding tổng thể */
+}
+
+/* Card từng voucher */
+.coupon-card {
+    background: indianred;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 0.8em; /* Giảm padding bên trong voucher */
+    border-radius: 0.4em;
+    box-shadow: 0 0.4em 0.8em rgba(0, 0, 0, 0.1);
+    width: calc(45% - 0.8em); /* Hai voucher trên một dòng, nhỏ hơn */
+    max-width: 250px; /* Giới hạn kích thước tối đa */
+    position: relative;
+    border: 2px solid #FFD700;
+}
+
+/* Logo voucher */
+.logo-voucher {
+    width: 70%; /* Giảm kích thước logo */
+    max-width: 8em;
+    margin-bottom: 0.4em;
+}
+
+/* Tiêu đề và nội dung */
+.coupon-card h3 {
+    font-size: 0.9em; /* Giảm font-size tiêu đề */
+    line-height: 1.3em;
+    margin: 0.4em 0;
+}
+
+.coupon-card p {
+    font-size: 0.7em; /* Giảm font-size ngày hết hạn */
+    margin: 0.4em 0;
+}
+
+/* Row chứa mã và nút copy */
+.COUPON-ROW {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 0.8em;
+}
+
+#cpnCode, #cpnBtn {
+    font-size: 0.8em; /* Giảm kích thước chữ */
+    padding: 0.4em 0.6em; /* Giảm padding của nút và mã */
+    border-radius: 4px;
+    text-align: center;
+}
+
+#cpnCode {
+    background: transparent;
+    border: 1px dashed #fff;
+}
+
+#cpnBtn {
+    background: #fff;
+    color: var(--red);
+    border: 1px solid #fff;
+    cursor: pointer;
+}
+
+/* Trang trí vòng tròn */
+.circle1, .circle2 {
+    background: #f9f9f9;
+    width: 10px; /* Giảm kích thước vòng tròn */
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.circle1 {
+    left: -5px;
+}
+
+.circle2 {
+    right: -5px;
+
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    background-color: var(--white);
+}
+
+.modal-footer-control button {
+    background-color: var(--red);
+    border: none;
+    outline: none;
+    color: var(--white);
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.modal-footer-control button:hover {
+    background-color: #a8232a;
+}
+
+/* Scrollbar trong modal */
+.modal-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.modal-container:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5);
+}
+textarea {
+    width: 100%;
+    height: 100px;
+    font-size: 16px;
+}
+
+
+/* Footer */
+/* Css footer */
+.footer {
+    background-color: #f2f2f2;
+    margin-top: 30px;
+    border-top: 4px solid var(--red);
+}
+
+.footer .container {
+    margin: 0 auto;
+    display: block;
+}
+
+.footer-top {
+    padding: 32px 0;
+    border-bottom: 1px solid #e6e6e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.footer-top-content {
+    display: flex;
+    line-height: 26px;
+    justify-content: space-between;
+}
+
+.footer-top-img {
+    border-right: 1px solid #e6e6e6;
+    padding-right: 25px;
+}
+
+.footer-top-img img {
+    width: 240px;
+}
+
+.footer-top-subbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 30px;
+}
+
+.footer-top-subs-title {
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.footer-top-subs-text {
+    font-size: 15px;
+    color: #888;
+    font-weight: 500;
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.form-ground {
+    margin-left: 50px;
+    line-height: 26px;
+    display: flex;
+}
+
+.form-ground-input,
+.form-ground-btn {
+    height: 50px;
+    border-radius: 99px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.form-ground-input {
+    padding: 0 30px;
+    border: 1px solid #ccc;
+    color: #4D5765;
+    outline: none;
+    font-size: 15px;
+}
+
+.form-ground-btn {
+    margin-left: 10px;
+    padding: 0 40px;
+    cursor: pointer;
+    background: #B5292F;
+    overflow: hidden;
+    outline: none;
+    border: none;
+    color: white;
+    text-transform: uppercase;
+}
+
+.form-ground-btn span {
+    margin-right: 10px;
+}
+
+.form-ground-btn:hover {
+    color: #010f1c;
+    background-color: #fff;
+}
+
+.widget-area {
+    padding: 60px 0 30px;
+}
+
+.widget-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.widget-row-col {
+    width: 25%;
+}
+
+.widget-row-col-1 {
+    width: 25%;
+}
+
+.widget-row>div{
+    padding: 0 10px 10px;
+}
+
+.widget-title {
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.widget-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: none;
+    height: 3px;
+    width: 100px;
+    background-image: linear-gradient(to right, var(--red), transparent);
+}
+
+.widget-row-col-content {
+    padding-bottom: 18px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.widget-social {
+    display: flex;
+}
+
+.widget-social-item {
+    margin: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #2C2C2C;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s linear;
+}
+
+.widget-contact-item {
+    margin-bottom: 12px;
+}
+
+.widget-contact-item i {
+    transition: transform 0.3s linear;
+}
+
+.widget-contact-item a {
+    color: #2C2C2C;
+}
+
+.widget-contact-item:hover i {
+    transform: translateX(4px);
+}
+
+.widget-social-item:hover {
+    background-color: var(--red);
+    transform: scale(1.1);
+    border: none;
+}
+
+.widget-social-item:hover i {
+    color: #fff;
+}
+
+.widget-social-item i {
+    color: #2C2C2C;
+}
+
+.widget-contact i {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.widget-contact span {
+    font-weight: 400;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.contact-item-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--red);
+    color: var(--white)
+}
+
+.contact-content {
+    margin-left: 10px;
+    width: 80%;
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+.copyright-wrap {
+    background: #f3f5f7;
+    color: var(--text-color);
+    margin: unset;
+    padding: 18px 0;
+    border-top: 1px solid #e6e6e6;
+}
+
+.copyright-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+

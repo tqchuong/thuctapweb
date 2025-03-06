@@ -1,0 +1,385 @@
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Roboto&display=swap");
+
+/* General Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #e6e1dd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header .logo img {
+  width: 120px;
+}
+
+.header .basket img {
+  width: 30px;
+}
+
+/* Cart Section */
+.cart-title h1 {
+  font-size: 2em;
+  text-align: center;
+  margin: 20px 0;
+  font-family: "Amatic SC", cursive;
+  color: #333;
+}
+
+/* Empty Cart Message */
+.gio-hang-trong {
+  text-align: center;
+  color: #777;
+  display: none;
+}
+
+.gio-hang-trong i {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+/* Cart Item List */
+.cart-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.item img {
+  width: 80px;
+  height: auto;
+  margin-right: 15px;
+  border-radius: 5px;
+}
+
+.item h4 {
+  flex: 1;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.item .item-price {
+  font-weight: bold;
+  color: #333;
+  margin-right: 10px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  font-size: 1em;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.quantity-controls input {
+  width: 50px;
+  text-align: center;
+  padding: 5px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.btn-remove {
+  background-color: #ff4d4d;
+  color: #fff;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* Delivery and Payment Section */
+.delivery-payment {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.delivery-address,
+.payment-details {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  flex: 1;
+}
+
+.coupon {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.coupon h3 {
+  font-family: "Amatic SC", cursive;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.coupon-input {
+  width: 60%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Summary Section */
+.summary {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.summary-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.amount {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Buttons */
+.btn-checkout {
+  background-color: #478298;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn-checkout:hover {
+  background-color: #3a6f80;
+}
+
+.btn-reverse {
+  background-color: #ddd;
+  color: #333;
+}
+
+.btn-reverse:hover {
+  background-color: #ccc;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .header {
+    padding: 15px;
+  }
+
+  .item h4 {
+    font-size: 1em;
+  }
+
+  .amount {
+    font-size: 1.2em;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .quantity-controls {
+    margin-top: 10px;
+  }
+
+  .delivery-payment {
+    flex-direction: column;
+  }
+
+  .btn-checkout {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+.header .logo img {
+  width: 250px; /* Adjust this value as needed */
+  height: auto; /* Keeps the aspect ratio */
+}
+.btn-apply {
+  margin-left: 10px; /* Khoảng cách giữa ô nhập và nút */
+  padding: 5px 10px; /* Kích thước nút */
+  background-color: #4CAF50; /* Màu nền */
+  color: white; /* Màu chữ */
+  border: none; /* Không viền */
+  border-radius: 4px; /* Bo góc */
+  cursor: pointer; /* Con trỏ khi di chuột */
+}
+
+.btn-apply:hover {
+  background-color: #45a049; /* Màu khi hover */
+}
+.modal {
+  display: none; /* Ẩn modal */
+  position: fixed; /* Ở vị trí cố định */
+  z-index: 1; /* Chồng lên các phần tử khác */
+  left: 0;
+  top: 0;
+  width: 100%; /* Toàn bộ màn hình */
+  height: 100%; /* Toàn bộ màn hình */
+  overflow: auto; /* Thêm thanh cuộn nếu cần */
+  background-color: rgb(0, 0, 0); /* Màu nền đen */
+  background-color: rgba(0, 0, 0, 0.4); /* Màu nền với độ trong suốt */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* Căn giữa */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Chiều rộng modal */
+}
+
+.close {
+  color: #aaa;
+  float: right; /* Đẩy nút đóng bên phải */
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black; /* Đổi màu khi hover */
+  text-decoration: none;
+  cursor: pointer; /* Con trỏ khi hover */
+}
+
+
+
+/* Bố trí chung cho hàng chứa checkbox và nút xoá */
+.actions {
+  display: flex; /* Sử dụng Flexbox */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: space-between; /* Đẩy nút "Sửa" sang bên trái */
+  margin-bottom: 10px; /* Khoảng cách bên dưới */
+  gap: 20px; /* Khoảng cách giữa các phần tử */
+}
+
+
+/* CSS cho checkbox "Chọn tất cả" */
+label {
+  display: flex;
+  align-items: center;
+  font-size: 18px; /* Kích thước chữ */
+  font-weight: 500; /* Độ đậm chữ */
+  color: #333; /* Màu chữ */
+  margin: 10px 0; /* Khoảng cách trên dưới */
+  cursor: pointer; /* Con trỏ hiển thị như liên kết */
+}
+
+/* Khoảng cách giữa checkbox và chữ */
+label input[type="checkbox"] {
+  margin-right: 10px; /* Khoảng cách từ checkbox tới chữ */
+  transform: scale(1.2); /* Phóng to checkbox một chút */
+}
+
+/* Khi hover vào dòng chữ */
+label:hover {
+  color: #007bff; /* Màu chữ khi hover */
+}
+
+/* Checkbox khi được chọn */
+label input[type="checkbox"]:checked {
+  accent-color: #007bff; /* Màu xanh cho checkbox (trình duyệt hỗ trợ modern) */
+}
+
+
+.productCheckbox {
+  margin-right: 10px;
+}
+.deleteItem {
+  padding: 5px 15px; /* Khoảng cách bên trong nút */
+  font-size: 14px; /* Kích thước chữ */
+  background-color: #ff4d4d; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+  border: 2px solid #ff4d4d; /* Viền đỏ */
+  border-radius: 5px; /* Viền bo góc */
+  cursor: pointer; /* Con trỏ chuột khi di chuột vào nút */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
+}
+
+.deleteItem:hover {
+  background-color: white; /* Màu nền khi hover */
+  color: #ff4d4d; /* Màu chữ khi hover */
+  border-color: #ff4d4d; /* Màu viền khi hover */
+}
+
+.deleteItem:active {
+  background-color: #e60000; /* Màu nền khi nhấn */
+  border-color: #e60000; /* Màu viền khi nhấn */
+}
+.btn-summary{
+  margin-top: -40px;
+  margin-right: 50px;
+}
+
+
+
+
+
+
+
+
+
