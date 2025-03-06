@@ -165,18 +165,22 @@ public class OrderAdminDAO {
         String sql = "UPDATE orders SET OrderStatus = :newStatus WHERE Id = :orderId";
 
         try (Handle handle = jdbi.open()) {
-            System.out.println("Order ID: " + orderId + ", New Status: " + newStatus);
+            System.out.println("SQL Query: " + sql);
+            System.out.println("Thực thi với orderId: " + orderId + ", newStatus: " + newStatus);
 
             int rowsUpdated = handle.createUpdate(sql)
                     .bind("newStatus", newStatus)
                     .bind("orderId", orderId)
                     .execute();
-            return rowsUpdated > 0; // Trả về true nếu có ít nhất một dòng được cập nhật
+
+            System.out.println("Rows affected: " + rowsUpdated);
+            return rowsUpdated > 0;
         } catch (Exception e) {
             e.printStackTrace();
-            return false; // Trả về false nếu có lỗi
+            return false;
         }
     }
+
 
     public double calculateTotalPrice(int orderId) {
         String sql = "SELECT SUM(od.Quantity * od.UnitPrice) AS TotalPrice " +
