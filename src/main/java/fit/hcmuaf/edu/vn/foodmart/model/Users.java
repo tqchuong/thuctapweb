@@ -14,7 +14,26 @@ public class Users implements Serializable {
     private String fullName;
     private String role;
     private String userStatus;
+
+    public boolean isIs_verified() {
+        return Is_verified;
+    }
+
+    public void setIs_verified(boolean is_verified) {
+        Is_verified = is_verified;
+    }
+
+    public String getOtp() {
+        return Otp;
+    }
+
+    public void setOtp(String otp) {
+        Otp = otp;
+    }
+
     private Timestamp created_at;
+    private String Otp;
+    private boolean Is_verified;
     public Users() {
     }
 
