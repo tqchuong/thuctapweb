@@ -339,9 +339,9 @@
 
                 </table>
             </div>
-
-            <!-- </div> -->
         </div>
+            <!-- </div> -->
+
         <!-- Order  -->
         <div class="section">
             <div class="admin-control">
@@ -660,13 +660,43 @@
                     </button>
                 </div>
             </div>
-            <div id="show-ship">
-
-
-            </div>
-            <div class="page-nav" id="page-nav">
-                <ul class="page-nav-list">
-                </ul>
+            <div class="table">
+                <table width="100%">
+                    <thead>
+                    <tr>
+                        <td>Mã đơn</td>
+                        <td>Khách hàng</td>
+                        <td>Ngày đặt</td>
+                        <td>Tổng tiền</td>
+                        <td>Trạng thái</td>
+                        <td>Thao tác</td>
+                    </tr>
+                    </thead>
+<%--                    <%--%>
+<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
+<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
+<%--                    %>--%>
+<%--                    <tbody id="showOrder">--%>
+<%--                    <% for (Order order : orders) { %>--%>
+<%--                    <tr>--%>
+<%--                        <td>DH<%= order.getId() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= order.getReceiverPhone() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
+<%--                        <td>--%>
+<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
+<%--                          </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control">--%>
+<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <% } %>--%>
+<%--                    </tbody>--%>
+                </table>
             </div>
         </div>
 
@@ -696,13 +726,43 @@
                     </button>
                 </div>
             </div>
-            <div id="show-ship">
-
-
-            </div>
-            <div class="page-nav" id="page-nav">
-                <ul class="page-nav-list">
-                </ul>
+            <div class="table">
+                <table width="100%">
+                    <thead>
+                    <tr>
+                        <td>Mã đơn</td>
+                        <td>Khách hàng</td>
+                        <td>Ngày đặt</td>
+                        <td>Tổng tiền</td>
+                        <td>Trạng thái</td>
+                        <td>Thao tác</td>
+                    </tr>
+                    </thead>
+<%--                    <%--%>
+<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
+<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
+<%--                    %>--%>
+<%--                    <tbody id="showOrder">--%>
+<%--                    <% for (Order order : orders) { %>--%>
+<%--                    <tr>--%>
+<%--                        <td>DH<%= order.getId() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= order.getReceiverPhone() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
+<%--                        <td>--%>
+<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
+<%--                          </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control">--%>
+<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <% } %>--%>
+<%--                    </tbody>--%>
+                </table>
             </div>
         </div>
 
@@ -751,6 +811,20 @@
                             </select>
                             <span class="form-message"></span>
                         </div>
+
+                        <div class="form-group">
+                            <label for="NCC" class="form-label">Nhà cung cấp</label>
+                            <select name="NCCID" id="chon-ncc">
+                                <option value="1"> HoaBanFood</option>
+                                <option value="2">ABC</option>
+                                <option value="3"> text3</option>
+                                <option value="4">text4</option>
+                                <option value="5">text5</option>
+                                <option value="6">text6</option>
+                            </select>
+                            <span class="form-message"></span>
+                        </div>
+
 
                         <div class="form-group">
                             <label for="IsSale" class="form-label">Chọn sale</label>
@@ -844,7 +918,6 @@
 
         </div>
     </div>
-
 
     <%
         UserAdminDAO userDao = new UserAdminDAO();
