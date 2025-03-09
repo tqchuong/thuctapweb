@@ -18,39 +18,24 @@ public class UpdateOrderStatusServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            // Lấy dữ liệu từ request
             String requestData = request.getReader().lines().reduce("", String::concat);
-            JsonObject json = JsonParser.parseString(requestData).getAsJsonObject();
+            System.out.println("Dữ liệu nhận được từ JS: " + requestData); // Log nhận request
 
+            JsonObject json = JsonParser.parseString(requestData).getAsJsonObject();
             int orderId = json.get("orderId").getAsInt();
             String newStatus = json.get("newStatus").getAsString();
 
-            // Lấy thông tin đơn hàng từ DAO
+            System.out.println("Cập nhật Order ID: " + orderId + " thành trạng thái: " + newStatus);
+
             OrderAdminDAO orderDAO = new OrderAdminDAO();
-            Order order = orderDAO.getOrderById(orderId);
-            List<OrderDetails> details = orderDAO.getOrderDetailsByProductId(orderId);
-
-            if (order == null) {
-                response.setContentType("application/json");
-                JsonObject jsonResponse = new JsonObject();
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Không tìm thấy đơn hàng với ID: " + orderId);
-                response.getWriter().write(jsonResponse.toString());
-                return;
-            }
-
-            // Cập nhật trạng thái đơn hàng
             boolean isUpdated = orderDAO.updateOrderStatus(orderId, newStatus);
 
-            // Phản hồi kết quả
+            System.out.println("Cập nhật thành công: " + isUpdated);
+
             response.setContentType("application/json");
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("success", isUpdated);
-            jsonResponse.addProperty("message", isUpdated ? "Cập nhật trạng thái thành công." : "Cập nhật trạng thái thất bại.");
-            if (isUpdated) {
-                jsonResponse.addProperty("orderId", orderId);
-                jsonResponse.addProperty("newStatus", newStatus);
-            }
+            jsonResponse.addProperty("message", isUpdated ? "Cập nhật trạng thái thành công." : "Cập nhật thất bại.");
             response.getWriter().write(jsonResponse.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,3 +44,5 @@ public class UpdateOrderStatusServlet extends HttpServlet {
         }
     }
 }
+
+

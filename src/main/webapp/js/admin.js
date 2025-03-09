@@ -523,7 +523,7 @@ function toggleOrderStatus() {
     // Chuyển trạng thái
     const newStatus = currentStatus === "completed" ? "pending" : "completed";
 
-    fetch(`/updateOrderStatus`, {
+    fetch(`/project/updateOrderStatus`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -558,29 +558,35 @@ function closeModal() {
 
 
 
-function toggleOrderStatus(button, orderId) {
-    const currentStatus = button.innerText.trim();
-    const newStatus = currentStatus === "Chưa xử lý" ? "Đã xử lý" : "Chưa xử lý";
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".order-status").forEach(select => {
+        select.addEventListener("change", function () {
+            const orderId = this.dataset.orderId;
+            const newStatus = this.value;
 
-    fetch('/project/updateOrderStatus', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId: orderId, newStatus: newStatus }),
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                button.innerText = newStatus;
-                button.style.backgroundColor = newStatus === "Chưa xử lý" ? "#e74c3c" : "#2ecc71";
-            } else {
-                alert(data.message || "Không thể cập nhật trạng thái.");
-            }
-        })
-        .catch(error => {
-            console.error("Lỗi:", error);
-            alert("Đã xảy ra lỗi khi cập nhật trạng thái.");
+            console.log(`Cập nhật đơn hàng ${orderId} thành trạng thái: ${newStatus}`);
+
+            fetch('/project//updateOrderStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, newStatus }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Phản hồi từ server:", data);
+                    if (data.success) {
+                        alert("Cập nhật trạng thái thành công!");
+                    } else {
+                        alert("Cập nhật trạng thái thất bại!");
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi cập nhật trạng thái:", error);
+                    alert("Có lỗi xảy ra, vui lòng thử lại!");
+                });
         });
-}
+    });
+});
 
 
 
