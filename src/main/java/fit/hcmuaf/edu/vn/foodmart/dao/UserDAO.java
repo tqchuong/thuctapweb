@@ -109,8 +109,8 @@ public class UserDAO implements ObjectDAO {
         userList.put(user.getUsername(), user);
 
         // Câu lệnh SQL để thêm người dùng vào cơ sở dữ liệu
-        String sql = "INSERT INTO `users` (`Username`, `Password`, `Email`, `Phone`) \n" +
-                "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO `users` (`Username`, `Password`, `Email`, `Phone`,`Otp`) \n" +
+                "VALUES (?, ?, ?, ?,?)";
 
         try (Handle handle = jdbi.open()) {
             handle.createUpdate(sql)
@@ -118,6 +118,7 @@ public class UserDAO implements ObjectDAO {
                     .bind(1, user.getPassword())
                     .bind(2, user.getEmail())
                     .bind(3, user.getPhone())
+                    .bind(4,user.getOtp())
                     .execute();
             return true;
         } catch (Exception e) {

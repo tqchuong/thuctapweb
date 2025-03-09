@@ -113,6 +113,19 @@
         </div>
     </div>
 
+<%--    form xác nhận otp--%>
+<%--    <form action="verifyServlet" method="post" class="login__form">--%>
+<%--        <input type="hidden" name="email" value="${param.email}">--%>
+
+<%--        <div class="login__box">--%>
+<%--            <input type="text" id="otp" name="otp" required placeholder=" " class="login__input">--%>
+<%--            <label for="otp" class="login__label">Nhập mã OTP</label>--%>
+<%--        </div>--%>
+
+<%--        <button type="submit" class="login__button">Xác nhận</button>--%>
+<%--    </form>--%>
+
+
     <!-- ===== FORGOT PASSWORD ===== -->
     <div id="forgotPasswordForm" class="forgot-password" style="display: <%= "forgotPassword".equals(formType) ? "block" : "none" %>;">
         <h1 class="login__title">Quên Mật khẩu?</h1>
