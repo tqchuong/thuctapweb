@@ -8,6 +8,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.util.Random;
 
 @WebServlet(name = "LoginController", value = "/login")
 public class LoginController extends HttpServlet {
@@ -88,12 +89,21 @@ public class LoginController extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
+
+            // Tạo mã OTP ngẫu nhiên
+            String otp = String.format("%06d", new Random().nextInt(999999));
+
             // Thêm người dùng vào cơ sở dữ liệu
             if (userDAO.add(user)) {
-                // Tạo session và chuyển hướng tới trang đăng nhập
-                HttpSession session = request.getSession(true);
-                session.setAttribute("auth", user);  // Lưu thông tin người dùng vào session
-                response.sendRedirect("home.jsp");
+
+                UserDAO.sendMail(email,"OTP xác thực tài khoản",otp);
+                response.sendRedirect("verify.jsp?email=" + email); // fix lại địa chỉ xác nhận otp
+
+//                // Tạo session và chuyển hướng tới trang đăng nhập
+//                HttpSession session = request.getSession(true);
+//                session.setAttribute("auth", user);  // Lưu thông tin người dùng vào session
+//                response.sendRedirect("home.jsp");
+
             } else {
                 request.setAttribute("error", "Có lỗi xảy ra trong quá trình đăng ký.");
                 request.setAttribute("showRegisterForm", true);
