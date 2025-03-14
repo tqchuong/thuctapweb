@@ -113,17 +113,23 @@
         </div>
     </div>
 
-<%--    form xác nhận otp--%>
-<%--    <form action="verifyServlet" method="post" class="login__form">--%>
-<%--        <input type="hidden" name="email" value="${param.email}">--%>
-
-<%--        <div class="login__box">--%>
-<%--            <input type="text" id="otp" name="otp" required placeholder=" " class="login__input">--%>
-<%--            <label for="otp" class="login__label">Nhập mã OTP</label>--%>
-<%--        </div>--%>
-
-<%--        <button type="submit" class="login__button">Xác nhận</button>--%>
-<%--    </form>--%>
+    <!-- ===== OTP CONFIRMATION FORM ===== -->
+    <div id="otpForm" class="otp-form" style="display: <%= "otp".equals(formType) ? "block" : "none" %>;">
+        <h1 class="login__title">Xác nhận mã OTP</h1>
+        <div class="login__area">
+            <form action="login?action=verifyOtp" method="post" class="login__form">
+                <c:if test="${not empty otpError}">
+                    <div style="color: red;">${otpError}</div>
+                </c:if>
+                <input type="hidden" name="email" value="${param.email}">
+                <div class="login__box">
+                    <input type="text" id="otpCode" name="otp" required placeholder=" " class="login__input">
+                    <label for="otpCode" class="login__label">Nhập mã OTP</label>
+                </div>
+                <button type="submit" class="login__button">Xác nhận</button>
+            </form>
+        </div>
+    </div>
 
 
     <!-- ===== FORGOT PASSWORD ===== -->

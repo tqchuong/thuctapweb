@@ -14,26 +14,9 @@ public class Users implements Serializable {
     private String fullName;
     private String role;
     private String userStatus;
-
-    public boolean isIs_verified() {
-        return Is_verified;
-    }
-
-    public void setIs_verified(boolean is_verified) {
-        Is_verified = is_verified;
-    }
-
-    public String getOtp() {
-        return Otp;
-    }
-
-    public void setOtp(String otp) {
-        Otp = otp;
-    }
-
     private Timestamp created_at;
-    private String Otp;
-    private boolean Is_verified;
+    private String otp;
+    private boolean is_verified;
     public Users() {
     }
 
@@ -52,6 +35,31 @@ public class Users implements Serializable {
         this.email = email;
         this.phone = phone;
         this.role = role;
+    }
+
+    public Users(String username, String password, String email, String phone, String otp, boolean b) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.otp = otp;
+        this.is_verified = b;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public boolean isIs_verified() {
+        return is_verified;
+    }
+
+    public void setIs_verified(boolean is_verified) {
+        this.is_verified = is_verified;
     }
 
     public String getUsername() {
