@@ -60,13 +60,14 @@ public class UserAdminDAO {
     }
 
     public boolean updateUser(Users user) {
-        String sql = "UPDATE users SET phone = ?, password = ?, UserStatus = ? WHERE id = ?";
+        String sql = "UPDATE users SET phone = ?, password = ?, Role =?, UserStatus = ? WHERE id = ?";
         try (Handle handle = jdbi.open()) {
             int rowsAffected = handle.createUpdate(sql)
                     .bind(0, user.getPhone())
                     .bind(1, user.getPassword())
-                    .bind(2, user.getUserStatus())
-                    .bind(3, user.getId())
+                    .bind(2, user.getRole())
+                    .bind(3, user.getUserStatus())
+                    .bind(4, user.getId())
                     .execute();
             return rowsAffected > 0; // Kiểm tra số dòng bị ảnh hưởng
         } catch (Exception e) {
