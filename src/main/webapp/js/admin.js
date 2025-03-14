@@ -73,16 +73,13 @@ document.getElementById("tinh-trang").addEventListener("change", function () {
 
 // Hiển thị thông báo
 function showToast(type, title, message, duration = 3000) {
-    toast({ title, message, type, duration });
+    toast({title, message, type, duration});
 }
-
 
 
 function showToast(type, title, message, duration = 3000) {
-    toast({ title, message, type, duration });
+    toast({title, message, type, duration});
 }
-
-
 
 
 function getPathImage(path) {
@@ -166,7 +163,7 @@ function setupPagination(productAll, perPage) {
             currentPage--;
             setupPagination(productAll, perPage);
             displayList(productAll, perPage, currentPage);
-            window.scrollTo(0,600);
+            window.scrollTo(0, 600);
         }
     });
     document.querySelector(".page-nav-list").appendChild(prevButton);
@@ -186,7 +183,7 @@ function setupPagination(productAll, perPage) {
             currentPage++;
             setupPagination(productAll, perPage);
             displayList(productAll, perPage, currentPage);
-            window.scrollTo(0,600);
+            window.scrollTo(0, 600);
         }
     });
     document.querySelector(".page-nav-list").appendChild(nextButton);
@@ -224,10 +221,6 @@ function paginationChange(page, productAll) {
 document.addEventListener("DOMContentLoaded", () => {
     showHomeProduct(products); // Hiển thị trang đầu tiên
 });
-
-
-
-
 
 
 // Đóng tất cả modal trước khi mở modal mới
@@ -303,7 +296,6 @@ document.querySelectorAll(".btn-edit-customer").forEach(button => {
 });
 
 
-
 // Đóng modal khi nhấn nút close
 document.querySelectorAll(".modal-close").forEach(closeButton => {
     closeButton.addEventListener("click", function () {
@@ -311,6 +303,7 @@ document.querySelectorAll(".modal-close").forEach(closeButton => {
         modal.classList.remove("open");
     });
 });
+
 function openEditCustomerModal(customer) {
     document.getElementById("form-action").value = "edit";
     document.getElementById("customer-id").value = customerRow.dataset.id; // Gán id vào input ẩn
@@ -322,6 +315,7 @@ function openEditCustomerModal(customer) {
     // Hiển thị modal
     document.getElementById("customer-modal").style.display = "block";
 }
+
 document.addEventListener("DOMContentLoaded", function () {
     const action = document.getElementById("form-action").value; // Lấy giá trị action
     const fullnameInput = document.getElementById("customer-fullname");
@@ -333,9 +327,6 @@ document.addEventListener("DOMContentLoaded", function () {
         fullnameInput.setAttribute("readonly", true); // Khóa trường khi chỉnh sửa
     }
 });
-
-
-
 
 
 // Đóng tất cả modal trước khi mở modal mới
@@ -468,15 +459,6 @@ document.getElementById("product-form").addEventListener("submit", function (e) 
 });
 
 
-
-
-
-
-
-
-
-
-
 function showOrderDetails(orderId) {
     fetch(`/getOrderDetails?orderId=${orderId}`)
         .then(response => response.json())
@@ -528,7 +510,7 @@ function toggleOrderStatus() {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ orderId, status: newStatus }),
+        body: JSON.stringify({orderId, status: newStatus}),
     })
         .then(response => response.json())
         .then(data => {
@@ -556,8 +538,6 @@ function closeModal() {
 }
 
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".order-status").forEach(select => {
         select.addEventListener("change", function () {
@@ -568,8 +548,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             fetch('/project//updateOrderStatus', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, newStatus }),
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({orderId, newStatus}),
             })
                 .then(response => response.json())
                 .then(data => {
@@ -589,9 +569,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
-    document.body.addEventListener('click', function(event) {
+    document.body.addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('btn-delete')) {
             console.log('Nút xóa được nhấn');
             const id = event.target.getAttribute('data-id');
@@ -611,7 +590,7 @@ function deleteItem(type, id) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id }), // Gửi ID dưới dạng JSON
+        body: JSON.stringify({id}), // Gửi ID dưới dạng JSON
     })
         .then(response => response.json())
         .then(data => {
@@ -674,3 +653,9 @@ document.querySelectorAll(".product-order-detail").forEach(button => {
 document.querySelector(".modal-close").addEventListener("click", function () {
     document.querySelector(".modal.detail-order-product").classList.remove("open");
 });
+
+
+
+
+
+
