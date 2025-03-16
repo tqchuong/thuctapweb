@@ -54,20 +54,7 @@ const togglePasswordVisibility = (passwordId, eyeIconId) => {
         forgotPasswordForm.style.display = 'none';
      });
  }
-document.addEventListener("DOMContentLoaded", function () {
-    const login__button = document.getElementById("signup-button");
-    const otpForm = document.getElementById("otpForm");
 
-    document.getElementById("signup-button").addEventListener("click", function () {
-        registerForm.style.display = "none";
-        otpForm.style.display = "block";
-    });
-
-    document.getElementById("backToLoginButton").addEventListener("click", function () {
-        otpForm.style.display = "none";
-        document.getElementById("registerForm").style.display = "block";
-    });
-});
 
  
 

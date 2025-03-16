@@ -109,8 +109,8 @@ public class UserDAO implements ObjectDAO {
         userList.put(user.getUsername(), user);
 
         // Câu lệnh SQL để thêm người dùng vào cơ sở dữ liệu
-        String sql = "INSERT INTO `users` (`Username`, `Password`, `Email`, `Phone`,`Otp`) \n" +
-                "VALUES (?, ?, ?, ?,? )";
+        String sql = "INSERT INTO users (Username, Password, Email, Phone, verification_token, token_expiry, is_verified) " +
+                "VALUES (?, ?, ?, ?, ?, ?, FALSE)";
 
         try (Handle handle = jdbi.open()) {
             handle.createUpdate(sql)
@@ -118,12 +118,11 @@ public class UserDAO implements ObjectDAO {
                     .bind(1, user.getPassword())
                     .bind(2, user.getEmail())
                     .bind(3, user.getPhone())
-                    .bind(4,user.getOtp())
+                    .bind(4, user.getVerification_token())
+                    .bind(5, user.getToken_expiry())
                     .execute();
             return true;
         } catch (Exception e) {
-            // Ghi lỗi vào log thay vì in ra console
-            System.err.println("Lỗi khi thêm người dùng: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -301,6 +300,9 @@ public class UserDAO implements ObjectDAO {
         return true;
     }
 
+
+
+
     // Hàm tạo mật khẩu ngẫu nhiên 6 chữ số
     private String generateRandomPassword() {
         String chars = "0123456789";  // Chỉ chứa số
@@ -383,6 +385,8 @@ public class UserDAO implements ObjectDAO {
         }
     }
 
+
+
     // Phương thức main để kiểm tra và truy vấn dữ liệu
     public static void main(String[] args) {
         // Lấy danh sách người dùng từ cơ sở dữ liệu
@@ -399,9 +403,7 @@ public class UserDAO implements ObjectDAO {
 //        String passwordHash = PasswordUtils.hashPassword("admin123");
 //        Users userAdmin = new Users("admin",passwordHash,"admin@gmail.com","admin","Admin");
 //        System.out.println(dao.addAdmin(userAdmin));
-        String passwordHash = PasswordUtils.hashPassword("admin123");
-        Users user = new Users("nttv",passwordHash,"gatrong015@gmail.com","0886520589","115654",true);
-        System.out.println(dao.add(user));
+
 //        System.out.println(dao.checkLogin("hmc", "524173"));
 //        System.out.println(dao.checkLogin("tqc", "1234"));
 //        System.out.println(dao.checkLogin("tqcc", "123"));

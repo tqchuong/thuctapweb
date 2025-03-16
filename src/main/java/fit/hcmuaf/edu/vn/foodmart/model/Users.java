@@ -1,6 +1,7 @@
 package fit.hcmuaf.edu.vn.foodmart.model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Users implements Serializable {
@@ -15,8 +16,10 @@ public class Users implements Serializable {
     private String role;
     private String userStatus;
     private Timestamp created_at;
-    private String otp;
+    private String verification_token;
     private boolean is_verified;
+    private Timestamp token_expiry;
+
     public Users() {
     }
 
@@ -37,21 +40,29 @@ public class Users implements Serializable {
         this.role = role;
     }
 
-    public Users(String username, String password, String email, String phone, String otp, boolean b) {
+    public Users(String username, String password, String email, String phone, String verification_token, boolean b) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.phone = phone;
-        this.otp = otp;
+        this.verification_token = verification_token;
         this.is_verified = b;
     }
 
-    public String getOtp() {
-        return otp;
+    public String getVerification_token() {
+        return verification_token;
     }
 
-    public void setOtp(String otp) {
-        this.otp = otp;
+    public void setVerification_token(String verification_token) {
+        this.verification_token = verification_token;
+    }
+
+    public Timestamp getToken_expiry() {
+        return token_expiry;
+    }
+
+    public void setToken_expiry(Timestamp token_expiry) {
+        this.token_expiry = token_expiry;
     }
 
     public boolean isIs_verified() {

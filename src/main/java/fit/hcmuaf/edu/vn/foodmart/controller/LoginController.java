@@ -4,14 +4,23 @@ import fit.hcmuaf.edu.vn.foodmart.dao.UserDAO;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import fit.hcmuaf.edu.vn.foodmart.utils.PasswordUtils;
+import fit.hcmuaf.edu.vn.foodmart.utils.TokenGenerator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static com.google.gson.internal.bind.TypeAdapters.UUID;
 
 
 @WebServlet(name = "LoginController", value = "/login")
@@ -69,56 +78,57 @@ public class LoginController extends HttpServlet {
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } else if (action.equals("res")) {
-//            // Xử lý hành động đăng ký
-//            String username = request.getParameter("username");
-//            String phone = request.getParameter("phone");
-//            String email = request.getParameter("email");
-//            String password = request.getParameter("password");
-//
-//            // Kiểm tra mật khẩu tối thiểu 6 ký tự
-//            if (password == null || password.length() < 6) {
-//                request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
-//                request.setAttribute("showRegisterForm", true);
-//                request.getRequestDispatcher("login.jsp").forward(request, response);
-//                return;
-//            }
-//            String hashedPassword = PasswordUtils.hashPassword(password);
-//
-//            UserDAO userDAO = new UserDAO();
-//            Users user = new Users(username, hashedPassword,email,phone);
-//
-//            // Kiểm tra nếu tên người dùng đã tồn tại
-//            if (userDAO.userExists(username)) {
-//                request.setAttribute("error", "Tên người dùng đã tồn tại.");
-//                request.setAttribute("showRegisterForm", true);
-//                request.getRequestDispatcher("login.jsp").forward(request, response);
-//                return;
-//            }
-//
-//            // Tạo mã OTP ngẫu nhiên
-//            String otp = String.format("%06d", new Random().nextInt(999999));
-//
-//            // Thêm người dùng vào cơ sở dữ liệu
-//            if (userDAO.add(user)) {
-//
-//                UserDAO.sendMail(email,"OTP xác thực tài khoản",otp);
-//                response.sendRedirect("verify.jsp?email=" + email); // fix lại địa chỉ xác nhận otp
-//
-////                // Tạo session và chuyển hướng tới trang đăng nhập
-////                HttpSession session = request.getSession(true);
-////                session.setAttribute("auth", user);  // Lưu thông tin người dùng vào session
-////                response.sendRedirect("home.jsp");
-//
-//            } else {
-//                request.setAttribute("error", "Có lỗi xảy ra trong quá trình đăng ký.");
-//                request.setAttribute("showRegisterForm", true);
-//                request.getRequestDispatcher("login.jsp").forward(request, response);
-//            }
+            // Xử lý hành động đăng ký
+            String username = request.getParameter("username");
+            String phone = request.getParameter("phone");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
 
-            handleRegister(request, response);
+            // Kiểm tra mật khẩu tối thiểu 6 ký tự
+            if (password == null || password.length() < 6) {
+                request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
+                request.setAttribute("showRegisterForm", true);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+            String hashedPassword = PasswordUtils.hashPassword(password);
 
-        } else if ("verifyOtp".equals(action)) {
-            handleVerifyOtp(request, response);
+            UserDAO userDAO = new UserDAO();
+            Users user = new Users(username, hashedPassword,email,phone);
+
+            // Kiểm tra nếu tên người dùng đã tồn tại
+            if (userDAO.userExists(username)) {
+                request.setAttribute("error", "Tên người dùng đã tồn tại.");
+                request.setAttribute("showRegisterForm", true);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+
+
+            // Tạo token xác thực
+            String token = TokenGenerator.generateToken(username);
+            String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
+            Timestamp expiry = Timestamp.from(Instant.now().plusSeconds(24 * 60 * 60)); // Hết hạn sau 24h
+            user.setVerification_token(encodedToken);
+            user.setToken_expiry(expiry);
+
+
+            if (userDAO.add(user)) {
+                // Gửi email xác thực
+                String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken;
+                String subject = "Xác thực tài khoản của bạn";
+                String message = "Nhấn vào link sau để xác thực tài khoản: " + verifyLink + "\nLink có hiệu lực trong 24 giờ.";
+                UserDAO.sendMail(email, subject, message);
+
+                response.sendRedirect("verify.jsp?email=" + email);
+            } else {
+                request.setAttribute("error", "Có lỗi xảy ra trong quá trình đăng ký.");
+                request.setAttribute("showRegisterForm", true);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+
+
+
         } else if (action.equals("logout")) {
             // Xử lý hành động đăng xuất
             HttpSession session = request.getSession();
@@ -154,76 +164,7 @@ public class LoginController extends HttpServlet {
 
 
     }
-    private void handleVerifyOtp(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = request.getParameter("email");
-        String enteredOtp = request.getParameter("otp");
-
-        Optional<String> storedOtp = jdbi.withHandle(handle ->
-                handle.createQuery("SELECT otp FROM users WHERE email = :email AND is_verified = FALSE")
-                        .bind("email", email)
-                        .mapTo(String.class)
-                        .findOne()
-        );
-
-        if (storedOtp.isPresent() && enteredOtp.equals(storedOtp.get())) {
-            jdbi.useHandle(handle ->
-                    handle.createUpdate("UPDATE users SET is_verified = TRUE WHERE email = :email")
-                            .bind("email", email)
-                            .execute()
-            );
-
-            Optional<Users> user = jdbi.withHandle(handle ->
-                    handle.createQuery("SELECT * FROM users WHERE email = :email")
-                            .bind("email", email)
-                            .mapToBean(Users.class)
-                            .findOne()
-            );
-
-            if (user.isPresent()) {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("auth", user.get());
-                response.sendRedirect("home.jsp");
-            } else {
-                response.sendRedirect("verify.jsp?email=" + email + "&error=nouser");
-            }
-        } else {
-            response.sendRedirect("verify.jsp?email=" + email + "&error=invalid");
-        }
-    }
-    private void handleRegister(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String phone = request.getParameter("phone");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-
-        if (password == null || password.length() < 6) {
-            request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
-            request.setAttribute("showRegisterForm", true);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
-
-        UserDAO userDAO = new UserDAO();
-        if (userDAO.userExists(username)) {
-            request.setAttribute("error", "Tên người dùng đã tồn tại.");
-            request.setAttribute("showRegisterForm", true);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
-
-        String hashedPassword = PasswordUtils.hashPassword(password);
-        String otp = String.format("%06d", new Random().nextInt(999999));
-
-        Users user = new Users(username, hashedPassword, email, phone, otp, false);
 
 
-        if (userDAO.add(user)) {
-            UserDAO.sendMail(email, "OTP xác thực tài khoản", "Mã OTP của bạn là: " + otp);
-            //response.sendRedirect("verify.jsp?email=" + email);
-        } else {
-            request.setAttribute("error", "Có lỗi xảy ra trong quá trình đăng ký.");
-            request.setAttribute("showRegisterForm", true);
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-    }
+
 }
