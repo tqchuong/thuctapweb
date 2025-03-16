@@ -1,6 +1,7 @@
 package fit.hcmuaf.edu.vn.foodmart.model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Users implements Serializable {
@@ -14,26 +15,11 @@ public class Users implements Serializable {
     private String fullName;
     private String role;
     private String userStatus;
-
-    public boolean isIs_verified() {
-        return Is_verified;
-    }
-
-    public void setIs_verified(boolean is_verified) {
-        Is_verified = is_verified;
-    }
-
-    public String getOtp() {
-        return Otp;
-    }
-
-    public void setOtp(String otp) {
-        Otp = otp;
-    }
-
     private Timestamp created_at;
-    private String Otp;
-    private boolean Is_verified;
+    private String verification_token;
+    private boolean is_verified;
+    private Timestamp token_expiry;
+
     public Users() {
     }
 
@@ -52,6 +38,39 @@ public class Users implements Serializable {
         this.email = email;
         this.phone = phone;
         this.role = role;
+    }
+
+    public Users(String username, String password, String email, String phone, String verification_token, boolean b) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.verification_token = verification_token;
+        this.is_verified = b;
+    }
+
+    public String getVerification_token() {
+        return verification_token;
+    }
+
+    public void setVerification_token(String verification_token) {
+        this.verification_token = verification_token;
+    }
+
+    public Timestamp getToken_expiry() {
+        return token_expiry;
+    }
+
+    public void setToken_expiry(Timestamp token_expiry) {
+        this.token_expiry = token_expiry;
+    }
+
+    public boolean isIs_verified() {
+        return is_verified;
+    }
+
+    public void setIs_verified(boolean is_verified) {
+        this.is_verified = is_verified;
     }
 
     public String getUsername() {

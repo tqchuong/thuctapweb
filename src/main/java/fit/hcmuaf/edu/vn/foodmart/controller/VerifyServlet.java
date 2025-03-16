@@ -1,7 +1,6 @@
 package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
-
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -10,54 +9,42 @@ import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
-@WebServlet(name = "VerifyServlet", value = "/verifyServlet")
+
+@WebServlet(name = "VerifyServlet", value = "/verify")
 public class VerifyServlet extends HttpServlet {
     private static final Jdbi jdbi = DBConnect.getJdbi();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String token = request.getParameter("token");
+        if (token != null) {
+            token = URLDecoder.decode(token, StandardCharsets.UTF_8.toString());
+        } else {
+            response.getWriter().println("Token không hợp lệ.");
+            return;
+        }
+        String sql = "SELECT Username, token_expiry FROM users WHERE verification_token = ? AND is_verified = FALSE";
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String enteredOtp = request.getParameter("otp");
+        try (Handle handle = jdbi.open()) {
+            Users user = handle.createQuery(sql)
+                    .bind(0, token)
+                    .mapToBean(Users.class)
+                    .findOne()
+                    .orElse(null);
 
-        try {
-            Optional<String> storedOtp = jdbi.withHandle(handle ->
-                    handle.createQuery("SELECT otp FROM users WHERE email = :email AND is_verified = FALSE")
-                            .bind("email", email)
-                            .mapTo(String.class)
-                            .findOne()
-            );
-
-            if (storedOtp.isPresent() && enteredOtp.equals(storedOtp.get())) {
-                // Cập nhật trạng thái is_verified = TRUE
-                jdbi.useHandle(handle ->
-                        handle.createUpdate("UPDATE users SET is_verified = TRUE WHERE email = :email")
-                                .bind("email", email)
-                                .execute()
-                );
-
-                // Lấy thông tin người dùng sau khi cập nhật
-                Optional<Users> user = jdbi.withHandle(handle ->
-                        handle.createQuery("SELECT * FROM users WHERE email = :email")
-                                .bind("email", email)
-                                .mapToBean(Users.class)
-                                .findOne()
-                );
-
-                if (user.isPresent()) {
-                    // Lưu user vào session
-                    HttpSession session = request.getSession(true);
-                    session.setAttribute("auth", user);
-                    response.sendRedirect("home.jsp");
-                } else {
-                    response.sendRedirect("verify.jsp?email=" + email + "&error=nouser");
-                }
-            } else {
-                response.sendRedirect("verify.jsp?email=" + email + "&error=invalid");
+            if (user == null || user.getToken_expiry().before(new Timestamp(System.currentTimeMillis()))) {
+                response.getWriter().println("Link xác thực không hợp lệ hoặc đã hết hạn.");
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("verify.jsp?email=" + email + "&error=server");
+
+            // Xác thực thành công -> cập nhật DB
+            String updateSql = "UPDATE users SET is_verified = TRUE, verification_token = NULL WHERE verification_token = ?";
+            handle.createUpdate(updateSql).bind(0, token).execute();
+
+            response.getWriter().println("Xác thực thành công! ");
+            response.sendRedirect("home.jsp");
         }
     }
 }
