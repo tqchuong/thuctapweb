@@ -100,6 +100,17 @@ public class UserDAO implements ObjectDAO {
             return null;
         }
     }
+    public boolean emailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (Handle handle = jdbi.open()) {
+            int count = handle.createQuery(sql)
+                    .bind(0, email)
+                    .mapTo(Integer.class)
+                    .one();
+            return count > 0;
+        }
+    }
+
 
     @Override
     public boolean add(Object obj) {
