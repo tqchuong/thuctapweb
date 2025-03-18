@@ -96,29 +96,30 @@ public class LoginController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             Users user = new Users(username, hashedPassword,email,phone);
 
-            // Kiểm tra nếu tên người dùng đã tồn tại
-            if (userDAO.userExists(username)) {
-                request.setAttribute("error", "Tên người dùng đã tồn tại.");
+            if (userDAO.userExists(username) || userDAO.emailExists(email)) {
+                request.setAttribute("error", "Tên người dùng hoặc email đã tồn tại.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
 
 
+
             // Tạo token xác thực
             String token = TokenGenerator.generateToken(username);
-            String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
             Timestamp expiry = Timestamp.from(Instant.now().plusSeconds(24 * 60 * 60)); // Hết hạn sau 24h
-            user.setVerification_token(encodedToken);
+            user.setVerification_token(token);
             user.setToken_expiry(expiry);
 
 
             if (userDAO.add(user)) {
                 // Gửi email xác thực
-                String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken;
+                String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
+                String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken ;
                 String subject = "Xác thực tài khoản của bạn";
                 String message = "Nhấn vào link sau để xác thực tài khoản: " + verifyLink + "\nLink có hiệu lực trong 24 giờ.";
-                UserDAO.sendMail(email, subject, message);
+                new Thread(() -> UserDAO.sendMail(email, subject, message)).start();
+
 
                 response.sendRedirect("verify.jsp?email=" + email);
             } else {
