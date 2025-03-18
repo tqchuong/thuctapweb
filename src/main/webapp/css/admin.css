@@ -80,41 +80,47 @@ body,input,button,textarea,pre {
 .switch {
     position: relative;
     cursor: pointer;
-    width: 40px;
-    height: 20px;
+    width: 60px; /* Kéo dài để chứa 3 trạng thái */
+    height: 24px;
     display: inline-block;
     margin-left: 30px;
     top: 6px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     background: #ccc;
-    border-radius: 100rem;
+    border-radius: 100px;
     transition: background-color 0.25s linear;
 }
 
 .switch:after {
     content: "";
     position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 40px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
     background-color: #fff;
-    top: 5px;
-    left: 5px;
-    transition: background-color 0.25s linear, transform 0.25s linear;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.25s linear;
 }
 
-.switch-input {
-    display: none;
+/* Trạng thái bật 1 */
+.switch.on1 {
+    background-color: orange;
 }
 
-.switch-input:checked + .switch {
-    background-color: var(--red);
-}
-
-.switch-input:checked + .switch:after {
+.switch.on1:after {
     transform: translateX(20px);
-    background-color: #fff;
 }
+
+/* Trạng thái bật 2 */
+.switch.on2 {
+    background-color: red;
+}
+
+.switch.on2:after {
+    transform: translateX(36px);
+}
+
+
 
 
 .header {

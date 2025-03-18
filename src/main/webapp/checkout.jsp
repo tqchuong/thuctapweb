@@ -170,6 +170,14 @@
                         <span>&nbsp;&nbsp;Thanh toán bằng ví điện tử</span>
                         <input type="hidden" name="paymentStatus" value="Đã thanh toán">
                     </label>
+
+                    <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff;">
+                        <input type="radio" id="rdPaymentTypeVnpay" name="paymentType" value="VNPAY">&nbsp;&nbsp;
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>&nbsp;&nbsp;Thanh toán qua VNPay</span>
+                        <input type="hidden" name="paymentStatus" value="Đã thanh toán">
+                    </label>
+
                 </div>
 
                 <!-- Tổng tiền -->
