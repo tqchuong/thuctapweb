@@ -115,7 +115,7 @@ public class LoginController extends HttpServlet {
             if (userDAO.add(user)) {
                 // Gửi email xác thực
                 String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
-                String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken;
+                String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken ;
                 String subject = "Xác thực tài khoản của bạn";
                 String message = "Nhấn vào link sau để xác thực tài khoản: " + verifyLink + "\nLink có hiệu lực trong 24 giờ.";
                 new Thread(() -> UserDAO.sendMail(email, subject, message)).start();

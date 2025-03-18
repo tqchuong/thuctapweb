@@ -311,9 +311,6 @@ public class UserDAO implements ObjectDAO {
         return true;
     }
 
-
-
-
     // Hàm tạo mật khẩu ngẫu nhiên 6 chữ số
     private String generateRandomPassword() {
         String chars = "0123456789";  // Chỉ chứa số
@@ -396,6 +393,15 @@ public class UserDAO implements ObjectDAO {
         }
     }
 
+    public boolean isVerified(String email) {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("SELECT Is_verified FROM users WHERE email = :email")
+                        .bind("email", email)
+                        .mapTo(Boolean.class)
+                        .findOne()
+                        .orElse(false)
+        );
+    }
 
 
     // Phương thức main để kiểm tra và truy vấn dữ liệu
