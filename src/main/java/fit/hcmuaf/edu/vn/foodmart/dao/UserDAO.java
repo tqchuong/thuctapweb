@@ -69,6 +69,11 @@ public class UserDAO implements ObjectDAO {
                 return "ACCOUNT_LOCKED"; // Tài khoản bị khóa
             }
 
+            if (!user.isVerified()) {
+                System.out.println("Tài khoản chưa được xác thực: " + username);
+                return "VERIFY_ACCOUNT"; // Chuyển hướng đến trang xác thực
+            }
+
             // Kiểm tra mật khẩu
             if (PasswordUtils.verifyPassword(password, user.getPassword())) {
                 System.out.println("Đăng nhập thành công: " + username);
@@ -77,6 +82,8 @@ public class UserDAO implements ObjectDAO {
                 System.out.println("Sai mật khẩu cho người dùng: " + username);
                 return "INCORRECT_PASSWORD";
             }
+
+
         } catch (Exception e) {
             // Xử lý lỗi kết nối hoặc truy vấn
             System.out.println("Lỗi khi kiểm tra đăng nhập: " + e.getMessage());
@@ -403,6 +410,39 @@ public class UserDAO implements ObjectDAO {
         );
     }
 
+
+    public Users getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = :email";
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind("email", email)
+                    .mapToBean(Users.class)
+                    .findOne()
+                    .orElse(null);
+        }
+    }
+
+    //update token
+    public void updateVerificationToken(String email, String newToken) {
+        String sql = "UPDATE users SET verification_token = :token WHERE email = :email";
+        try (Handle handle = jdbi.open()) {
+            handle.createUpdate(sql)
+                    .bind("token", newToken)
+                    .bind("email", email)
+                    .execute();
+        }
+    }
+
+    public String getEmailByUsername(String username) {
+        String sql = "SELECT email FROM users WHERE username = :username";
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind("username", username)
+                    .mapTo(String.class)
+                    .findOne()
+                    .orElse(null);
+        }
+    }
 
     // Phương thức main để kiểm tra và truy vấn dữ liệu
     public static void main(String[] args) {

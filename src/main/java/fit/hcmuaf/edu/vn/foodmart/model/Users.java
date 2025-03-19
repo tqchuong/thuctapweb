@@ -65,11 +65,11 @@ public class Users implements Serializable {
         this.token_expiry = token_expiry;
     }
 
-    public boolean isIs_verified() {
+    public boolean isVerified() {
         return is_verified;
     }
 
-    public void setIs_verified(boolean is_verified) {
+    public void setVerified(boolean is_verified) {
         this.is_verified = is_verified;
     }
 

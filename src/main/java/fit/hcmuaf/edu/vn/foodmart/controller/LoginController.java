@@ -45,10 +45,11 @@ public class LoginController extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
+
             // Kiểm tra đăng nhập
             UserDAO userDAO = new UserDAO();
             String loginStatus = userDAO.checkLogin(username, password);
-
+            String email = userDAO.getEmailByUsername(username);
             if (loginStatus.equals("LOGIN_SUCCESS")) {
                 // Nếu đăng nhập thành công, lấy thông tin người dùng từ cơ sở dữ liệu
                 Users user = userDAO.getUserByUsername(username);
@@ -73,6 +74,9 @@ public class LoginController extends HttpServlet {
                     case "ERROR":
                         errorMessage = "Đã có lỗi xảy ra, vui lòng thử lại!";
                         break;
+                    case "VERIFY_ACCOUNT":
+                        response.sendRedirect("verify.jsp?email=" + email);
+                        return;
                 }
                 request.setAttribute("loginError", errorMessage);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -116,8 +120,13 @@ public class LoginController extends HttpServlet {
                 // Gửi email xác thực
                 String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
                 String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken ;
-                String subject = "Xác thực tài khoản của bạn";
-                String message = "Nhấn vào link sau để xác thực tài khoản: " + verifyLink + "\nLink có hiệu lực trong 24 giờ.";
+                String subject = "Xác thực tài khoản FoodMart";
+                String message = "Xin chào " + user.getUsername() + ",\n\n"
+                        + "Bạn đã yêu cầu gửi lại email xác thực. Vui lòng bấm vào liên kết dưới đây để xác thực tài khoản của bạn:\n"
+                        + verifyLink + "\n\n"
+                        + "\nLink có hiệu lực trong 24 giờ."+ "\n\n"
+                        + "Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.\n\n"
+                        + "Trân trọng,\nFoodMart Team";
                 new Thread(() -> UserDAO.sendMail(email, subject, message)).start();
 
 

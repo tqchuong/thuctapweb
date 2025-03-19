@@ -20,6 +20,16 @@
 <!--=============== LOGIN ===============-->
 <div class="login container grid" id="loginAccessRegister">
 
+<%--    <% if (request.getAttribute("message") != null) { %>--%>
+<%--    <div class="alert alert-success"><%= request.getAttribute("message") %></div>--%>
+<%--    <% } %>--%>
+
+<%--    <% if (request.getAttribute("error") != null) { %>--%>
+<%--    <div class="alert alert-danger"><%= request.getAttribute("error") %></div>--%>
+<%--    <% } %>--%>
+
+
+
     <!-- ===== CONFIRMATION FORM ===== -->
     <div id="verifyAccountForm" class="verify-form">
         <h1 class="verify__title">Xác thực tài khoản</h1>
@@ -36,8 +46,12 @@
 
         <p class="verify__note">
             Nếu bạn không nhận được email, hãy kiểm tra thư mục spam hoặc
-            <a href="resendVerification?email=${param.email}" class="verify__link">gửi lại email xác thực</a>.
+            <a href="${pageContext.request.contextPath}/resendVerification?email=${param.email}" class="verify__link">
+                gửi lại email xác thực.
+            </a>
+
         </p>
+
     </div>
 
     <jsp:include page="footer.jsp"/>
@@ -67,6 +81,16 @@
         setInterval(checkVerification, 3000);
     });
 </script>
+<script>
+    <% if (request.getAttribute("message") != null) { %>
+    alert("<%= request.getAttribute("message") %>");
+    <% } %>
+
+    <% if (request.getAttribute("error") != null) { %>
+    alert("<%= request.getAttribute("error") %>");
+    <% } %>
+</script>
+
 
 </body>
 </html>
