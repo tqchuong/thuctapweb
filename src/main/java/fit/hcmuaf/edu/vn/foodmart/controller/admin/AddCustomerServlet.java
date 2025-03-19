@@ -72,13 +72,31 @@ public class AddCustomerServlet extends HttpServlet {
 
                 // **Chỉ cập nhật vai trò nếu checkbox được chọn**
                 if (isRoleChecked) {
-                    existingUser.setRole(existingUser.getRole().equals("User") ? "Admin" : "User");
-                    System.out.println("Vai trò cập nhật thành: " + existingUser.getRole());
+                    String oldRole = existingUser.getRole();
+                    // Kiểm tra và cập nhật vai trò mới
+                    String newRole = existingUser.getRole().equals("User") ? "Admin" : "User";
+                    existingUser.setRole(newRole); // Cập nhật vai trò mới cho đối tượng existingUser
+                    System.out.println("Vai trò cập nhật thành: " + newRole);
+
+                    // **Nếu vai trò chuyển từ User -> Admin**, yêu cầu đăng xuất ngay lập tức
+                    if (oldRole.equals("Admin") && newRole.equals("User")) {
+                        // Cập nhật vai trò vào cơ sở dữ liệu trước khi đăng xuất
+                        boolean isUpdated = userDao.updateUser(existingUser);
+                        String message = isUpdated ? "Cập nhật vai trò thành User thành công. Đăng xuất ngay." : "Lỗi: Không thể cập nhật vai trò.";
+
+                        // Đăng xuất người dùng hiện tại
+                        request.getSession().invalidate();  // Xóa session để đăng xuất người dùng
+                        response.sendRedirect("login.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
+                        return; // Dừng lại, không tiếp tục xử lý
+                    }
+                    // Nếu không phải chuyển từ User -> Admin, thì chỉ cập nhật vai trò bình thường
+                    else {
+                        boolean isUpdated = userDao.updateUser(existingUser);
+                        String message = isUpdated ? "Cập nhật khách hàng thành công" : "Lỗi: Cập nhật khách hàng thất bại";
+                        response.sendRedirect("admin.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
+                    }
                 }
 
-                boolean isUpdated = userDao.updateUser(existingUser);
-                String message = isUpdated ? "Cập nhật khách hàng thành công" : "Lỗi: Cập nhật khách hàng thất bại";
-                response.sendRedirect("admin.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
             } else {
                 System.out.println("User not found for editing.");
                 String message = URLEncoder.encode("Lỗi: Không tìm thấy khách hàng để chỉnh sửa", StandardCharsets.UTF_8.toString());
