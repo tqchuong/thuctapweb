@@ -38,8 +38,10 @@ public class AddProductServlet extends HttpServlet {
         int stockQuantity = (stock != null && !stock.isEmpty()) ? Integer.parseInt(stock) : 0;
 
 
-        // Nếu không sale, đặt discountPercentage về 0
-        if (!isSale) {
+        // Tính giá bán sau giảm và lưu trực tiếp vào giá bán (price)
+        if (isSale && discountPercentage > 0) {
+            price = price - (price * discountPercentage / 100);
+        } else {
             discountPercentage = 0;
         }
         // Đường dẫn lưu file vào thư mục image/products

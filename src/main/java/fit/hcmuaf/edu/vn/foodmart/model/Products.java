@@ -20,6 +20,7 @@ public class Products {
     private double discountPercentage; // Thêm thuộc tính discountPercentage
     private Sale sales;
     private int IsSale;
+    private int salePrice;
 
     // Constructor mặc định
     public Products() {
@@ -58,6 +59,14 @@ public class Products {
         this.IsSale =IsSale;
         this.discountPercentage = discountPercentage;
         this.sales = sales;
+    }
+
+    public int getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(int salePrice) {
+        this.salePrice = salePrice;
     }
 
     public int getID() {

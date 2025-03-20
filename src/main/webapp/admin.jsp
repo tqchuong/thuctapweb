@@ -339,9 +339,9 @@
 
                 </table>
             </div>
-
-            <!-- </div> -->
         </div>
+            <!-- </div> -->
+
         <!-- Order  -->
         <div class="section">
             <div class="admin-control">
@@ -664,13 +664,42 @@
                     </button>
                 </div>
             </div>
-            <div id="show-ship">
+            <div class="table">
+                <table width="100%">
+                    <thead>
+                    <tr>
+                        <td>STT</td>
+                        <td>Tên nhà cung cấp</td>
+                        <td>Ngày đặt</td>
+                        <td>Tổng tiền</td>
 
-
-            </div>
-            <div class="page-nav" id="page-nav">
-                <ul class="page-nav-list">
-                </ul>
+                    </tr>
+                    </thead>
+<%--                    <%--%>
+<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
+<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
+<%--                    %>--%>
+<%--                    <tbody id="showOrder">--%>
+<%--                    <% for (Order order : orders) { %>--%>
+<%--                    <tr>--%>
+<%--                        <td>DH<%= order.getId() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= order.getReceiverPhone() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
+<%--                        <td>--%>
+<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
+<%--                          </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control">--%>
+<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <% } %>--%>
+<%--                    </tbody>--%>
+                </table>
             </div>
         </div>
 
@@ -700,13 +729,42 @@
                     </button>
                 </div>
             </div>
-            <div id="show-ship">
+            <div class="table">
+                <table width="100%">
+                    <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Phương thức giao hàng</td>
+                        <td>Gía tiền</td>
+                        <td>Trạng thái</td>
 
-
-            </div>
-            <div class="page-nav" id="page-nav">
-                <ul class="page-nav-list">
-                </ul>
+                    </tr>
+                    </thead>
+<%--                    <%--%>
+<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
+<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
+<%--                    %>--%>
+<%--                    <tbody id="showOrder">--%>
+<%--                    <% for (Order order : orders) { %>--%>
+<%--                    <tr>--%>
+<%--                        <td>DH<%= order.getId() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= order.getReceiverPhone() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
+<%--                        <td>--%>
+<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
+<%--                          </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control">--%>
+<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <% } %>--%>
+<%--                    </tbody>--%>
+                </table>
             </div>
         </div>
 
@@ -755,6 +813,20 @@
                             </select>
                             <span class="form-message"></span>
                         </div>
+
+                        <div class="form-group">
+                            <label for="NCC" class="form-label">Nhà cung cấp</label>
+                            <select name="NCCID" id="chon-ncc">
+                                <option value="1"> HoaBanFood</option>
+                                <option value="2">ABC</option>
+                                <option value="3"> text3</option>
+                                <option value="4">text4</option>
+                                <option value="5">text5</option>
+                                <option value="6">text6</option>
+                            </select>
+                            <span class="form-message"></span>
+                        </div>
+
 
                         <div class="form-group">
                             <label for="IsSale" class="form-label">Chọn sale</label>
@@ -849,12 +921,17 @@
         </div>
     </div>
 
-
     <%
         UserAdminDAO userDao = new UserAdminDAO();
         List<Users> userList = userDao.getAllUsers();
         request.setAttribute("userList", userList);
     %>
+
+    <%
+        // Lấy dữ liệu khách hàng được truyền từ Servlet
+        Users customer = (Users) request.getAttribute("customer");
+    %>
+
 
     <div class="modal" id="customer-modal">
         <div class="modal-container2 ">
@@ -889,10 +966,19 @@
                 <!-- Trạng thái (Chỉ dành cho chỉnh sửa) -->
                 <div class="form-group edit-customer-e">
                     <label for="customer-status" class="form-label">Trạng thái</label>
-                    <input type="hidden" name="status" value="0"> <!-- Giá trị mặc định là 0 -->
-                    <input type="checkbox" id="customer-status" name="status" value="1" class="switch-input">
+                    <input type="checkbox" id="customer-status" name="status" value="1" class="switch-input"
+                        <%= (customer != null && "Đang hoạt động".equals(customer.getUserStatus())) ? "checked" : "" %> >
                     <label for="customer-status" class="switch"></label>
                 </div>
+
+                <div class="form-group edit-customer-e">
+                    <label for="customer-role" class="form-label">Vai trò</label>
+                    <input type="checkbox" id="customer-role" name="role" value="1" class="switch-input"
+                        <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
+                    <label for="customer-role" class="switch"></label>
+                </div>
+
+
                 <!-- Nút Hành Động -->
                 <button type="submit" class="form-submit add-account-e" id="signup-button">Đăng ký</button>
                 <button type="submit" class="form-submit edit-customer-e" id="update-customer-button">
@@ -1006,6 +1092,7 @@
 
 
 </script>
+
 
 <script src="js/admin.js"></script>
 </body>

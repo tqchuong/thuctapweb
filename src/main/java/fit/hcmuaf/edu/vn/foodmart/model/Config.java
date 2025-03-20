@@ -13,7 +13,8 @@ import java.util.*;
 
 public class Config {
     public static String vnp_TmnCode = "VZ8T3AHZ"; // Mã website của bạn trên VNPay
-    public static String vnp_HashSecret = "JPSODXCRIRJYTUQG95BUTNS85NFGF8NK"; // Chuỗi bí mật VNPay
+    public static String vnp_HashSecret = "JPSODXCRIRJYTUQG95BUTNS85NFGF8NK";
+    // Chuỗi bí mật VNPay
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_Returnurl = "http://localhost:8080/project/";
 
@@ -58,12 +59,19 @@ public class Config {
         List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
-        for (String fieldName : fieldNames) {
+
+        for (int i = 0; i < fieldNames.size(); i++) {
+            String fieldName = fieldNames.get(i);
             String fieldValue = fields.get(fieldName);
             if (fieldValue != null && !fieldValue.isEmpty()) {
-                hashData.append(fieldName).append('=').append(fieldValue).append('&');
+                hashData.append(fieldName).append('=').append(fieldValue);
+                if (i < fieldNames.size() - 1) {
+                    hashData.append('&');
+                }
             }
         }
+
         return hmacSHA512(vnp_HashSecret, hashData.toString());
     }
+
 }
