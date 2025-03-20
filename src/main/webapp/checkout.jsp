@@ -13,7 +13,7 @@
 </head>
 
 <body>
-<form action="checkout" method="post" class="checkout-form">
+<form action="checkout" method="post" class="checkout-form" onsubmit="return handlePayment(event)">
     <div class="checkout-page">
         <div class="checkout-header">
             <div class="checkout-return">
@@ -194,6 +194,32 @@
         </main>
     </div>
 </form>
+<script>
+    function handlePayment(event) {
+        event.preventDefault();
+        let paymentType = document.querySelector('input[name="paymentType"]:checked').value;
+        let totalAmount = document.getElementById("totalAmountInput").value;
+
+        if (paymentType === "VNPAY") {
+            let form = document.createElement("form");
+            form.method = "POST";
+            form.action = "vnpay-payment";
+
+            let amountInput = document.createElement("input");
+            amountInput.type = "hidden";
+            amountInput.name = "amount";
+            amountInput.value = totalAmount;
+
+            form.appendChild(amountInput);
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            document.getElementById('checkout-form').submit();
+        }
+    }
+
+</script>
+
     <script src="js/checkout.js"></script>
 
 </body>
