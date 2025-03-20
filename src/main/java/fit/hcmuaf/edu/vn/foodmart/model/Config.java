@@ -2,48 +2,76 @@ package fit.hcmuaf.edu.vn.foodmart.model;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.util.Random;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+
+
 
 public class Config {
-    public static String vnp_Version = "2.1.0";
-    public static String vnp_Command = "pay";
-    public static String vnp_TmnCode = "YOUR_TMN_CODE";
-    public static String vnp_HashSecret = "YOUR_SECRET_KEY";
-    public static String vnp_Returnurl = "YOUR_RETURN_URL";
+    public static String vnp_TmnCode = "VZ8T3AHZ"; // Mã website của bạn trên VNPay
+    public static String vnp_HashSecret = "JPSODXCRIRJYTUQG95BUTNS85NFGF8NK";
+    // Chuỗi bí mật VNPay
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static String vnp_Returnurl = "http://localhost:8080/project/";
 
+    // Hàm tạo số ngẫu nhiên
     public static String getRandomNumber(int length) {
-        Random rand = new Random();
+        Random rnd = new Random();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            sb.append(rand.nextInt(10));
+            sb.append(rnd.nextInt(10));
         }
         return sb.toString();
     }
 
+    // Hàm lấy địa chỉ IP khách hàng
     public static String getIpAddress(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null) {
+        if (ipAddress == null || ipAddress.isEmpty()) {
             ipAddress = request.getRemoteAddr();
         }
         return ipAddress;
     }
 
+    // Hàm mã hóa SHA-512
     public static String hmacSHA512(String key, String data) {
         try {
-            Mac hmac = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "HmacSHA512");
-            hmac.init(secretKey);
-            byte[] hash = hmac.doFinal(data.getBytes());
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            byte[] hash = md.digest((key + data).getBytes(StandardCharsets.UTF_8));
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
-                hexString.append(String.format("%02x", b));
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
             }
             return hexString.toString();
-        } catch (Exception e) {
-            return "";
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error while hashing", e);
         }
     }
+
+    // Hàm tạo chuỗi ký tự bảo mật
+    public static String hashAllFields(Map<String, String> fields) {
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder hashData = new StringBuilder();
+
+        for (int i = 0; i < fieldNames.size(); i++) {
+            String fieldName = fieldNames.get(i);
+            String fieldValue = fields.get(fieldName);
+            if (fieldValue != null && !fieldValue.isEmpty()) {
+                hashData.append(fieldName).append('=').append(fieldValue);
+                if (i < fieldNames.size() - 1) {
+                    hashData.append('&');
+                }
+            }
+        }
+
+        return hmacSHA512(vnp_HashSecret, hashData.toString());
+    }
+
 }
