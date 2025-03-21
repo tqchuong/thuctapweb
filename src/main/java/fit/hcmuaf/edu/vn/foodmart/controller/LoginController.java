@@ -50,6 +50,7 @@ public class LoginController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             String loginStatus = userDAO.checkLogin(username, password);
             String email = userDAO.getEmailByUsername(username);
+
             if (loginStatus.equals("LOGIN_SUCCESS")) {
                 // Nếu đăng nhập thành công, lấy thông tin người dùng từ cơ sở dữ liệu
                 Users user = userDAO.getUserByUsername(username);
@@ -57,7 +58,6 @@ public class LoginController extends HttpServlet {
                 // Tạo session và lưu thông tin người dùng
                 HttpSession session = request.getSession(true);
                 session.setAttribute("auth", user);
-
 
                 // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
                 response.sendRedirect("home.jsp");
@@ -70,6 +70,9 @@ public class LoginController extends HttpServlet {
                         break;
                     case "INCORRECT_PASSWORD":
                         errorMessage = "Tài khoản hoặc mật khẩu không đúng!";
+                        break;
+                    case "ACCOUNT_TEMP_LOCKED":
+                        errorMessage = "Tài khoản bị khóa tạm thời do đăng nhập sai quá 5 lần.\n Vui lòng thử lại sau 5 phút!";
                         break;
                     case "ERROR":
                         errorMessage = "Đã có lỗi xảy ra, vui lòng thử lại!";

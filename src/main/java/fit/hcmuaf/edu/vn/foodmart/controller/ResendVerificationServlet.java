@@ -45,13 +45,7 @@ public class ResendVerificationServlet extends HttpServlet {
 
         boolean emailSent = UserDAO.sendMail(email, subject, message);
 
-//        if (emailSent) {
-//            String redirectURL = "verify.jsp?message=" + URLEncoder.encode("Email xác thực đã được gửi lại!", "UTF-8");
-//            response.sendRedirect(redirectURL);
-//        } else {
-//            String redirectURL = "verify.jsp?error=" + URLEncoder.encode("Gửi email thất bại, vui lòng thử lại!", "UTF-8");
-//            response.sendRedirect(redirectURL);
-//        }
+
         if (emailSent) {
             request.setAttribute("message", "Email xác thực đã được gửi lại!");
         } else {

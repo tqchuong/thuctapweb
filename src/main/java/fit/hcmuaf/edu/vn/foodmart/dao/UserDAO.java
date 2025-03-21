@@ -11,10 +11,10 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public class UserDAO implements ObjectDAO {
 
@@ -63,13 +63,20 @@ public class UserDAO implements ObjectDAO {
                 return "INCORRECT_PASSWORD";
             }
 
+            // Lấy thời gian hiện tại theo múi giờ Việt Nam
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            if (user.getLockTime() != null && currentTime.before(getLockTimeByUser(username))) {
+                System.out.println("Tài khoản bị khóa tạm thời: " + username);
+                return "ACCOUNT_TEMP_LOCKED";
+            }
+
             // Kiểm tra trạng thái người dùng
             if (!user.getUserStatus().equals("Đang hoạt động")) {
                 System.out.println("Tài khoản không thể đăng nhập do trạng thái: " + user.getUserStatus());
                 return "ACCOUNT_LOCKED"; // Tài khoản bị khóa
             }
 
-            if (!user.isVerified()) {
+            if (!isVerified(getEmailByUsername(username))) {
                 System.out.println("Tài khoản chưa được xác thực: " + username);
                 return "VERIFY_ACCOUNT"; // Chuyển hướng đến trang xác thực
             }
@@ -77,10 +84,20 @@ public class UserDAO implements ObjectDAO {
             // Kiểm tra mật khẩu
             if (PasswordUtils.verifyPassword(password, user.getPassword())) {
                 System.out.println("Đăng nhập thành công: " + username);
+                updateLoginAttempts(handle,username,0,null);
                 return "LOGIN_SUCCESS";
             } else {
-                System.out.println("Sai mật khẩu cho người dùng: " + username);
-                return "INCORRECT_PASSWORD";
+                // Sai mật khẩu, tăng loginAttempts
+                int attempts = user.getLoginAttempts() + 1;
+                Timestamp lockTime = null;
+                if (attempts >= 5) {
+                    lockTime = new Timestamp(System.currentTimeMillis() + 5 * 60 * 1000); // Khóa 5 phút
+                    System.out.println(lockTime);
+                    System.out.println("Khóa tài khoản tạm thời do sai quá 5 lần: " + username);
+                }
+                updateLoginAttempts(handle, username, attempts,lockTime);
+                System.out.println("Sai mật khẩu cho người dùng: " + username + " (Lần " + attempts + ")");
+                return attempts >= 5 ? "ACCOUNT_TEMP_LOCKED" : "INCORRECT_PASSWORD";
             }
 
 
@@ -89,6 +106,33 @@ public class UserDAO implements ObjectDAO {
             System.out.println("Lỗi khi kiểm tra đăng nhập: " + e.getMessage());
             e.printStackTrace();
             return "ERROR"; // Trả về false nếu có lỗi
+        }
+    }
+
+    // Phương thức hỗ trợ cập nhật loginAttempts và lockTime
+    private void updateLoginAttempts(Handle handle, String username, int attempts, Timestamp lockTime) {
+        String updateSql = "UPDATE users SET login_attempts = :attempts, lock_time = :lockTime WHERE username = :username";
+        try {
+            handle.createUpdate(updateSql)
+                    .bind("attempts", attempts)
+                    .bind("lockTime", lockTime)
+                    .bind("username", username)
+                    .execute();
+        } catch (Exception e) {
+            System.out.println("Lỗi khi cập nhật login attempts hoặc lock time cho " + username + ": " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Không thể cập nhật thông tin đăng nhập", e);
+        }
+    }
+
+    public Timestamp getLockTimeByUser(String username) {
+        String sql = "SELECT lock_time FROM users WHERE username = :username";
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind("username", username)
+                    .mapTo(Timestamp.class)
+                    .findOne()
+                    .orElse(null);
         }
     }
 

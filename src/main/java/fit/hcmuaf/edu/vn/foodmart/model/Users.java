@@ -16,9 +16,11 @@ public class Users implements Serializable {
     private String role;
     private String userStatus;
     private Timestamp created_at;
-    private String verification_token;
-    private boolean is_verified;
-    private Timestamp token_expiry;
+    private String verification_token;  //link xác thực
+    private boolean is_verified;    //đã xác thực chưa?
+    private Timestamp token_expiry; //thời hạn xác thực
+    private int loginAttempts; // Số lần đăng nhập sai
+    private Timestamp lockTime; // Thời gian bị khóa
 
     public Users() {
     }
@@ -49,6 +51,22 @@ public class Users implements Serializable {
         this.is_verified = b;
     }
 
+    public Timestamp getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(Timestamp lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public int getLoginAttempts() {
+        return loginAttempts;
+    }
+
+    public void setLoginAttempts(int loginAttempts) {
+        this.loginAttempts = loginAttempts;
+    }
+
     public String getVerification_token() {
         return verification_token;
     }
@@ -65,11 +83,20 @@ public class Users implements Serializable {
         this.token_expiry = token_expiry;
     }
 
-    public boolean isVerified() {
+//    public boolean isVerified() {
+//        return is_verified;
+//    }
+//
+//    public void setVerified(boolean is_verified) {
+//        this.is_verified = is_verified;
+//    }
+
+
+    public boolean isIs_verified() {
         return is_verified;
     }
 
-    public void setVerified(boolean is_verified) {
+    public void setIs_verified(boolean is_verified) {
         this.is_verified = is_verified;
     }
 
@@ -156,7 +183,7 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "Users{" +
-                "userId=" + Id +
+                "Id=" + Id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
@@ -166,6 +193,11 @@ public class Users implements Serializable {
                 ", role='" + role + '\'' +
                 ", userStatus='" + userStatus + '\'' +
                 ", created_at=" + created_at +
+                ", verification_token='" + verification_token + '\'' +
+                ", is_verified=" + is_verified +
+                ", token_expiry=" + token_expiry +
+                ", loginAttempts=" + loginAttempts +
+                ", lockTime=" + lockTime +
                 '}';
     }
 }
