@@ -36,8 +36,8 @@ public class VNPayPaymentServlet extends HttpServlet {
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", txnRef);
-        vnp_Params.put("vnp_OrderInfo", orderInfo);
-        vnp_Params.put("vnp_OrderType", orderType);
+        vnp_Params.put("vnp_OrderInfo", "123");
+        vnp_Params.put("vnp_OrderType", "344");
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", Config.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", ipAddr);
@@ -45,6 +45,12 @@ public class VNPayPaymentServlet extends HttpServlet {
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         vnp_Params.put("vnp_CreateDate", formatter.format(cld.getTime()));
+
+        Calendar expire = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+
+        expire.add(Calendar.MINUTE, 15); // Hết hạn sau 15 phút
+        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        vnp_Params.put("vnp_ExpireDate", formatter1.format(expire.getTime()));
 
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
@@ -59,8 +65,22 @@ public class VNPayPaymentServlet extends HttpServlet {
             }
         }
 
+
         String vnp_SecureHash = Config.hmacSHA512(Config.vnp_HashSecret, hashData.toString());
         query.append("vnp_SecureHash=").append(vnp_SecureHash);
+        vnp_Params.put("vnp_SecureHash", vnp_SecureHash); // Bổ sung SecureHash vào params
+        System.out.println("Chuỗi hash trước khi mã hóa: " + hashData.toString());
+
+        System.out.println("---- Dữ liệu đã gửi đến VNPay ----");
+
+        System.out.println("vnp_TmnCode: " + vnp_Params.get("vnp_TmnCode"));
+        System.out.println("vnp_TxnRef: " + vnp_Params.get("vnp_TxnRef"));
+        System.out.println("vnp_Amount: " + vnp_Params.get("vnp_Amount"));
+        System.out.println("vnp_OrderInfo: " + vnp_Params.get("vnp_OrderInfo"));
+        System.out.println("vnp_IpAddr: " + vnp_Params.get("vnp_IpAddr"));
+        System.out.println("vnp_CreateDate: " + vnp_Params.get("vnp_CreateDate"));
+        System.out.println("vnp_SecureHash: " + vnp_Params.get("vnp_SecureHash"));
+        System.out.println("----------------------------------");
 
         String paymentUrl = Config.vnp_PayUrl + "?" + query.toString();
         JsonObject job = new JsonObject();

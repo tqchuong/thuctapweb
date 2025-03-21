@@ -2,6 +2,8 @@ package fit.hcmuaf.edu.vn.foodmart.model;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -36,27 +38,31 @@ public class Config {
         return ipAddress;
     }
 
-    // Hàm mã hóa SHA-512
+
     public static String hmacSHA512(String key, String data) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            byte[] hash = md.digest((key + data).getBytes(StandardCharsets.UTF_8));
+            Mac sha512_HMAC = Mac.getInstance("HmacSHA512");
+            SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+            sha512_HMAC.init(secret_key);
+            byte[] hash = sha512_HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8));
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
+                hexString.append(String.format("%02x", b));
             }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error while hashing", e);
+            return hexString.toString().toUpperCase();
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tạo HMAC SHA512", e);
         }
     }
 
-    // Hàm tạo chuỗi ký tự bảo mật
+
     public static String hashAllFields(Map<String, String> fields) {
+        // Xóa tham số vnp_SecureHash nếu có
+        fields.remove("vnp_SecureHash");
+
         List<String> fieldNames = new ArrayList<>(fields.keySet());
-        Collections.sort(fieldNames);
+        Collections.sort(fieldNames); // Sắp xếp tham số theo thứ tự A-Z
+
         StringBuilder hashData = new StringBuilder();
         for (String fieldName : fieldNames) {
             String fieldValue = fields.get(fieldName);
@@ -64,6 +70,17 @@ public class Config {
                 hashData.append(fieldName).append('=').append(fieldValue).append('&');
             }
         }
-        return hmacSHA512(vnp_HashSecret, hashData.toString());
+
+        // Kiểm tra và loại bỏ dấu '&' cuối cùng nếu tồn tại
+        if (hashData.length() > 0 && hashData.charAt(hashData.length() - 1) == '&') {
+            hashData.setLength(hashData.length() - 1);
+        }
+
+        System.out.println("Chuỗi trước khi hash: " + hashData.toString()); // Debug
+
+        return hmacSHA512(vnp_HashSecret, hashData.toString()); // Gọi hàm mã hóa
     }
+
+
+
 }
