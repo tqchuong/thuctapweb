@@ -1,4 +1,4 @@
-
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Users" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <footer class="footer">
 
@@ -106,6 +106,12 @@
     <a href="#">💬</a>
 </div>
 <script>
+    <%
+        Users currentUser = (Users) session.getAttribute("auth");
+        String role = (currentUser != null) ? currentUser.getRole() : "";
+    %>
+
+    <% if ("Admin".equals(role)) { %>
     setInterval(() => {
         fetch('<%=request.getContextPath()%>/checkSession')
             .then(response => response.text())
@@ -120,4 +126,6 @@
                 window.location.href = '<%=request.getContextPath()%>/login.jsp';
             });
     }, 3000); // Kiểm tra mỗi 3 giây
+    <% } %>
 </script>
+

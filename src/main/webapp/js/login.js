@@ -54,6 +54,8 @@ const togglePasswordVisibility = (passwordId, eyeIconId) => {
         forgotPasswordForm.style.display = 'none';
      });
  }
+
+
  
 
  

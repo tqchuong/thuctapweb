@@ -100,6 +100,17 @@ public class UserDAO implements ObjectDAO {
             return null;
         }
     }
+    public boolean emailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (Handle handle = jdbi.open()) {
+            int count = handle.createQuery(sql)
+                    .bind(0, email)
+                    .mapTo(Integer.class)
+                    .one();
+            return count > 0;
+        }
+    }
+
 
     @Override
     public boolean add(Object obj) {
@@ -109,8 +120,8 @@ public class UserDAO implements ObjectDAO {
         userList.put(user.getUsername(), user);
 
         // Câu lệnh SQL để thêm người dùng vào cơ sở dữ liệu
-        String sql = "INSERT INTO `users` (`Username`, `Password`, `Email`, `Phone`,`Otp`) \n" +
-                "VALUES (?, ?, ?, ?,?)";
+        String sql = "INSERT INTO users (Username, Password, Email, Phone, verification_token, token_expiry, is_verified) " +
+                "VALUES (?, ?, ?, ?, ?, ?, FALSE)";
 
         try (Handle handle = jdbi.open()) {
             handle.createUpdate(sql)
@@ -118,12 +129,11 @@ public class UserDAO implements ObjectDAO {
                     .bind(1, user.getPassword())
                     .bind(2, user.getEmail())
                     .bind(3, user.getPhone())
-                    .bind(4,user.getOtp())
+                    .bind(4, user.getVerification_token())
+                    .bind(5, user.getToken_expiry())
                     .execute();
             return true;
         } catch (Exception e) {
-            // Ghi lỗi vào log thay vì in ra console
-            System.err.println("Lỗi khi thêm người dùng: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -383,6 +393,17 @@ public class UserDAO implements ObjectDAO {
         }
     }
 
+    public boolean isVerified(String email) {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("SELECT Is_verified FROM users WHERE email = :email")
+                        .bind("email", email)
+                        .mapTo(Boolean.class)
+                        .findOne()
+                        .orElse(false)
+        );
+    }
+
+
     // Phương thức main để kiểm tra và truy vấn dữ liệu
     public static void main(String[] args) {
         // Lấy danh sách người dùng từ cơ sở dữ liệu
@@ -396,9 +417,9 @@ public class UserDAO implements ObjectDAO {
         // Kiểm tra đăng nhập
         UserDAO dao = new UserDAO();
 
-        String passwordHash = PasswordUtils.hashPassword("admin123");
-        Users userAdmin = new Users("admin",passwordHash,"admin@gmail.com","admin","Admin");
-        System.out.println(dao.addAdmin(userAdmin));
+//        String passwordHash = PasswordUtils.hashPassword("admin123");
+//        Users userAdmin = new Users("admin",passwordHash,"admin@gmail.com","admin","Admin");
+//        System.out.println(dao.addAdmin(userAdmin));
 
 //        System.out.println(dao.checkLogin("hmc", "524173"));
 //        System.out.println(dao.checkLogin("tqc", "1234"));

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css">
     <!--=============== CSS ===============-->
     <link rel="stylesheet" href="css/login.css">
+
     <title>Login</title>
 </head>
 <body>
@@ -112,18 +113,6 @@
             </p>
         </div>
     </div>
-
-<%--    form xác nhận otp--%>
-<%--    <form action="verifyServlet" method="post" class="login__form">--%>
-<%--        <input type="hidden" name="email" value="${param.email}">--%>
-
-<%--        <div class="login__box">--%>
-<%--            <input type="text" id="otp" name="otp" required placeholder=" " class="login__input">--%>
-<%--            <label for="otp" class="login__label">Nhập mã OTP</label>--%>
-<%--        </div>--%>
-
-<%--        <button type="submit" class="login__button">Xác nhận</button>--%>
-<%--    </form>--%>
 
 
     <!-- ===== FORGOT PASSWORD ===== -->

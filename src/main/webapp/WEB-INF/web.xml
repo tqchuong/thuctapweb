@@ -56,4 +56,14 @@
         <url-pattern>/order-his</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>VNPayPaymentServlet</servlet-name>
+        <servlet-class>fit.hcmuaf.edu.vn.foodmart.model.VNPayPaymentServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>VNPayPaymentServlet</servlet-name>
+        <url-pattern>/vnpay-payment</url-pattern>
+    </servlet-mapping>
+
 </web-app>
