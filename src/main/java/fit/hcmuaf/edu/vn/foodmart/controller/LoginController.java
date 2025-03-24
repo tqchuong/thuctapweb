@@ -1,16 +1,32 @@
 package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.UserDAO;
+import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import fit.hcmuaf.edu.vn.foodmart.utils.PasswordUtils;
+import fit.hcmuaf.edu.vn.foodmart.utils.SessionManager;
+import fit.hcmuaf.edu.vn.foodmart.utils.TokenGenerator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static com.google.gson.internal.bind.TypeAdapters.UUID;
+
 
 @WebServlet(name = "LoginController", value = "/login")
 public class LoginController extends HttpServlet {
+    private static final Jdbi jdbi = DBConnect.getJdbi();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Xử lý các yêu cầu GET (nếu có)
@@ -41,6 +57,8 @@ public class LoginController extends HttpServlet {
                 // Tạo session và lưu thông tin người dùng
                 HttpSession session = request.getSession(true);
                 session.setAttribute("auth", user);
+
+                SessionManager.addSession(user.getUsername(), session);
 
 
                 // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
@@ -81,31 +99,52 @@ public class LoginController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             Users user = new Users(username, hashedPassword,email,phone);
 
-            // Kiểm tra nếu tên người dùng đã tồn tại
-            if (userDAO.userExists(username)) {
-                request.setAttribute("error", "Tên người dùng đã tồn tại.");
+            if (userDAO.userExists(username) || userDAO.emailExists(email)) {
+                request.setAttribute("error", "Tên người dùng hoặc email đã tồn tại.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
-            // Thêm người dùng vào cơ sở dữ liệu
+
+
+
+            // Tạo token xác thực
+            String token = TokenGenerator.generateToken(username);
+            Timestamp expiry = Timestamp.from(Instant.now().plusSeconds(24 * 60 * 60)); // Hết hạn sau 24h
+            user.setVerification_token(token);
+            user.setToken_expiry(expiry);
+
+
             if (userDAO.add(user)) {
-                // Tạo session và chuyển hướng tới trang đăng nhập
-                HttpSession session = request.getSession(true);
-                session.setAttribute("auth", user);  // Lưu thông tin người dùng vào session
-                response.sendRedirect("home.jsp");
+                // Gửi email xác thực
+                String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
+                String verifyLink = "http://localhost:8080/project/verify?token=" + encodedToken ;
+                String subject = "Xác thực tài khoản của bạn";
+                String message = "Nhấn vào link sau để xác thực tài khoản: " + verifyLink + "\nLink có hiệu lực trong 24 giờ.";
+                new Thread(() -> UserDAO.sendMail(email, subject, message)).start();
+
+
+                response.sendRedirect("verify.jsp?email=" + email);
             } else {
                 request.setAttribute("error", "Có lỗi xảy ra trong quá trình đăng ký.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
 
+
+
         } else if (action.equals("logout")) {
             // Xử lý hành động đăng xuất
-            HttpSession session = request.getSession();
-            session.invalidate();  // Hủy session khi đăng xuất
+            HttpSession session = request.getSession(false);
+            if(session != null) {
+                Users user = (Users) session.getAttribute("auth");
+                if(user != null) {
+                    SessionManager.removeSession(user.getUsername(), session);
+                }
+                session.invalidate();
+            }
             response.sendRedirect("home.jsp");
-        } else if(action.equals("forgetPass")) {
+        }else if(action.equals("forgetPass")) {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
 
@@ -133,5 +172,9 @@ public class LoginController extends HttpServlet {
             }
         }
 
+
     }
+
+
+
 }

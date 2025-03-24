@@ -25,7 +25,6 @@ public class CheckoutServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Users user = (Users) session.getAttribute("auth");
         Cart cart = (Cart) session.getAttribute("cart");
-        int userId = user.getId();
 
         if (user == null || cart == null || cart.getlist().isEmpty()) {
             response.sendRedirect("cart.jsp?error=empty_cart_or_user");
@@ -33,8 +32,6 @@ public class CheckoutServlet extends HttpServlet {
         }
 
         try {
-            // Lấy thông tin từ form
-
             double shippingFee = Double.parseDouble(request.getParameter("shippingFee"));
             String shippingMethod = request.getParameter("shippingMethod");
             String shippingAddress = request.getParameter("recipientAddress");
@@ -43,21 +40,23 @@ public class CheckoutServlet extends HttpServlet {
             Date deliveryDate = Date.valueOf(request.getParameter("deliveryDate"));
             String deliveryTime = request.getParameter("specificDeliveryTime");
             String receiverName = request.getParameter("recipientName");
-
             String receiverPhone = request.getParameter("recipientPhone");
             String paymentStatus = request.getParameter("paymentStatus");
-
-
             double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
 
+            // ✅ Kiểm tra nếu chọn VNPay thì chuyển hướng đến VNPay
+            if ("VNPAY".equals(paymentMethod)) {
+                session.setAttribute("checkout_data", request.getParameterMap()); // Lưu dữ liệu đặt hàng
+                response.sendRedirect("vnpay_pay?amount=" + totalAmount);
+                return;
+            }
+
+            // ✅ Nếu không chọn VNPay, xử lý thanh toán bình thường
             Jdbi jdbi = DBConnect.getJdbi();
             jdbi.useTransaction(handle -> {
                 OrderDao orderDAO = new OrderDao(handle);
-
-                // Gọi createOrder với các tham số mới
-                int orderId = orderDAO.createOrder(user, totalAmount, shippingMethod,
-                        deliveryDate, deliveryTime, paymentMethod, orderNote,
-                        receiverName, receiverPhone, shippingAddress);
+                int orderId = orderDAO.createOrder(user, totalAmount, shippingMethod, deliveryDate,
+                        deliveryTime, paymentMethod, orderNote, receiverName, receiverPhone, shippingAddress);
 
                 OrderDetailDAO orderDetailDAO = new OrderDetailDAO(handle.getJdbi());
                 for (CartProduct item : cart.getlist()) {
@@ -65,9 +64,8 @@ public class CheckoutServlet extends HttpServlet {
                 }
 
                 ShippingDAO shippingDAO = new ShippingDAO(handle.getJdbi());
-                shippingDAO.addShipping(orderId, shippingFee); // Fixed rate
+                shippingDAO.addShipping(orderId, shippingFee);
 
-// Thêm thông tin thanh toán
                 PaymentDAO paymentDAO = new PaymentDAO();
                 paymentDAO.addPayment(orderId, paymentStatus);
             });
@@ -79,4 +77,5 @@ public class CheckoutServlet extends HttpServlet {
             response.sendRedirect("error.jsp");
         }
     }
+
 }

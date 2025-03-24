@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css">
     <!--=============== CSS ===============-->
     <link rel="stylesheet" href="css/login.css">
+
     <title>Login</title>
 </head>
 <body>
@@ -112,6 +113,7 @@
             </p>
         </div>
     </div>
+
 
     <!-- ===== FORGOT PASSWORD ===== -->
     <div id="forgotPasswordForm" class="forgot-password" style="display: <%= "forgotPassword".equals(formType) ? "block" : "none" %>;">
