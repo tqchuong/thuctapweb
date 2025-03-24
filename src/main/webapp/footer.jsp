@@ -105,3 +105,19 @@
 <div class="chat-box">
     <a href="#">💬</a>
 </div>
+<script>
+    setInterval(() => {
+        fetch('<%=request.getContextPath()%>/checkSession')
+            .then(response => response.text())
+            .then(result => {
+                if(result.trim() !== 'Admin'){
+                    alert('Vai trò của bạn đã thay đổi hoặc phiên đã hết hạn. Bạn sẽ bị logout ngay!');
+                    window.location.href = '<%=request.getContextPath()%>/login.jsp?message=' + encodeURIComponent('Vai trò thay đổi hoặc phiên hết hạn.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                window.location.href = '<%=request.getContextPath()%>/login.jsp';
+            });
+    }, 3000); // Kiểm tra mỗi 3 giây
+</script>

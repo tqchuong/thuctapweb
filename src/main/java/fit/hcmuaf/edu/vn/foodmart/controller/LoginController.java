@@ -3,6 +3,7 @@ package fit.hcmuaf.edu.vn.foodmart.controller;
 import fit.hcmuaf.edu.vn.foodmart.dao.UserDAO;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import fit.hcmuaf.edu.vn.foodmart.utils.PasswordUtils;
+import fit.hcmuaf.edu.vn.foodmart.utils.SessionManager;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -42,6 +43,8 @@ public class LoginController extends HttpServlet {
                 // Tạo session và lưu thông tin người dùng
                 HttpSession session = request.getSession(true);
                 session.setAttribute("auth", user);
+
+                SessionManager.addSession(user.getUsername(), session);
 
 
                 // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
@@ -112,10 +115,16 @@ public class LoginController extends HttpServlet {
 
         } else if (action.equals("logout")) {
             // Xử lý hành động đăng xuất
-            HttpSession session = request.getSession();
-            session.invalidate();  // Hủy session khi đăng xuất
+            HttpSession session = request.getSession(false);
+            if(session != null) {
+                Users user = (Users) session.getAttribute("auth");
+                if(user != null) {
+                    SessionManager.removeSession(user.getUsername(), session);
+                }
+                session.invalidate();
+            }
             response.sendRedirect("home.jsp");
-        } else if(action.equals("forgetPass")) {
+        }else if(action.equals("forgetPass")) {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
 
