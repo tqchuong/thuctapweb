@@ -16,6 +16,16 @@
         <url-pattern>/checkout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <filter>
+            <filter-name>sessionFilter</filter-name>
+            <filter-class>fit.hcmuaf.edu.vn.foodmart.filter.SessionFilter</filter-class>
+        </filter>
+
+        <filter-mapping>
+            <filter-name>sessionFilter</filter-name>
+            <url-pattern>/addCustomer</url-pattern> <!-- Đặt URL của servlet cần kiểm tra -->
+        </filter-mapping>
+
 
         <servlet-name>ProductDetailsServlet</servlet-name>
         <url-pattern>/productDetails</url-pattern>
