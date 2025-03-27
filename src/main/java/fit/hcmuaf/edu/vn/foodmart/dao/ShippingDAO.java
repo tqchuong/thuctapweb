@@ -20,7 +20,6 @@ import org.jdbi.v3.core.Jdbi;
             jdbi.useHandle(handle ->
                     handle.createUpdate(sql)
                             .bind("orderId", orderId)
-
                             .bind("shippingCost", shippingCost)
                             .execute()
             );

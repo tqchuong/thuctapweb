@@ -302,6 +302,7 @@
 <div class="chat-box">
     <a href="#">💬</a>
 </div>
+<jsp:include page="footer.jsp"/>
     <script src="js/flash-sale.js"></script>
 <!--<script src="../js/home.js"></script>-->
 

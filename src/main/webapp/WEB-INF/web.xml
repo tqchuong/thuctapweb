@@ -58,7 +58,7 @@
 
     <servlet>
         <servlet-name>VNPayPaymentServlet</servlet-name>
-        <servlet-class>fit.hcmuaf.edu.vn.foodmart.model.VNPayPaymentServlet</servlet-class>
+        <servlet-class>fit.hcmuaf.edu.vn.foodmart.controller.VNPay.VNPayPaymentServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

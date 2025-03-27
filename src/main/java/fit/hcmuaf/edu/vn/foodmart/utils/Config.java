@@ -1,4 +1,4 @@
-package fit.hcmuaf.edu.vn.foodmart.model;
+package fit.hcmuaf.edu.vn.foodmart.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -1,9 +1,9 @@
-package fit.hcmuaf.edu.vn.foodmart.model;
+package fit.hcmuaf.edu.vn.foodmart.controller.VNPay;
 
 
 import com.google.gson.JsonObject;
-import com.google.gson.Gson;
 
+import fit.hcmuaf.edu.vn.foodmart.utils.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -36,8 +36,8 @@ public class VNPayPaymentServlet extends HttpServlet {
         vnp_Params.put("vnp_CurrCode", "VND");
 
         vnp_Params.put("vnp_TxnRef", txnRef);
-        vnp_Params.put("vnp_OrderInfo", "123");
-        vnp_Params.put("vnp_OrderType", "344");
+        vnp_Params.put("vnp_OrderInfo", orderInfo);
+        vnp_Params.put("vnp_OrderType", orderType);
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", Config.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", ipAddr);
