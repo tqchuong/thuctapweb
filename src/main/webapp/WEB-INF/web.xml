@@ -47,12 +47,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>VNPayPaymentServlet</servlet-name>
-        <servlet-class>fit.hcmuaf.edu.vn.foodmart.model.VNPayPaymentServlet</servlet-class>
+        <servlet-name>ajaxServlet</servlet-name>
+        <servlet-class>fit.hcmuaf.edu.vn.foodmart.vnpay.ajaxServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>VNPayPaymentServlet</servlet-name>
+        <servlet-name>ajaxServlet</servlet-name>
         <url-pattern>/vnpay-payment</url-pattern>
     </servlet-mapping>
 

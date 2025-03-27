@@ -175,7 +175,7 @@
                         <input type="radio" id="rdPaymentTypeVnpay" name="paymentType" value="VNPAY">&nbsp;&nbsp;
                         <i class="fa-solid fa-credit-card"></i>
                         <span>&nbsp;&nbsp;Thanh toán qua VNPay</span>
-                        <input type="hidden" name="paymentStatus" value="Đã thanh toán">
+                        <input type="hidden" name="paymentStatus" value="Chưa thanh toán">
                     </label>
 
                 </div>
@@ -198,23 +198,29 @@
     function handlePayment(event) {
         event.preventDefault();
         let paymentType = document.querySelector('input[name="paymentType"]:checked').value;
-        let totalAmount = document.getElementById("totalAmountInput").value;
 
         if (paymentType === "VNPAY") {
+            // Tạo một hidden form để submit
             let form = document.createElement("form");
             form.method = "POST";
-            form.action = "vnpay-payment";
+            form.action = "checkout"; // Gửi đến CheckoutServlet
 
-            let amountInput = document.createElement("input");
-            amountInput.type = "hidden";
-            amountInput.name = "amount";
-            amountInput.value = totalAmount;
+            // Thêm tất cả các field từ form gốc
+            let originalForm = document.querySelector('.checkout-form');
+            let inputs = originalForm.querySelectorAll('input, select, textarea');
 
-            form.appendChild(amountInput);
+            inputs.forEach(input => {
+                if (!input.name) return;
+                let clone = input.cloneNode();
+                clone.value = input.value;
+                form.appendChild(clone);
+            });
+
             document.body.appendChild(form);
             form.submit();
         } else {
-            document.getElementById('checkout-form').submit();
+            // COD hoặc phương thức khác
+            document.querySelector('form.checkout-form').submit();
         }
     }
 
