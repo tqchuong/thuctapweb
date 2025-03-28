@@ -5,8 +5,11 @@ import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import fit.hcmuaf.edu.vn.foodmart.utils.PasswordUtils;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
+import fit.hcmuaf.edu.vn.foodmart.utils.SessionManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -73,23 +76,44 @@ public class AddCustomerServlet extends HttpServlet {
                 // **Chỉ cập nhật vai trò nếu checkbox được chọn**
                 if (isRoleChecked) {
                     String oldRole = existingUser.getRole();
-                    // Kiểm tra và cập nhật vai trò mới
                     String newRole = existingUser.getRole().equals("User") ? "Admin" : "User";
                     existingUser.setRole(newRole); // Cập nhật vai trò mới cho đối tượng existingUser
                     System.out.println("Vai trò cập nhật thành: " + newRole);
 
-                    // **Nếu vai trò chuyển từ User -> Admin**, yêu cầu đăng xuất ngay lập tức
+                    // **Nếu vai trò chuyển từ Admin -> User**, yêu cầu đăng xuất ngay lập tức
                     if (oldRole.equals("Admin") && newRole.equals("User")) {
                         // Cập nhật vai trò vào cơ sở dữ liệu trước khi đăng xuất
                         boolean isUpdated = userDao.updateUser(existingUser);
                         String message = isUpdated ? "Cập nhật vai trò thành User thành công. Đăng xuất ngay." : "Lỗi: Không thể cập nhật vai trò.";
 
-                        // Đăng xuất người dùng hiện tại
+                        // Đặt một cookie toàn cục để báo cho các trình duyệt khác biết về sự thay đổi quyền
+                        Cookie logoutCookie = new Cookie("roleChanged", "true");
+                        logoutCookie.setMaxAge(300);  // Thời gian hết hạn, ví dụ: 5 phút
+                        logoutCookie.setPath("/");  // Đảm bảo cookie có thể truy cập từ tất cả các đường dẫn
+                        response.addCookie(logoutCookie);
+
+                        // Xóa tất cả session của người dùng
+                        SessionManager.invalidateAllSessions(existingUser.getUsername());
+
+                        // Đăng xuất người dùng hiện tại và xóa session, cookies
                         request.getSession().invalidate();  // Xóa session để đăng xuất người dùng
+
+                        // Xóa tất cả cookies
+                        Cookie[] cookies = request.getCookies();
+                        if (cookies != null) {
+                            for (Cookie cookie : cookies) {
+                                cookie.setMaxAge(0);  // Set cookie age to 0 to delete it
+                                cookie.setPath("/");   // Ensure the cookie is deleted for all paths
+                                response.addCookie(cookie);  // Add the cookie to the response to delete it
+                            }
+                        }
+
+                        // Chuyển hướng đến trang login với thông báo
                         response.sendRedirect("login.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
                         return; // Dừng lại, không tiếp tục xử lý
                     }
-                    // Nếu không phải chuyển từ User -> Admin, thì chỉ cập nhật vai trò bình thường
+
+                    // **Nếu vai trò không phải từ Admin -> User**, tiếp tục cập nhật vai trò bình thường
                     else {
                         boolean isUpdated = userDao.updateUser(existingUser);
                         String message = isUpdated ? "Cập nhật khách hàng thành công" : "Lỗi: Cập nhật khách hàng thất bại";
@@ -105,3 +129,6 @@ public class AddCustomerServlet extends HttpServlet {
         }
     }
 }
+
+
+
