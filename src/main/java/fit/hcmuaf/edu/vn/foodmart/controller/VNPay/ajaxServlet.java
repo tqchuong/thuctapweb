@@ -1,4 +1,4 @@
-package fit.hcmuaf.edu.vn.foodmart.controller.vnpay;
+package fit.hcmuaf.edu.vn.foodmart.controller.VNPay;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

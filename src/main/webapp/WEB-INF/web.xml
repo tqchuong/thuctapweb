@@ -32,7 +32,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ApplyCouponServlet</servlet-name>
-        <url-pattern>/apply-coupon</url-pattern>
+        <url-pattern>/apply-coupon</url-pattern>ix
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Add</servlet-name>
@@ -58,7 +58,7 @@
 
     <servlet>
         <servlet-name>ajaxServlet</servlet-name>
-        <servlet-class>fit.hcmuaf.edu.vn.foodmart.controller.vnpay.ajaxServlet</servlet-class>
+        <servlet-class>fit.hcmuaf.edu.vn.foodmart.controller.VNPay.ajaxServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

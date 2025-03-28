@@ -540,6 +540,107 @@
             </div>
         </div>
         <!--Voucher-->
+<%--        <div class="section">--%>
+<%--            <!-- Bộ lọc và tìm kiếm -->--%>
+<%--            <div class="admin-control">--%>
+<%--                <div class="admin-control-left">--%>
+<%--                    <select name="tinh-trang-voucher" id="tinh-trang-voucher">--%>
+<%--                        <option value="2">Tất cả</option>--%>
+<%--                        <option value="1">Còn thời hạn</option>--%>
+<%--                        <option value="0">Hết thời hạn</option>--%>
+<%--                    </select>--%>
+<%--                </div>--%>
+<%--                <div class="admin-control-center">--%>
+<%--                    <form action="" class="form-search">--%>
+<%--                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>--%>
+<%--                        <input id="form-search-voucher" type="text" class="form-search-input" placeholder="Tìm kiếm mã giảm giá...">--%>
+<%--                    </form>--%>
+<%--                </div>--%>
+<%--                <div class="admin-control-right">--%>
+<%--                    <form action="" class="fillter-date">--%>
+<%--                        <div>--%>
+<%--                            <label for="time-start">Từ</label>--%>
+<%--                            <input type="date" class="form-control-date" id="time-start-voucher">--%>
+<%--                        </div>--%>
+<%--                        <div>--%>
+<%--                            <label for="time-end">Đến</label>--%>
+<%--                            <input type="date" class="form-control-date" id="time-end-voucher">--%>
+<%--                        </div>--%>
+<%--                    </form>--%>
+<%--                    <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>--%>
+<%--                    <button id="btn-add-voucher" class="btn-control-large"><i class="fa-light fa-plus"></i><span>Thêm Mã</span></button>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+
+<%--            <div class="table" style="margin-top: 10px;">--%>
+<%--                <table width="100%">--%>
+<%--                    <thead>--%>
+<%--                    <tr>--%>
+<%--                        <td>STT</td>--%>
+<%--                        <td>Mã giảm giá</td>--%>
+<%--                        <td>Số tiền giảm giá</td>--%>
+<%--                        <td>Miêu tả</td>--%>
+<%--                        <td>Loại giảm giá</td>--%>
+<%--                        <td>Số lần sử dụng</td>--%>
+<%--                        <td>Trạng thái</td>--%>
+<%--                        <td>Hạn sử dụng</td>--%>
+<%--                        <td></td>--%>
+<%--                    </tr>--%>
+<%--                    </thead>--%>
+
+<%--                    <tbody id="show-voucher">--%>
+<%--                    <%--%>
+<%--                        CouponDAO couponDAO = new CouponDAO();--%>
+<%--                        List<Coupon> coupons = couponDAO.getActiveCoupons();--%>
+<%--                        int indexx = 1; // Khởi tạo biến đếm STT--%>
+<%--                        for (Coupon coupon : coupons) {--%>
+<%--                    %>--%>
+<%--                    <tr data-id="<%= coupon.getId() %>">--%>
+<%--                        <td><%= indexx %></td> <!-- Hiển thị STT -->--%>
+<%--                        <td><%= coupon.getCouponCode() %></td>--%>
+<%--                        <td><%= coupon.getDiscountAmount() %></td>--%>
+<%--                        <td><%= coupon.getDescription() %></td>--%>
+<%--                        <td><%= coupon.getDiscountType() %></td> <!-- Loại giảm giá -->--%>
+<%--                        <td><%= coupon.getMaxUsage() %></td> <!-- Số lần sử dụng -->--%>
+<%--                        <td>--%>
+<%--                        <span class="<%= (coupon.getStatus().equals("Active")) ? "status-complete" : "status-no-complete" %>">--%>
+<%--                            <%= coupon.getStatus() %>--%>
+<%--                        </span>--%>
+<%--                        </td>--%>
+<%--                        <td>--%>
+<%--                            <%--%>
+<%--                                // Lấy ngày hiện tại--%>
+<%--                                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());--%>
+
+<%--                                // Tính toán số ngày còn lại--%>
+<%--                                long diffInMillies = coupon.getEndDate().getTime() - currentTimestamp.getTime();--%>
+<%--                                long daysRemaining = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);--%>
+<%--                            %>--%>
+<%--                            <span class="<%= (diffInMillies > 0) ? "status-complete" : "status-no-complete" %>">--%>
+<%--                            <% if (diffInMillies > 0) { %>--%>
+<%--                                Còn <%= daysRemaining %> ngày--%>
+<%--                            <% } else { %>--%>
+<%--                                Hết hạn--%>
+<%--                            <% } %>--%>
+<%--                        </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control control-table">--%>
+<%--                            <button class="btn-edit-coupon" id="edit-coupon">--%>
+<%--                                <i class="fa-light fa-pen-to-square"></i>--%>
+<%--                            </button>--%>
+<%--                            <button class="btn-deletee" data-type="user" data-id="<%= coupon.getId() %>">--%>
+<%--                                <i class="fa-regular fa-trash"></i>--%>
+<%--                            </button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <%--%>
+<%--                            indexx++;--%>
+<%--                        }--%>
+<%--                    %>--%>
+<%--                    </tbody>--%>
+<%--                </table>--%>
+<%--            </div>--%>
+<%--        </div>--%>
         <div class="section">
             <!-- Bộ lọc và tìm kiếm -->
             <div class="admin-control">
@@ -553,8 +654,7 @@
                 <div class="admin-control-center">
                     <form action="" class="form-search">
                         <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-user" type="text" class="form-search-input"
-                               placeholder="Tìm kiếm mã giảm giá...">
+                        <input id="form-search-user" type="text" class="form-search-input" placeholder="Tìm kiếm mã giảm giá...">
                     </form>
                 </div>
                 <div class="admin-control-right">
@@ -569,76 +669,81 @@
                         </div>
                     </form>
                     <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
-                    <button id="btn-add-user" class="btn-control-large"><i class="fa-light fa-plus"></i>
-                        <span>Thêm Mã</span></button>
-                </div>
-                <div class="table" style="margin-top: 10px;">
-                    <table width="100%">
-                        <thead>
-                        <tr>
-                            <td>STT</td>
-                            <td>Mã giảm giá</td>
-                            <td>Số tiền giảm giá</td>
-                            <td>Miêu tả</td>
-                            <td>Hạn sử dụng</td>
-                            <td></td>
-                        </tr>
-                        </thead>
-
-                        <tbody id="show-user">
-                        <%
-                            CouponDAO couponDAO = new CouponDAO();
-                            List<Coupon> coupons = couponDAO.getActiveCoupons();
-                            int indexx = 1; // Khởi tạo biến đếm STT
-                            for (Coupon coupon : coupons) {
-                        %>
-                        <tr data-id="<%= coupon.getId() %>">
-                            <td><%= indexx %>
-                            </td> <!-- Hiển thị STT -->
-
-                            <td><%= coupon.getCouponCode() %>
-                            </td>
-                            <td><%= coupon.getDiscountAmount() %>
-                            </td>
-                            <td><%= coupon.getDescription() %>
-                            </td>
-                            <td>
-                                <%
-                                    // Lấy ngày hiện tại
-                                    java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-
-                                    // Tính toán số ngày còn lại
-                                    long diffInMillies = coupon.getEndDate().getTime() - currentTimestamp.getTime();
-                                    long daysRemaining = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
-                                %>
-                                <span class="<%= (diffInMillies > 0) ? "status-complete" : "status-no-complete" %>">
-                                    <% if (diffInMillies > 0) { %>
-                                        Còn <%= daysRemaining %> ngày
-                                    <% } else { %>
-                                        Hết hạn
-                                    <% } %>
-                                </span>
-                            </td>
-                            <td class="control control-table">
-                                <button class="btn-edit-coupon" id="edit-coupon">
-                                    <i class="fa-light fa-pen-to-square"></i>
-                                </button>
-                                <button class="btn-deletee" data-type="user" data-id="<%= coupon.getId() %>">
-                                    <i class="fa-regular fa-trash"></i>
-                                </button>
-
-                            </td>
-                        </tr>
-                        <%
-                                indexx++;
-                            }
-                        %>
-                        </tbody>
-
-                    </table>
+                    <button id="btn-add-user" class="btn-control-large"><i class="fa-light fa-plus"></i><span>Thêm Mã</span></button>
                 </div>
             </div>
+
+            <div class="table" style="margin-top: 10px;">
+                <table width="100%">
+                    <thead>
+                    <tr>
+                        <td>STT</td>
+                        <td>Mã giảm giá</td>
+                        <td>Số tiền giảm giá</td>
+                        <td>Miêu tả</td>
+                        <td>Loại giảm giá</td>
+                        <td>Số lần sử dụng</td>
+                        <td>Trạng thái</td>
+                        <td>Hạn sử dụng</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+
+                    <tbody id="show-user">
+                    <%
+                        CouponDAO couponDAO = new CouponDAO();
+                        List<Coupon> coupons = couponDAO.getActiveCoupons();
+                        int indexx = 1; // Khởi tạo biến đếm STT
+                        for (Coupon coupon : coupons) {
+                    %>
+                    <tr data-id="<%= coupon.getId() %>">
+                        <td><%= indexx %></td> <!-- Hiển thị STT -->
+                        <td><%= coupon.getCouponCode() %></td>
+                        <td><%= coupon.getDiscountAmount() %></td>
+                        <td><%= coupon.getDescription() %></td>
+                        <td><%= coupon.getDiscountType() %></td> <!-- Loại giảm giá -->
+                        <td><%= coupon.getMaxUsage() %></td> <!-- Số lần sử dụng -->
+                        <td>
+                        <span class="<%= (coupon.getStatus().equals("Active")) ? "status-complete" : "status-no-complete" %>">
+                            <%= coupon.getStatus() %>
+                        </span>
+                        </td>
+                        <td>
+                            <%
+                                // Lấy ngày hiện tại
+                                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+
+                                // Tính toán số ngày còn lại
+                                long diffInMillies = coupon.getEndDate().getTime() - currentTimestamp.getTime();
+                                long daysRemaining = java.util.concurrent.TimeUnit.DAYS.convert(diffInMillies, java.util.concurrent.TimeUnit.MILLISECONDS);
+                            %>
+                            <span class="<%= (diffInMillies > 0) ? "status-complete" : "status-no-complete" %>">
+                            <% if (diffInMillies > 0) { %>
+                                Còn <%= daysRemaining %> ngày
+                            <% } else { %>
+                                Hết hạn
+                            <% } %>
+                        </span>
+                        </td>
+                        <td class="control control-table">
+                            <button class="btn-edit-coupon" id="edit-coupon">
+                                <i class="fa-light fa-pen-to-square"></i>
+                            </button>
+                            <button class="btn-deletee" data-type="user" data-id="<%= coupon.getId() %>">
+                                <i class="fa-regular fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <%
+                            indexx++;
+                        }
+                    %>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+
         <!--ncc-->
         <div class="section ncc-all">
             <div class="admin-control">
