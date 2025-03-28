@@ -1,14 +1,13 @@
-package fit.hcmuaf.edu.vn.foodmart.controller.VNPay;
-
+package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import com.google.gson.JsonObject;
-
 import fit.hcmuaf.edu.vn.foodmart.utils.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.*;
 

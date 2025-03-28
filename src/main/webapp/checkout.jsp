@@ -52,12 +52,12 @@
                             <input type="date" name="deliveryDate" id="deliveryDate" style="margin-top: 10px;"required>
                         </div>
 
-                        <!-- Thời gian giao hàng -->
-                        <div class="content-group chk-ship" id="giaotannoi-group">
-                            <p class="checkout-content-label">Thời gian giao hàng</p>
+
+                        <div class="content-group" id="delivery-time-group">
+                            <p class="checkout-content-label">Thời gian nhận hàng</p>
                             <div class="delivery-time">
-                                <input type="radio" name="deliveryTime" id="deliverytime" value="specific" class="radio"required>
-                                <label for="deliverytime">Giao vào giờ</label>
+                                <input type="radio" name="deliveryTime" id="deliverytime" value="specific" class="radio" required>
+                                <label for="deliverytime">Nhận vào giờ</label>
                                 <select class="choise-time" name="specificDeliveryTime">
                                     <c:forEach var="hour" begin="8" end="21">
                                         <option value="${hour}:00">${hour}:00 - ${hour + 1}:00</option>

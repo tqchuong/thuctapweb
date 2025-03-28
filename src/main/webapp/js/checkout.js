@@ -7,6 +7,7 @@ let totalAmountInput = document.getElementById("totalAmountInput");
 
 
 
+
 // Hàm cập nhật tổng tiền
 function updateTotal(isGiaoTanNoi) {
     let cartTotal = parseInt(cartTotalElement.textContent.replace(/\D/g, ""));
@@ -45,14 +46,22 @@ function toggleDeliveryOptions() {
 
     });
 
+    // Khi chọn "Giao tận nơi"
+    btnGiaoTanNoi.addEventListener("click", () => {
+        btnGiaoTanNoi.classList.add("active");
+        btnTuDenLay.classList.remove("active");
+        tuDenLayGroup.style.display = "none";
+        diaChiNhan.style.display = "block";
+        updateTotal(true);
+    });
+
     // Khi chọn "Tự đến lấy"
     btnTuDenLay.addEventListener("click", () => {
         btnTuDenLay.classList.add("active");
         btnGiaoTanNoi.classList.remove("active");
-        giaoTanNoiGroup.style.display = "none";
         tuDenLayGroup.style.display = "block";
         diaChiNhan.style.display = "none";
-        updateTotal(false); // Không thêm phí vận chuyển
+        updateTotal(false);
     });
 }
 function getCurrentDate() {
