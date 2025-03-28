@@ -1,4 +1,4 @@
-package fit.hcmuaf.edu.vn.foodmart.vnpay;
+package fit.hcmuaf.edu.vn.foodmart.controller.vnpay;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -7,7 +7,6 @@ package fit.hcmuaf.edu.vn.foodmart.vnpay;
  */
 
 
-import fit.hcmuaf.edu.vn.foodmart.dao.OrderDao;
 import java.io.IOException;import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -20,14 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import fit.hcmuaf.edu.vn.foodmart.model.Users;
+import fit.hcmuaf.edu.vn.foodmart.utils.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import fit.hcmuaf.edu.vn.foodmart.model.Order;
 
 /**
  *

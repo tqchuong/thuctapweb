@@ -48,7 +48,7 @@
 
     <servlet>
         <servlet-name>ajaxServlet</servlet-name>
-        <servlet-class>fit.hcmuaf.edu.vn.foodmart.vnpay.ajaxServlet</servlet-class>
+        <servlet-class>fit.hcmuaf.edu.vn.foodmart.controller.vnpay.ajaxServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

@@ -1,19 +1,16 @@
-package fit.hcmuaf.edu.vn.foodmart.vnpay;
+package fit.hcmuaf.edu.vn.foodmart.controller.vnpay;
 
-import fit.hcmuaf.edu.vn.foodmart.dao.OrderDao;
 import fit.hcmuaf.edu.vn.foodmart.dao.PaymentDAO;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
-import fit.hcmuaf.edu.vn.foodmart.model.Order;
+import fit.hcmuaf.edu.vn.foodmart.utils.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
