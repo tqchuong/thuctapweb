@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 @WebServlet("/vnpay-ipn")
-public class VNPayIPNServlet extends HttpServlet {
+public class VnPayReturn extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String> fields = new HashMap<>();
         for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
