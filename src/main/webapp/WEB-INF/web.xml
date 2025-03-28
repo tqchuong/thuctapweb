@@ -32,7 +32,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ApplyCouponServlet</servlet-name>
-        <url-pattern>/apply-coupon</url-pattern>
+        <url-pattern>/apply-coupon</url-pattern>ix
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Add</servlet-name>
