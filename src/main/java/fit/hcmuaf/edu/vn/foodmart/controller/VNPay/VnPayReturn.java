@@ -1,4 +1,4 @@
-package fit.hcmuaf.edu.vn.foodmart.controller.vnpay;
+package fit.hcmuaf.edu.vn.foodmart.controller.VNPay;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.PaymentDAO;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
