@@ -61,6 +61,9 @@ function toggleDeliveryOptions() {
         btnGiaoTanNoi.classList.remove("active");
         tuDenLayGroup.style.display = "block";
         diaChiNhan.style.display = "none";
+        ward.style.display = "none";
+        district.style.display = "none";
+        province.style.display = "none";
         updateTotal(false);
     });
 }
@@ -88,4 +91,69 @@ document.addEventListener("DOMContentLoaded", function () {
     totalAmountInput.value = totalFinal;
 
 
+});
+document.addEventListener("DOMContentLoaded", function () {
+    updateTotal(true);
+
+    const token = "b07a48aa-0c5c-11f0-bdfc-6a0eda42fc14";
+
+    async function fetchData(url, method, body = null) {
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json", "Token": token },
+                body: body ? JSON.stringify(body) : null
+            });
+            return await response.json();
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu:", error);
+        }
+    }
+
+    async function fetchProvinces() {
+        let data = await fetchData("https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "GET");
+        if (data?.code === 200) populateOptions("province", data.data, "ProvinceID", "ProvinceName");
+    }
+
+    async function fetchDistricts(provinceId) {
+        let data = await fetchData("https://online-gateway.ghn.vn/shiip/public-api/master-data/district", "POST", { province_id: parseInt(provinceId) });
+        if (data?.code === 200) populateOptions("district", data.data, "DistrictID", "DistrictName");
+    }
+
+    async function fetchWards(districtId) {
+        let data = await fetchData("https://online-gateway.ghn.vn/shiip/public-api/master-data/ward", "POST", { district_id: parseInt(districtId) });
+        if (data?.code === 200) populateOptions("ward", data.data, "WardCode", "WardName");
+    }
+
+    function populateOptions(elementId, data, valueField, textField) {
+        const select = document.getElementById(elementId);
+        select.innerHTML = "<option value=''>Chọn...</option>";
+        data.forEach(item => {
+            let option = document.createElement("option");
+            option.value = item[valueField];
+            option.textContent = item[textField];
+            select.appendChild(option);
+        });
+    }
+
+    function updateAddressInput() {
+        const provinceText = document.getElementById("province").selectedOptions[0]?.text || "";
+        const districtText = document.getElementById("district").selectedOptions[0]?.text || "";
+        const wardText = document.getElementById("ward").selectedOptions[0]?.text || "";
+        document.getElementById("diachinhan").value = `${wardText}, ${districtText}, ${provinceText}`;
+    }
+
+    document.getElementById("province").addEventListener("change", function () {
+        let provinceId = this.value;
+        if (provinceId) fetchDistricts(provinceId);
+    });
+
+    document.getElementById("district").addEventListener("change", function () {
+        let districtId = this.value;
+        if (districtId) fetchWards(districtId);
+    });
+
+    document.getElementById("ward").addEventListener("change", updateAddressInput);
+
+    fetchProvinces();
 });
