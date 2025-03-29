@@ -111,7 +111,7 @@ public class UserDAO implements ObjectDAO {
 
     // Phương thức hỗ trợ cập nhật loginAttempts và lockTime
     private void updateLoginAttempts(Handle handle, String username, int attempts, Timestamp lockTime) {
-        String updateSql = "UPDATE users SET login_attempts = :attempts, lock_time = :lockTime WHERE username = :username";
+        String updateSql = "UPDATE users SET loginAttempts = :attempts, lockTime = :lockTime WHERE username = :username";
         try {
             handle.createUpdate(updateSql)
                     .bind("attempts", attempts)
@@ -126,7 +126,7 @@ public class UserDAO implements ObjectDAO {
     }
 
     public Timestamp getLockTimeByUser(String username) {
-        String sql = "SELECT lock_time FROM users WHERE username = :username";
+        String sql = "SELECT lockTime FROM users WHERE username = :username";
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .bind("username", username)

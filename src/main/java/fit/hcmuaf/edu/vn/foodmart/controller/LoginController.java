@@ -44,19 +44,26 @@ public class LoginController extends HttpServlet {
         } else if (action.equals("login")) {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-
+            String userCaptcha  = request.getParameter("captcha");
 
             // Kiểm tra đăng nhập
             UserDAO userDAO = new UserDAO();
             String loginStatus = userDAO.checkLogin(username, password);
             String email = userDAO.getEmailByUsername(username);
 
-            if (loginStatus.equals("LOGIN_SUCCESS")) {
+            // Lấy mã CAPTCHA từ session
+            HttpSession session = request.getSession(true);
+            String correctCaptcha = (String) session.getAttribute("captcha");
+
+            if (!userCaptcha.equals(correctCaptcha)) {
+                request.setAttribute("loginError", "Mã CAPTCHA không đúng!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }else if (loginStatus.equals("LOGIN_SUCCESS")) {
                 // Nếu đăng nhập thành công, lấy thông tin người dùng từ cơ sở dữ liệu
                 Users user = userDAO.getUserByUsername(username);
 
                 // Tạo session và lưu thông tin người dùng
-                HttpSession session = request.getSession(true);
+                //HttpSession session = request.getSession(true);
                 session.setAttribute("auth", user);
 
                 // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
