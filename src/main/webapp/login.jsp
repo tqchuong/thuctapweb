@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css">
     <!--=============== CSS ===============-->
     <link rel="stylesheet" href="css/login.css">
-
+    <link rel="stylesheet" href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" />
     <title>Login</title>
 </head>
 <body>
@@ -59,18 +59,23 @@
                         <i class="ri-eye-off-fill login__icon login__password" id="loginPassword"></i>
                         <span class="form-message-check-login form-message"></span>
                     </div>
-                    <div class="login__box" style="background-color: transparent !important;">
-                        <img src="CaptchaServlet" alt="CAPTCHA" >
+                    <div class="form-group">
+                        <div class="captcha-container">
+                            <img src="CaptchaServlet" alt="CAPTCHA" id="captchaImage">
+                            <button type="button" class="reload-btn" onclick="reloadCaptcha()"><i class="fa-solid fa-rotate-right"></i></button>
+                            <input type="text" name="captcha" required placeholder="Nhập mã captcha" class="login__input" style="background-color: hsl(220, 50%, 97%);">
+                        </div>
                     </div>
-                    <div class="login__box">
-                        <input type="text" id="login-captcha" name="captcha" required placeholder="Nhập mã captcha" class="login__input">
-                    </div>
+                </div>
+
+                <button type="submit" id="login-button" class="login__button" value="login">Đăng nhập</button>
+                <div>
+                    <i class="fa-brands fa-google"></i>
+                    <i class="fa-brands fa-facebook"></i>
                 </div>
                 <p>
                     <button id="forgotPasswordLink" class="forgotPasswordLink">Quên Mật khẩu?</button>
                 </p>
-                <button type="submit" id="login-button" class="login__button" value="login">Đăng nhập</button>
-
             </form>
             <p class="login__switch">
                 Chưa có tài khoản?
@@ -154,5 +159,12 @@
 <!--=============== MAIN JS ===============-->
 <script src="js/login.js"></script>
 <script src="js/home.js"></script>
+<script>
+    function reloadCaptcha() {
+        var captchaImg = document.getElementById('captchaImage');
+        // Thêm timestamp để buộc reload hình ảnh mới
+        captchaImg.src = 'CaptchaServlet?' + new Date().getTime();
+    }
+</script>
 </body>
 </html>

@@ -118,7 +118,7 @@ img {
 .login__input {
   background: none;
   width: 100%;
-  padding: 1.5rem 2.5rem 1.5rem 1.25rem;
+  padding: 1.5rem 2rem 1.5rem 1.25rem;
   font-weight: var(--font-semi-bold);
   border: 3px solid transparent;
   border-radius: 1rem;
@@ -149,11 +149,6 @@ img {
   z-index: 10;
 }
 
-.login-captcha{
-  cursor: pointer;
-  z-index: 10;
-}
-
 .login__forgot {
   display: block;
   width: max-content;
@@ -177,7 +172,7 @@ img {
   font-weight: var(--font-semi-bold);
   padding-block: 1.5rem;
   border-radius: 4rem;
-  margin-block: 2rem;
+  margin-block: .5rem;
   cursor: pointer;
   transition: background-color .4s, box-shadow .4s;
 }
@@ -344,7 +339,7 @@ img {
     margin-bottom: 3rem;
   }
   .login__button {
-    margin-bottom: 3rem;
+    margin-bottom: 2px;
   }
   .login__group {
     grid-template-columns: repeat(2, 1fr);
@@ -375,7 +370,7 @@ img {
   font-size: var(--small-font-size);
   font-weight: var(--font-semi-bold);
   cursor: pointer;
-  margin-top: 20px;  /* Adjust margin to position below password field */
+  margin-top: 10px;  /* Adjust margin to position below password field */
   margin-bottom: 5px;  /* Adds space before the login button */
   padding-right: 10px;
   text-align: right;
@@ -410,7 +405,7 @@ img {
 /* Khoảng cách giữa các ô nhập liệu trong form đăng ký */
 .login__form {
   display: grid;
-  row-gap: 1.5rem; /* Khoảng cách dọc giữa các ô */
+  row-gap: 1rem; /* Khoảng cách dọc giữa các ô */
 }
 
 /* Thiết lập lại các khối input để đảm bảo chiều rộng đầy đủ và khoảng cách hợp lý */
@@ -460,7 +455,7 @@ img {
   font-weight: var(--font-semi-bold);
   padding-block: 1.5rem;
   border-radius: 2rem;
-  margin-top: 2rem;
+  margin-top: 0.2rem;
   cursor: pointer;
   transition: background-color .4s, box-shadow .4s;
 }
@@ -540,4 +535,24 @@ img {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/*capcha*/
+.form-group {
+  margin-bottom: 15px;
+}
+input {
+  width: 100%;
+  padding: 5px;
+}
+.captcha-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Khoảng cách giữa ảnh và nút */
+}
+.reload-btn {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  background: none;
 }
