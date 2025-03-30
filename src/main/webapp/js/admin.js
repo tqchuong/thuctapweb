@@ -659,3 +659,57 @@ document.querySelector(".modal-close").addEventListener("click", function () {
 
 
 
+
+//voucher
+document.getElementById("btn-add-voucher").addEventListener("click", function () {
+    closeAllModals(); // Đóng tất cả các modal khác
+    const modal = document.querySelector(".modal.add-voucher");
+    modal.classList.add("show"); // Thêm lớp 'show' để hiển thị modal
+    document.querySelector(".add-voucher-e").style.display = "block"; // Hiển thị "THÊM MỚI VOUCHER"
+    document.querySelector(".edit-voucher-e").style.display = "none"; // Ẩn "CHỈNH SỬA VOUCHER"
+    resetVoucherForm(); // Reset form
+});
+
+
+//edit
+document.getElementById("edit-coupon").addEventListener("click", function () {
+    closeAllModals(); // Đóng tất cả các modal khác nếu có
+    const modal = document.querySelector(".modal.add-voucher");
+    modal.classList.add("show"); // Thêm lớp 'show' để hiển thị modal
+    document.querySelector(".edit-voucher-e").style.display = "block"; // Hiển thị "CHỈNH SỬA VOUCHER"
+    document.querySelector(".add-voucher-e").style.display = "none"; // Ẩn "THÊM MỚI VOUCHER"
+});
+
+
+function closeAllModals() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.classList.remove('show');  // Loại bỏ class 'show' để ẩn modal
+    });
+}
+
+
+function resetVoucherForm() {
+    document.getElementById("coupon-code").value = '';
+    document.getElementById("discount-amount").value = '';
+    document.getElementById("description").value = '';
+    document.getElementById("start-date").value = '';
+    document.getElementById("end-date").value = '';
+    document.getElementById("min-order-amount").value = '';
+    document.getElementById("discount-type").value = 'Percentage'; // Giá trị mặc định
+    document.getElementById("max-usage").value = '';
+    document.getElementById("status").value = 'Active'; // Giá trị mặc định
+}
+
+document.querySelectorAll(".modal-close").forEach(closeButton => {
+    closeButton.addEventListener("click", function () {
+        const modal = closeButton.closest(".modal");
+        modal.classList.remove("show"); // Ẩn modal khi nhấn nút đóng
+    });
+});
+
+
+
+
+
+
