@@ -134,6 +134,7 @@
                             <div class="info-food">
                                 <div class="name-food">${item.productName}</div>
                                 <div class="price">${item.price}&nbsp;₫</div>
+                                <div class="weight">${item.weight}g</div>
                             </div>
                         </div>
                     </c:forEach>
@@ -143,6 +144,7 @@
                     <div class="total-bill-order">
                         <div class="priceFlx">
                             <div class="text">Tiền hàng <span class="count-1">${sessionScope.cart.totalQuantity} món</span></div>
+
                             <div class="price-detail">
     <span id="checkout-cart-total">
         <c:choose>
@@ -156,11 +158,13 @@
     </span>
                             </div>
                         </div>
-                        <input type="hidden" name="shippingFee" id="shippingFeeInput" value="0">
                         <div class="priceFlx chk-ship">
                             <div class="text">Phí vận chuyển</div>
-                            <div class="price-detail chk-free-ship"><span>${shippingFee}&nbsp;₫</span></div>
+                            <div class="price-detail chk-free-ship">
+                                <span id="shippingFeeText">0 ₫</span>
+                            </div>
                         </div>
+                        <input type="hidden" name="shippingFee" id="shippingFeeInput" value="0">
                     </div>
                 </div>
                 <div class="policy-note">

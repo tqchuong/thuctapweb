@@ -91,7 +91,7 @@ public class OrderAdminDAO {
                         product.setID(result.getInt("Id"));
                         product.setProductName(result.getString("ProductName"));
                         product.setPrice(result.getDouble("Price"));
-                        product.setStockQuantity(result.getInt("TotalQuantity"));
+                        product.setWeight(result.getInt("Weight"));
                         product.setImageURL(result.getString("ImageURL"));
                         return product;
                     })
