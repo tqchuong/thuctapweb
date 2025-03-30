@@ -8,6 +8,7 @@ import fit.hcmuaf.edu.vn.foodmart.dao.PaymentDAO;
 import fit.hcmuaf.edu.vn.foodmart.dao.ShippingDAO;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -44,38 +45,47 @@ public class CheckoutServlet extends HttpServlet {
             String paymentStatus = request.getParameter("paymentStatus");
             double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
 
-            // ✅ Kiểm tra nếu chọn VNPay thì chuyển hướng đến VNPay
-            if ("VNPAY".equals(paymentMethod)) {
-                session.setAttribute("checkout_data", request.getParameterMap()); // Lưu dữ liệu đặt hàng
-                response.sendRedirect("vnpay_pay?amount=" + totalAmount);
-                return;
-            }
-
-            // ✅ Nếu không chọn VNPay, xử lý thanh toán bình thường
             Jdbi jdbi = DBConnect.getJdbi();
-            jdbi.useTransaction(handle -> {
+            int orderId = jdbi.withHandle(handle -> {
                 OrderDao orderDAO = new OrderDao(handle);
-                int orderId = orderDAO.createOrder(user, totalAmount, shippingMethod, deliveryDate,
+                // Tạo đơn hàng và trả về orderId
+                int newOrderId = orderDAO.createOrder(user, totalAmount, shippingMethod, deliveryDate,
                         deliveryTime, paymentMethod, orderNote, receiverName, receiverPhone, shippingAddress);
 
                 OrderDetailDAO orderDetailDAO = new OrderDetailDAO(handle.getJdbi());
                 for (CartProduct item : cart.getlist()) {
-                    orderDetailDAO.addOrderDetail(orderId, item);
+                    orderDetailDAO.addOrderDetail(newOrderId, item);
                 }
 
                 ShippingDAO shippingDAO = new ShippingDAO(handle.getJdbi());
-                shippingDAO.addShipping(orderId, shippingFee);
+                shippingDAO.addShipping(newOrderId, shippingFee);
 
                 PaymentDAO paymentDAO = new PaymentDAO();
-                paymentDAO.addPayment(orderId, paymentStatus);
+                paymentDAO.addPayment(newOrderId, paymentStatus);
+
+                return newOrderId;
             });
 
+            /// Lưu thông tin đơn hàng vào session
+            session.setAttribute("currentOrderId", orderId);
+            session.setAttribute("orderTotalAmount", totalAmount);
+
+            if ("VNPAY".equals(paymentMethod)) {
+                // Thay vì redirect, forward request đến ajaxServlet
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/vnpay-payment");
+                dispatcher.forward(request, response);
+                return;
+            }
+
+            // Nếu là COD thì xóa giỏ hàng và chuyển hướng
             session.removeAttribute("cart");
-            response.sendRedirect("home.jsp");
+            response.sendRedirect("home.jsp?orderId=" + orderId);
+
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("error.jsp");
         }
     }
-
 }
+
+

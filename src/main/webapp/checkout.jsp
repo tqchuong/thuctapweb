@@ -155,41 +155,41 @@
                 </div>
 
 
-            <div class="payment-options" bis_skin_checked="1">
-                <div bis_skin_checked="1">
-                    <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff">
-                        <input type="radio" id="rdPaymentTypeCod" name="paymentType" value="COD" checked="">&nbsp;&nbsp;
-                        <i class="fa-solid fa-hand-holding-usd"></i>
-                        <span>&nbsp;&nbsp;Thanh toán khi nhận hàng</span>
-                        <input type="hidden" name="paymentStatus" value="Chưa thanh toán">
-                    </label>
+                <div class="payment-options" bis_skin_checked="1">
+                    <div bis_skin_checked="1">
+                        <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff">
+                            <input type="radio" id="rdPaymentTypeCod" name="paymentType" value="COD" checked="">&nbsp;&nbsp;
+                            <i class="fa-solid fa-hand-holding-usd"></i>
+                            <span>&nbsp;&nbsp;Thanh toán khi nhận hàng</span>
+                            <input type="hidden" name="paymentStatus" value="Chưa thanh toán">
+                        </label>
 
-                    <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff;">
-                        <input type="radio" id="rdPaymentTypeMomo" name="paymentType" value="MOMO">&nbsp;&nbsp;
-                        <i class="fa-solid fa-wallet"></i>
-                        <span>&nbsp;&nbsp;Thanh toán bằng ví điện tử</span>
-                        <input type="hidden" name="paymentStatus" value="Đã thanh toán">
-                    </label>
+                        <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff;">
+                            <input type="radio" id="rdPaymentTypeMomo" name="paymentType" value="MOMO">&nbsp;&nbsp;
+                            <i class="fa-solid fa-wallet"></i>
+                            <span>&nbsp;&nbsp;Thanh toán bằng ví điện tử</span>
+                            <input type="hidden" name="paymentStatus" value="Đã thanh toán">
+                        </label>
 
-                    <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff;">
-                        <input type="radio" id="rdPaymentTypeVnpay" name="paymentType" value="VNPAY">&nbsp;&nbsp;
-                        <i class="fa-solid fa-credit-card"></i>
-                        <span>&nbsp;&nbsp;Thanh toán qua VNPay</span>
-                        <input type="hidden" name="paymentStatus" value="Đã thanh toán">
-                    </label>
+                        <label style="border: 1px solid #ced4da;height: calc(1.5em + 0.75rem + 2px);border-radius: 0.25rem;width: 100%; padding: 6px; background: #fff;">
+                            <input type="radio" id="rdPaymentTypeVnpay" name="paymentType" value="VNPAY">&nbsp;&nbsp;
+                            <i class="fa-solid fa-credit-card"></i>
+                            <span>&nbsp;&nbsp;Thanh toán qua VNPay</span>
+                            <input type="hidden" name="paymentStatus" value="Chưa thanh toán">
+                        </label>
 
-                </div>
-
-                <!-- Tổng tiền -->
-                <input type="hidden" name="totalAmount" id="totalAmountInput" value="${totalFinal}">
-                <div class="total-checkout">
-                    <div class="text">Tổng tiền</div>
-                    <div class="price-bill">
-                        <div class="price-final" id="checkout-cart-price-final" >${totalFinal}&nbsp;₫</div>
                     </div>
+
+                    <!-- Tổng tiền -->
+                    <input type="hidden" name="totalAmount" id="totalAmountInput" value="${totalFinal}">
+                    <div class="total-checkout">
+                        <div class="text">Tổng tiền</div>
+                        <div class="price-bill">
+                            <div class="price-final" id="checkout-cart-price-final" >${totalFinal}&nbsp;₫</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="complete-checkout-btn">Đặt hàng</button>
                 </div>
-                <button type="submit" class="complete-checkout-btn">Đặt hàng</button>
-            </div>
             </div>
         </main>
     </div>
@@ -198,29 +198,35 @@
     function handlePayment(event) {
         event.preventDefault();
         let paymentType = document.querySelector('input[name="paymentType"]:checked').value;
-        let totalAmount = document.getElementById("totalAmountInput").value;
 
         if (paymentType === "VNPAY") {
+            // Tạo một hidden form để submit
             let form = document.createElement("form");
             form.method = "POST";
-            form.action = "vnpay-payment";
+            form.action = "checkout"; // Gửi đến CheckoutServlet
 
-            let amountInput = document.createElement("input");
-            amountInput.type = "hidden";
-            amountInput.name = "amount";
-            amountInput.value = totalAmount;
+            // Thêm tất cả các field từ form gốc
+            let originalForm = document.querySelector('.checkout-form');
+            let inputs = originalForm.querySelectorAll('input, select, textarea');
 
-            form.appendChild(amountInput);
+            inputs.forEach(input => {
+                if (!input.name) return;
+                let clone = input.cloneNode();
+                clone.value = input.value;
+                form.appendChild(clone);
+            });
+
             document.body.appendChild(form);
             form.submit();
         } else {
-            document.getElementById('checkout-form').submit();
+            // COD hoặc phương thức khác
+            document.querySelector('form.checkout-form').submit();
         }
     }
 
 </script>
 
-    <script src="js/checkout.js"></script>
+<script src="js/checkout.js"></script>
 
 </body>
 
