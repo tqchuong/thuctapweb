@@ -148,6 +148,22 @@ public class OrderDao {
             return false;
         }
     }
+    public boolean updateOrderStatus(int orderId, String newStatus) {
+        String sql = "UPDATE Orders SET OrderStatus = :newStatus, updated_at = NOW() WHERE Id = :orderId";
+
+        try (Handle handle = jdbi.open()) {
+            int rowsAffected = handle.createUpdate(sql)
+                    .bind("newStatus", newStatus)
+                    .bind("orderId", orderId)
+                    .execute();
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
+        } catch (Exception e) {
+            System.out.println("Lỗi khi cập nhật trạng thái đơn hàng: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Hàm main để kiểm tra
     public static void main(String[] args) {
         OrderDao dao = new OrderDao();

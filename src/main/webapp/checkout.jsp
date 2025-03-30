@@ -52,12 +52,12 @@
                             <input type="date" name="deliveryDate" id="deliveryDate" style="margin-top: 10px;"required>
                         </div>
 
-                        <!-- Thời gian giao hàng -->
-                        <div class="content-group chk-ship" id="giaotannoi-group">
-                            <p class="checkout-content-label">Thời gian giao hàng</p>
+
+                        <div class="content-group" id="delivery-time-group">
+                            <p class="checkout-content-label">Thời gian nhận hàng</p>
                             <div class="delivery-time">
-                                <input type="radio" name="deliveryTime" id="deliverytime" value="specific" class="radio"required>
-                                <label for="deliverytime">Giao vào giờ</label>
+                                <input type="radio" name="deliveryTime" id="deliverytime" value="specific" class="radio" required>
+                                <label for="deliverytime">Nhận vào giờ</label>
                                 <select class="choise-time" name="specificDeliveryTime">
                                     <c:forEach var="hour" begin="8" end="21">
                                         <option value="${hour}:00">${hour}:00 - ${hour + 1}:00</option>
@@ -99,6 +99,21 @@
                             <div class="form-group">
                                 <input id="sdtnhan" name="recipientPhone" type="text" placeholder="Số điện thoại nhận hàng" class="form-control" required>
                                 <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <select id="province" name="province" class="form-control" required>
+                                    <option value="">Chọn tỉnh/thành phố</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select id="district" name="district" class="form-control" required>
+                                    <option value="">Chọn quận/huyện</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select id="ward" name="ward" class="form-control" required>
+                                    <option value="">Chọn phường/xã</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <input id="diachinhan" name="recipientAddress" type="text" placeholder="Địa chỉ nhận hàng" class="form-control chk-ship" >

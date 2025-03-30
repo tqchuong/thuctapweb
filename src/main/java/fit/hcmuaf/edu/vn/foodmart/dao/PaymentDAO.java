@@ -20,7 +20,15 @@ public class PaymentDAO {
                 .bind("paymentStatus", paymentStatus)
                 .execute());
     }
-
+    public boolean updatePaymentStatus(int orderId, String status) {
+        // Triển khai logic cập nhật
+        return jdbi.withHandle(handle ->
+                handle.createUpdate("UPDATE payments SET status = :status WHERE order_id = :orderId")
+                        .bind("orderId", orderId)
+                        .bind("status", status)
+                        .execute() > 0
+        );
+    }
     // Hàm truy vấn thông tin thanh toán theo OrderID
     public Payments getPaymentByOrderId(int orderId) {
         String sql = "SELECT * FROM Payments WHERE OrderID = :orderId";

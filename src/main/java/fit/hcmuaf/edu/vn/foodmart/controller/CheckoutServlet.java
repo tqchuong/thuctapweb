@@ -79,7 +79,7 @@ public class CheckoutServlet extends HttpServlet {
 
             // Nếu là COD thì xóa giỏ hàng và chuyển hướng
             session.removeAttribute("cart");
-            response.sendRedirect("home.jsp?orderId=" + orderId);
+            response.sendRedirect("home.jsp");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,5 +87,3 @@ public class CheckoutServlet extends HttpServlet {
         }
     }
 }
-
-
