@@ -59,6 +59,12 @@
                         <i class="ri-eye-off-fill login__icon login__password" id="loginPassword"></i>
                         <span class="form-message-check-login form-message"></span>
                     </div>
+                    <div class="login__box" style="background-color: transparent !important;">
+                        <img src="CaptchaServlet" alt="CAPTCHA" >
+                    </div>
+                    <div class="login__box">
+                        <input type="text" id="login-captcha" name="captcha" required placeholder="Nhập mã captcha" class="login__input">
+                    </div>
                 </div>
                 <p>
                     <button id="forgotPasswordLink" class="forgotPasswordLink">Quên Mật khẩu?</button>
