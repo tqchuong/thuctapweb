@@ -79,6 +79,7 @@
             re.setProductName(p.getProductName());
             re.setPrice(p.getPrice());
             re.setImageURL(p.getImageURL());
+            re.setWeight(p.getWeight());
             re.setQuantity(1);
             return re;
         }

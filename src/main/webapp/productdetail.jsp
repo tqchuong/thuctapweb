@@ -173,10 +173,10 @@
                                                 <label for="quantity">Số Lượng:</label>
                                                 <div class="quantity-control">
                                                     <button type="button" class="quantity-left-minus btn" onclick="updateQuantity(-1)">-</button>
-                                                    <input type="text" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="${product.stockQuantity}" readonly>
+                                                    <input type="text" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="${product.warehouse.quantity}" readonly>
                                                     <button type="button" class="quantity-right-plus btn" onclick="updateQuantity(1)">+</button>
                                                 </div>
-                                                <div class="stock-number">Còn ${product.stockQuantity} sản phẩm</div>
+                                                <div class="stock-number">Còn ${product.warehouse.quantity} sản phẩm</div>
                                             </div>
                                             <div class="button-group">
                                                 <button type="button" class="btn btn-secondary add-to-cart"
@@ -218,7 +218,8 @@
                             <ul style="list-style-type:disc;" class="list-unstyled ps-4">
                                 <li>Tên sản phẩm: ${product.productName}</li>
                                 <li>Danh Mục: ${product.category.categoryName}</li>
-                                <li>Số lượng: ${product.stockQuantity}</li>
+                                <li>Trọng lượng: ${product.weight}</li>
+                                <li>Số lượng trong kho: ${product.warehouse.quantity}</li>
                                 <li>Ngày hết hạn: <fmt:formatDate pattern="dd-MM-yyyy" value="${product.productsDetail.expiryDate}" /></li>
                             </ul>
                         </div>

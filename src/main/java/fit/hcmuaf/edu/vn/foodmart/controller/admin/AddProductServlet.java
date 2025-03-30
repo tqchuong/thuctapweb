@@ -27,7 +27,7 @@ public class AddProductServlet extends HttpServlet {
         boolean isSale = "1".equals(request.getParameter("IsSale"));
         double discountPercentage = Double.parseDouble(request.getParameter("DiscountPercentage"));
         String priceParam = request.getParameter("price");
-        String stock = request.getParameter("stockQuantity");
+        String weight = request.getParameter("Weight");
         String shortDescription = request.getParameter("shortDescription");
         String idParam = request.getParameter("id");
 
@@ -35,7 +35,7 @@ public class AddProductServlet extends HttpServlet {
         int id = (idParam != null && !idParam.isEmpty()) ? Integer.parseInt(idParam) : 0;
         int categoryID = (category != null && !category.isEmpty()) ? Integer.parseInt(category) : 0;
         double price = (priceParam != null && !priceParam.isEmpty()) ? Double.parseDouble(priceParam) : 0.0;
-        int stockQuantity = (stock != null && !stock.isEmpty()) ? Integer.parseInt(stock) : 0;
+        int Weight = (weight != null && !weight.isEmpty()) ? Integer.parseInt(weight) : 0;
 
 
         // Tính giá bán sau giảm và lưu trực tiếp vào giá bán (price)
@@ -72,7 +72,7 @@ public class AddProductServlet extends HttpServlet {
             newProduct.setIsSale(isSale ? 1 : 0);
             newProduct.setDiscountPercentage(discountPercentage);
             newProduct.setPrice(price);
-            newProduct.setStockQuantity(stockQuantity);
+            newProduct.setWeight(Weight);
             newProduct.setShortDescription(shortDescription);
             if (imageURL != null) {
                 newProduct.setImageURL(imageURL);
@@ -88,7 +88,7 @@ public class AddProductServlet extends HttpServlet {
                 existingProduct.setIsSale(isSale ? 1 : 0); // Chuyển boolean sang int (0 hoặc 1)
                 existingProduct.setDiscountPercentage(discountPercentage);
                 existingProduct.setPrice(price);
-                existingProduct.setStockQuantity(stockQuantity);
+                existingProduct.setWeight(Weight);
                 existingProduct.setShortDescription(shortDescription);
 
                 if (imageURL != null) {

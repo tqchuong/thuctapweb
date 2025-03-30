@@ -34,7 +34,7 @@ public class ProductAdminDAO {
                             product.setPrice(rs.getDouble("Price"));
                             product.setImageURL(rs.getString("ImageURL"));
                             product.setShortDescription(rs.getString("ShortDescription"));
-                            product.setStockQuantity(rs.getInt("StockQuantity"));
+                            product.setWeight(rs.getInt("Weight"));
 
                             // Tạo đối tượng Category và gán categoryName
                             Category category = new Category();
@@ -63,7 +63,7 @@ public class ProductAdminDAO {
             System.out.println("Price: " + product.getPrice());
             System.out.println("ImageURL: " + product.getImageURL());
             System.out.println("ShortDescription: " + product.getShortDescription());
-            System.out.println("StockQuantity: " + product.getStockQuantity());
+            System.out.println("StockQuantity: " + product.getWeight());
             handle.createUpdate(sql)
                     .bind(0, product.getProductName())
                     .bind(1, product.getCategoryID())
@@ -72,7 +72,7 @@ public class ProductAdminDAO {
                     .bind(4, product.getPrice())
                     .bind(5, product.getImageURL())
                     .bind(6, product.getShortDescription())
-                    .bind(7, product.getStockQuantity())
+                    .bind(7, product.getWeight())
                     .execute();
             return true;
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ProductAdminDAO {
                     .bind(4, product.getPrice())
                     .bind(5, product.getImageURL())
                     .bind(6, product.getShortDescription())
-                    .bind(7, product.getStockQuantity())
+                    .bind(7, product.getWeight())
                     .bind(8, product.getID())
                     .execute();
             return true;
@@ -144,7 +144,7 @@ public class ProductAdminDAO {
                         p.setPrice(rs.getDouble("price"));
                         p.setImageURL(rs.getString("imageUrl"));
                         p.setShortDescription(rs.getString("shortDescription"));
-                        p.setStockQuantity(rs.getInt("stockQuantity"));
+                        p.setWeight(rs.getInt("stockQuantity"));
 
                         // Kiểm tra và set categoryName nếu tồn tại
                         String categoryName = rs.getString("categoryName");
