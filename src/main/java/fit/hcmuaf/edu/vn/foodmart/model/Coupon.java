@@ -13,15 +13,17 @@ public class Coupon {
     private int orderId;
 
     // Các thuộc tính mới
-    private String discountType; // "Percentage" or "FixedAmount"
-    private int maxUsage;        // Số lần tối đa có thể sử dụng mã
-    private int usedCount;       // Số lần đã sử dụng mã
+    private String discountType; // "Percentage" hoặc "FixedAmount"
+    private Integer maxUsage;        // Tổng số lần tối đa sử dụng mã (null nếu không giới hạn)
+    private int usedCount;           // Số lần đã sử dụng mã
+    private Integer maxUsagePerUser; // Giới hạn số lần mỗi người dùng được sử dụng
+    private Double maxDiscountAmount; // Số tiền giảm tối đa (áp dụng khi DiscountType = Percentage)
     private String status;       // "Active" or "Inactive"
 
     public Coupon() {
     }
 
-    public Coupon(int id, String couponCode, double discountAmount, String description, Timestamp startDate, Timestamp endDate, double minOrderAmount, int orderId, String discountType, int maxUsage, int usedCount, String status) {
+    public Coupon(int id, String couponCode, double discountAmount, String description, Timestamp startDate, Timestamp endDate, double minOrderAmount, int orderId, String discountType, Integer maxUsage, int usedCount, Integer maxUsagePerUser, Double maxDiscountAmount, String status) {
         this.id = id;
         this.couponCode = couponCode;
         this.discountAmount = discountAmount;
@@ -33,7 +35,29 @@ public class Coupon {
         this.discountType = discountType;
         this.maxUsage = maxUsage;
         this.usedCount = usedCount;
+        this.maxUsagePerUser = maxUsagePerUser;
+        this.maxDiscountAmount = maxDiscountAmount;
         this.status = status;
+    }
+
+    public void setMaxUsage(Integer maxUsage) {
+        this.maxUsage = maxUsage;
+    }
+
+    public Integer getMaxUsagePerUser() {
+        return maxUsagePerUser;
+    }
+
+    public void setMaxUsagePerUser(Integer maxUsagePerUser) {
+        this.maxUsagePerUser = maxUsagePerUser;
+    }
+
+    public Double getMaxDiscountAmount() {
+        return maxDiscountAmount;
+    }
+
+    public void setMaxDiscountAmount(Double maxDiscountAmount) {
+        this.maxDiscountAmount = maxDiscountAmount;
     }
 
     public int getId() {
@@ -146,6 +170,8 @@ public class Coupon {
                 ", discountType='" + discountType + '\'' +
                 ", maxUsage=" + maxUsage +
                 ", usedCount=" + usedCount +
+                ", maxUsagePerUser=" + maxUsagePerUser +
+                ", maxDiscountAmount=" + maxDiscountAmount +
                 ", status='" + status + '\'' +
                 '}';
     }
