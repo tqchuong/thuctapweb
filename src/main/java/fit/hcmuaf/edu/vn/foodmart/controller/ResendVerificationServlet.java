@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 
 @WebServlet(name = "ResendVerificationServlet", value = "/resendVerification")
@@ -31,7 +33,8 @@ public class ResendVerificationServlet extends HttpServlet {
 
         // Tạo mã xác thực mới
         String newToken = TokenGenerator.generateToken(email);
-        userDAO.updateVerificationToken(email, newToken);
+        Timestamp expiry = Timestamp.from(Instant.now().plusSeconds(24 * 60 * 60));
+        userDAO.updateVerificationToken(email, newToken,expiry);
 
         // Gửi email xác thực
         String verifyLink = request.getRequestURL().toString().replace("resendVerification", "verify?token=" + newToken);

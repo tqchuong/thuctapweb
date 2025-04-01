@@ -167,24 +167,82 @@ public class LoginController extends HttpServlet {
 
             // Khởi tạo đối tượng UserDAO để kiểm tra trong DB
             UserDAO userDAO = new UserDAO();
+            Users user = new Users(username, email);
+
+
 
             // Kiểm tra xem username và email có tồn tại trong database không
             if(userDAO.isUserExist(username, email)) {
-                // Nếu tồn tại, tiếp tục với việc phục hồi mật khẩu
-                if(userDAO.passwordRecorvery(username, email)) {
-                    request.setAttribute("errorMessage", "Lấy mật khẩu thành công");
-                    request.setAttribute("showForgotPasswordForm", true);
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
-                } else {
-                    // Nếu không thể phục hồi mật khẩu (có thể là lỗi khác), hiển thị thông báo
-                    request.setAttribute("errorMessage", "Không thể phục hồi mật khẩu.");
-                    request.setAttribute("showForgotPasswordForm", true);
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
-                }
+                // Tạo token xác thực
+                String token = TokenGenerator.generateToken(username);
+                Timestamp expiry = Timestamp.from(Instant.now().plusSeconds(24 * 60 * 60)); // Hết hạn sau 24h
+                user.setVerification_token(token);
+                user.setToken_expiry(expiry);
+
+                // Lưu token và expiry vào DB
+                userDAO.updateVerificationToken(username, token, expiry);
+
+                // Tạo link xác thực
+                String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString());
+                String verifyLink = "http://localhost:8080/project/login?action=verifyToken&token=" + encodedToken;
+                String subject = "Lấy lại mật khẩu tài khoản FoodMart";
+                String message = "Xin chào " + user.getUsername() + ",\n\n"
+                        + "Bạn đã yêu cầu gửi lấy lại mật khẩu tài khoản. Vui lòng bấm vào liên kết dưới đây để lấy lại mật khẩu tài khoản của bạn:\n"
+                        + verifyLink + "\n\n"
+                        + "\nLink có hiệu lực trong 24 giờ."+ "\n\n"
+                        + "Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.\n\n"
+                        + "Trân trọng,\nFoodMart Team";
+                new Thread(() -> UserDAO.sendMail(email, subject, message)).start();
+
+
+                // Chuyển hướng với thông báo thành công
+                response.sendRedirect("login.jsp?message=" + URLEncoder.encode("Link xác thực đã được gửi đến email của bạn!", StandardCharsets.UTF_8.toString()));
+
+
             } else {
                 // Nếu không tìm thấy username và email trong database
                 request.setAttribute("errorMessage", "Tên đăng nhập hoặc email không đúng.");
                 request.setAttribute("showForgotPasswordForm", true);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+        }// Thêm logic xử lý khi nhấn link xác thực và đổi mật khẩu
+        else if (action.equals("verifyToken")) {
+            String token = request.getParameter("token");
+
+            UserDAO userDAO = new UserDAO();
+            Users user = userDAO.getUserByToken(token);
+
+            if (user != null && user.getToken_expiry().after(new Timestamp(System.currentTimeMillis()))) {
+                // Token hợp lệ, hiển thị form đổi mật khẩu
+                request.setAttribute("token", token);
+                request.getRequestDispatcher("passwordRecorvery.jsp").forward(request, response);
+            } else {
+                // Token không hợp lệ hoặc hết hạn
+                request.setAttribute("errorMessage", "Link xác thực không hợp lệ hoặc đã hết hạn.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            }
+        }
+        else if (action.equals("resetPassword")) {
+            String token = request.getParameter("token");
+            String newPassword = request.getParameter("passwordNew");
+            String confirmPassword = request.getParameter("passwordConfirm");
+
+            UserDAO userDAO = new UserDAO();
+            Users user = userDAO.getUserByToken(token);
+
+            if (user != null && user.getToken_expiry().after(new Timestamp(System.currentTimeMillis()))) {
+                if (newPassword.equals(confirmPassword)) {
+                    // Mã hóa mật khẩu trước khi lưu (nếu cần, ví dụ: dùng BCrypt)
+                    userDAO.updatePassword(user.getUsername(), newPassword);
+                    userDAO.clearVerificationToken(user.getUsername()); // Xóa token sau khi đổi mật khẩu
+                    response.sendRedirect("login.jsp?message=" + URLEncoder.encode("Đổi mật khẩu thành công! Vui lòng đăng nhập.", StandardCharsets.UTF_8.toString()));
+                } else {
+                    request.setAttribute("errorMessage", "Mật khẩu không khớp!");
+                    request.setAttribute("token", token);
+                    request.getRequestDispatcher("passwordRecorvery.jsp").forward(request, response);
+                }
+            } else {
+                request.setAttribute("errorMessage", "Link xác thực không hợp lệ hoặc đã hết hạn.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         }

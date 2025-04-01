@@ -20,13 +20,6 @@
 <!--=============== LOGIN ===============-->
 <div class="login container grid" id="loginAccessRegister">
 
-<%--    <% if (request.getAttribute("message") != null) { %>--%>
-<%--    <div class="alert alert-success"><%= request.getAttribute("message") %></div>--%>
-<%--    <% } %>--%>
-
-<%--    <% if (request.getAttribute("error") != null) { %>--%>
-<%--    <div class="alert alert-danger"><%= request.getAttribute("error") %></div>--%>
-<%--    <% } %>--%>
 
 
 
