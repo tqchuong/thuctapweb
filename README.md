@@ -8,7 +8,7 @@
 - IDE: IntelliJ IDEA / Eclipse
 
 ## 🗂️ Cấu trúc project
-
+src/ └── main/ ├── java/ │ └── fit/hcmuaf/edu/vn/foodmart/ │ ├── controller/ # Servlet điều khiển luồng request │ ├── dao/ # Tầng truy cập dữ liệu │ ├── model/ # Các class đại diện dữ liệu (Product, User, ...) │ ├── service/ # Xử lý logic ứng dụng │ └── utils/ # Tiện ích (DB connection, validate, ...) ├── resources/ # (Nếu có) file config, tài nguyên └── webapp/ ├── views/ # Các trang JSP (giao diện) ├── assets/ # CSS, JS, hình ảnh └── WEB-INF/ └── web.xml # Cấu hình Servlet
 
 
 ## ⚙️ Chức năng chính
