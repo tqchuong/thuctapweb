@@ -1,5 +1,7 @@
 # 🍱 FoodMart Web App (Java - Servlet/JSP)
 
+![diagram](https://github.com/user-attachments/assets/3a1076ef-f6ac-488a-b52a-2596dfb9ae5f)
+
 ## 🧱 Công nghệ sử dụng
 - Ngôn ngữ: Java (Servlets & JSP)
 - Cấu trúc: Maven Project
