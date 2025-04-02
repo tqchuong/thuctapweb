@@ -99,18 +99,16 @@ public class CouponDAO {
     }
 
     // Xóa coupon theo ID
-    public void deleteCoupon(int id) {
+    public boolean  deleteCoupon(int id) {
         String sql = "DELETE FROM Coupons WHERE Id = :id";
 
-        try (Handle handle = jdbi.open()) {
-            handle.createUpdate(sql)
-                    .bind("id", id)
-                    .execute();
-        } catch (Exception e) {
-            System.err.println("Lỗi khi xóa coupon: " + e.getMessage());
-            e.printStackTrace();
-        }
+        return jdbi.withHandle(handle -> handle.createUpdate(sql)
+                .bind("id", id)
+                .execute() > 0);
     }
+
+
+
 
     // Test các chức năng
     public static void main(String[] args) {

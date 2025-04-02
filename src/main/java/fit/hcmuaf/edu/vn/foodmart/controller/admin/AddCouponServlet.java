@@ -19,6 +19,7 @@ public class AddCouponServlet extends HttpServlet {
 
         String actionType = req.getParameter("actionType");
 
+
         try {
             String couponCode = req.getParameter("couponCode");
             String discountType = req.getParameter("discountType");
@@ -82,7 +83,7 @@ public class AddCouponServlet extends HttpServlet {
             }
 
             // Redirect về trang quản lý voucher
-            resp.sendRedirect(req.getContextPath() + "/admin/coupons");
+            resp.sendRedirect(req.getContextPath() + "/admin.jsp");
 
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Dữ liệu số không hợp lệ!");
