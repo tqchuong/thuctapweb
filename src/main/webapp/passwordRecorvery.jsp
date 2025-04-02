@@ -28,11 +28,8 @@
     <div id="loginForm" class="login__access">
         <h1 class="login__title">Lấy lại Mật khẩu?</h1>
         <div class="login__area">
-            <c:if test="${not empty errorMessage}">
-                <div style="color: red;">${errorMessage}</div>
-            </c:if>
-            <form action="login?action=resetPassword" method="post" class="login__form">
-                <input type="hidden" name="token" value="${token}">
+            <input type="hidden" name="username" value="<%= session.getAttribute("verifiedUser") %>">
+            <form action="/updatePassword" method="post" class="login__form">
                 <div class="login__box">
                     <input type="password" id="login-password" name="passwordNew" required placeholder=" " class="login__input" aria-label="New Password">
                     <label for="login-password" class="login__label">Mật khẩu mới </label>
@@ -51,6 +48,25 @@
     </div>
 </div>
 
-
+<script>
+    document.querySelector('.login__form').onsubmit = function(e) {
+        const pass = document.querySelector('#login-password').value;
+        const confirm = document.querySelector('#emailForgot').value;
+        if (pass !== confirm) {
+            e.preventDefault();
+            alert('Mật khẩu không khớp!');
+        }
+    };
+</script>
+<script>
+    document.querySelectorAll('.login__password').forEach(icon => {
+        icon.addEventListener('click', () => {
+            const input = icon.previousElementSibling;
+            input.type = input.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('ri-eye-off-fill');
+            icon.classList.toggle('ri-eye-fill');
+        });
+    });
+</script>
 </body>
 </html>

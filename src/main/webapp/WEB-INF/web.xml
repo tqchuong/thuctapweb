@@ -66,13 +66,6 @@
         <url-pattern>/vnpay-payment</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>fit.hcmuaf.edu.vn.foodmart.controller.LoginController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/passwordRecorvery</url-pattern>
-    </servlet-mapping>
+
 
 </web-app>

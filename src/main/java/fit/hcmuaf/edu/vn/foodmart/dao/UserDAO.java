@@ -518,15 +518,6 @@ public class UserDAO implements ObjectDAO {
         }
     }
 
-    // Xóa token sau khi đổi mật khẩu
-    public void clearVerificationToken(String username) {
-        String sql = "UPDATE users SET verification_token = NULL, token_expiry = NULL WHERE username = :username";
-        try (Handle handle = jdbi.open()) {
-            handle.createUpdate(sql)
-                    .bind("username", username)
-                    .execute();
-        }
-    }
 
     // Phương thức main để kiểm tra và truy vấn dữ liệu
     public static void main(String[] args) {
@@ -540,6 +531,8 @@ public class UserDAO implements ObjectDAO {
 
         // Kiểm tra đăng nhập
         UserDAO dao = new UserDAO();
+
+        dao.updateVerificationToken("gatrong015@gmail.com","f",null);
 
 //        String passwordHash = PasswordUtils.hashPassword("admin123");
 //        Users userAdmin = new Users("admin",passwordHash,"admin@gmail.com","admin","Admin");
