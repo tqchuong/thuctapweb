@@ -23,7 +23,7 @@ public class ProductDAO {
             p.Price AS price, 
             p.ImageURL AS imageUrl,
             p.ShortDescription AS shortDescription,
-            p.StockQuantity as stockQuantity, 
+            p.Weight as weight, 
             c.CategoryName AS categoryName, 
             p.IsSale AS isSale,
             p.DiscountPercentage AS discountPercentage ,
@@ -47,7 +47,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
                         product.setPrice(rs.getDouble("price"));
                         product.setImageURL(rs.getString("imageUrl"));
                         product.setShortDescription(rs.getString("shortDescription"));
-                        product.setStockQuantity(rs.getInt("stockQuantity"));
+                        product.setWeight(rs.getInt("weight"));
                         product.setIsSale(rs.getInt("isSale"));
 
                         product.setDiscountPercentage(rs.getDouble("discountPercentage")); // Ánh xạ discountPercentage
@@ -120,14 +120,15 @@ LEFT JOIN sales s ON p.ID = s.ProductID
             p.Price AS price,
             p.ImageURL AS imageUrl,
             p.ShortDescription AS shortDescription,
-            p.StockQuantity AS stockQuantity,
+            p.Weight as weight,
             c.CategoryName AS categoryName,
             pd.DetailedDescription AS detailedDescription,
             pd.ProductStatus AS productStatus,
             pd.ExpiryDate AS expiryDate,
             pv.View AS productViews,
             p.DiscountPercentage AS discountPercentage, 
-            p.IsSale AS isSale
+            p.IsSale AS isSale,
+            COALESCE(w.Quantity, 0) AS stockQuantity
         FROM 
             products p
         INNER JOIN 
@@ -136,6 +137,8 @@ LEFT JOIN sales s ON p.ID = s.ProductID
             productsdetail pd ON p.ID = pd.ProductID
         LEFT JOIN 
             products_view pv ON p.ID = pv.ProductID
+                    LEFT JOIN
+                         warehouse w ON p.ID = w.product_id
         WHERE 
             p.ID = :productId
         """;
@@ -174,12 +177,16 @@ LEFT JOIN sales s ON p.ID = s.ProductID
                         prod.setPrice(rs.getDouble("price"));
                         prod.setImageURL(rs.getString("imageUrl"));
                         prod.setShortDescription(rs.getString("shortDescription"));
-                        prod.setStockQuantity(rs.getInt("stockQuantity"));
+                        prod.setWeight(rs.getInt("weight"));
                         prod.setCategory(category);
                         prod.setProductViews(rs.getInt("productViews"));
                         prod.setDiscountPercentage(rs.getDouble("discountPercentage"));
                         prod.setIsSale(rs.getInt("isSale"));
-
+                        // Gán thông tin từ bảng warehouse vào đối tượng Warehouse
+                        Warehouse warehouse = new Warehouse();
+                        warehouse.setProductId(prod.getID());
+                        warehouse.setQuantity(rs.getInt("stockQuantity"));
+                        prod.setWarehouse(warehouse);
                         // Ánh xạ thông tin chi tiết sản phẩm
                         ProductsDetail detail = new ProductsDetail();
                         detail.setProductID(prod.getID());
@@ -257,7 +264,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
         String sql = """
             SELECT p.ID AS id, p.ProductName AS productName, 
                    p.CategoryID AS categoryId, p.Price AS price, 
-                   p.ImageURL AS imageUrl,p.ShortDescription AS shortDescription,p.StockQuantity as stockQuantity, c.CategoryName AS categoryName
+                   p.ImageURL AS imageUrl,p.ShortDescription AS shortDescription,p.Weight as weight, c.CategoryName AS categoryName
             FROM products p
             INNER JOIN categories c ON p.CategoryID = c.CategoryID
             WHERE c.CategoryID = :categoryId
@@ -278,7 +285,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
                         product.setPrice(rs.getDouble("price"));
                         product.setImageURL(rs.getString("imageUrl"));
                         product.setShortDescription(rs.getString("shortDescription"));
-                        product.setStockQuantity(rs.getInt("stockQuantity"));
+                        product.setWeight(rs.getInt("weight"));
                         product.setCategory(category);
 
                         return product;
@@ -301,7 +308,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
     }
     public List<Products> getLatestProducts(int limit) {
         String sql = "SELECT p.Id AS ProductID, p.ProductName, p.CategoryID, p.Price, p.UploadDate, " +
-                "p.ImageURL, p.ShortDescription, p.StockQuantity " +
+                "p.ImageURL, p.ShortDescription, p.Weight " +
                 "FROM Products p " +
                 "ORDER BY p.UploadDate DESC " + // Sắp xếp theo thời gian tải lên mới nhất
                 "LIMIT :limit";  // Lấy số sản phẩm theo tham số limit
@@ -328,14 +335,14 @@ LEFT JOIN sales s ON p.ID = s.ProductID
         p.ImageURL, 
         p.UploadDate, 
         p.ShortDescription, 
-        p.StockQuantity, 
+        p.Weight, 
         SUM(pv.View) AS TotalViews 
     FROM Products p 
     JOIN Products_View pv 
         ON p.ID = pv.ProductID 
     GROUP BY 
         p.ID, p.ProductName, p.CategoryID, p.Price, 
-        p.ImageURL, p.UploadDate, p.ShortDescription, p.StockQuantity 
+        p.ImageURL, p.UploadDate, p.ShortDescription, p.Weight 
     ORDER BY TotalViews DESC 
     LIMIT :limit
     """;
@@ -351,6 +358,22 @@ LEFT JOIN sales s ON p.ID = s.ProductID
             return Collections.emptyList();  // Trả về danh sách rỗng thay vì null
         }
     }
+    public Warehouse getProductStock(int productId) {
+        String sql = "SELECT ProductID, Quantity FROM warehouse WHERE ProductID = :productId";
+
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind("productId", productId)
+                    .mapToBean(Warehouse.class)
+                    .findOne()
+                    .orElse(new Warehouse(productId, 0)); // Mặc định nếu không có thì trả về 0
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy thông tin kho: " + e.getMessage());
+            e.printStackTrace();
+            return new Warehouse(productId, 0);
+        }
+    }
+
 
     //update view_product mỗi khi vào detail
     public boolean updateView(int productID) {
@@ -373,6 +396,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
             e.printStackTrace();
             return false;  // Trả về false nếu có lỗi
         }
+
     }
     // Test phương thức getAllProducts() và getProductDetailsById()
     public static void main(String[] args) {
