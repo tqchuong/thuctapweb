@@ -467,12 +467,13 @@ public class UserDAO implements ObjectDAO {
     }
 
     //update token
-    public void updateVerificationToken(String email, String newToken) {
-        String sql = "UPDATE users SET verification_token = :token WHERE email = :email";
+    public void updateVerificationToken(String email, String newToken ,Timestamp expiry) {
+        String sql = "UPDATE users SET verification_token = :token,token_expiry = :expiry WHERE email = :email";
         try (Handle handle = jdbi.open()) {
             handle.createUpdate(sql)
                     .bind("token", newToken)
                     .bind("email", email)
+                    .bind("expiry", expiry)
                     .execute();
         }
     }
@@ -487,6 +488,36 @@ public class UserDAO implements ObjectDAO {
                     .orElse(null);
         }
     }
+    // Lấy thông tin user theo token
+    public Users getUserByToken(String token) {
+        String sql = "SELECT username, email, verification_token, token_expiry FROM users WHERE verification_token = :token";
+        try (Handle handle = jdbi.open()) {
+            Optional<Users> user = handle.createQuery(sql)
+                    .bind("token", token)
+                    .map((rs, ctx) -> {
+                        Users u = new Users();
+                        u.setUsername(rs.getString("username"));
+                        u.setEmail(rs.getString("email"));
+                        u.setVerification_token(rs.getString("verification_token"));
+                        u.setToken_expiry(rs.getTimestamp("token_expiry"));
+                        return u;
+                    })
+                    .findOne();
+            return user.orElse(null);
+        }
+    }
+
+    // Cập nhật mật khẩu
+    public void updatePassword(String username, String newPassword) {
+        String sql = "UPDATE users SET password = :password WHERE username = :username";
+        try (Handle handle = jdbi.open()) {
+            handle.createUpdate(sql)
+                    .bind("password", newPassword) // Nên mã hóa trước khi gọi
+                    .bind("username", username)
+                    .execute();
+        }
+    }
+
 
     // Phương thức main để kiểm tra và truy vấn dữ liệu
     public static void main(String[] args) {
@@ -500,6 +531,8 @@ public class UserDAO implements ObjectDAO {
 
         // Kiểm tra đăng nhập
         UserDAO dao = new UserDAO();
+
+        dao.updateVerificationToken("gatrong015@gmail.com","f",null);
 
 //        String passwordHash = PasswordUtils.hashPassword("admin123");
 //        Users userAdmin = new Users("admin",passwordHash,"admin@gmail.com","admin","Admin");
