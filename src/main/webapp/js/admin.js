@@ -756,6 +756,43 @@ document.querySelectorAll(".btn-edit-coupon").forEach(button => {
 });
 
 
+// Xử lý sự kiện khi nhấn nút xóa voucher
+document.querySelectorAll(".btn-delete").forEach(button => {
+    button.addEventListener("click", function () {
+        const voucherRow = button.closest("tr");
+        const id = voucherRow.dataset.id;  // Lấy id voucher từ thuộc tính data-id
+
+        // Hiển thị hộp thoại xác nhận
+        if (confirm("Bạn có chắc chắn muốn xóa không?")) {
+            // Gửi yêu cầu AJAX để xóa voucher
+            fetch(`${window.location.origin}/project/delete-voucher`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: id }) // Gửi id voucher dưới dạng JSON
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Voucher đã được xóa thành công.");
+                        voucherRow.remove();  // Xóa dòng voucher khỏi bảng
+                    } else {
+                        alert("Xóa voucher không thành công.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Không thể xóa voucher:", err);
+                    alert("Có lỗi xảy ra khi xóa voucher.");
+                });
+        }
+    });
+});
+
+
+
+
+
 
 
 
