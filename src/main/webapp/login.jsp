@@ -10,6 +10,19 @@
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" />
     <title>Login</title>
+    <style>
+        .login_gg_fb {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .login_gg_fb i {
+            color: #c20f0f;
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
 <!--=============== LOGIN IMAGE ===============-->  <svg class="login__blob" viewBox="0 0 566 840" xmlns="http://www.w3.org/2000/svg">
@@ -69,9 +82,14 @@
                 </div>
 
                 <button type="submit" id="login-button" class="login__button" value="login">Đăng nhập</button>
-                <div>
-                    <i class="fa-brands fa-google"></i>
-                    <i class="fa-brands fa-facebook"></i>
+                <div class="login_gg_fb">
+                    <div id="g_id_onload"
+                         data-client_id="677800086189-ntqafhoaddalkskih5jot4u56ngsa5ck.apps.googleusercontent.com"
+                         data-login_uri="http://localhost:8080/project/loginGoogle"
+                         data-auto_prompt="false">
+                    </div>
+                    <button class="login_gg" id="googleLogin"><i class="fa-brands fa-google"></i></button>
+                    <button class="login_fb"><i class="fa-brands fa-facebook"></i></button>
                 </div>
                 <p>
                     <button id="forgotPasswordLink" class="forgotPasswordLink">Quên Mật khẩu?</button>
@@ -166,5 +184,6 @@
         captchaImg.src = 'CaptchaServlet?' + new Date().getTime();
     }
 </script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
