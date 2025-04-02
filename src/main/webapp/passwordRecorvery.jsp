@@ -29,7 +29,7 @@
         <h1 class="login__title">Lấy lại Mật khẩu?</h1>
         <div class="login__area">
             <input type="hidden" name="username" value="<%= session.getAttribute("verifiedUser") %>">
-            <form action="/updatePassword" method="post" class="login__form">
+            <form action="${pageContext.request.contextPath}/updatePassword" method="post" class="login__form">
                 <div class="login__box">
                     <input type="password" id="login-password" name="passwordNew" required placeholder=" " class="login__input" aria-label="New Password">
                     <label for="login-password" class="login__label">Mật khẩu mới </label>

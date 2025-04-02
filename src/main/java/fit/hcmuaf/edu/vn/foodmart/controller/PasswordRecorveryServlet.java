@@ -21,7 +21,7 @@ public class PasswordRecorveryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8"); // Đặt encoding cho response
         String token = request.getParameter("token");
-        String email = request.getParameter("email");
+
         if (token != null) {
             token = URLDecoder.decode(token, StandardCharsets.UTF_8.toString());
         }
@@ -32,7 +32,7 @@ public class PasswordRecorveryServlet extends HttpServlet {
 
         // Truy vấn user dựa trên token
         String sql = """
-                    SELECT username, verification_token, token_expiry 
+                    SELECT username, verification_token, token_expiry , email
                     FROM users 
                     WHERE verification_token = ?  LIMIT 1
                     """;
@@ -54,11 +54,7 @@ public class PasswordRecorveryServlet extends HttpServlet {
                 sendErrorResponse(response, "Link xác thực không hợp lệ hoặc đã hết hạn.");
                 return;
             }
-            // Kiểm tra email có khớp với token không
-            if (!email.equals(user.getEmail())) {
-                sendErrorResponse(response, "Email không khớp với token.");
-                return;
-            }
+
             // Lưu username vào session để sử dụng sau
             request.getSession().setAttribute("verifiedUser", user.getUsername());
 
