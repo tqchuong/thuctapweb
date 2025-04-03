@@ -21,14 +21,14 @@ public class PaymentDAO {
                 .execute());
     }
     public boolean updatePaymentStatus(int orderId, String status) {
-        // Triển khai logic cập nhật
         return jdbi.withHandle(handle ->
-                handle.createUpdate("UPDATE payments SET status = :status WHERE order_id = :orderId")
+                handle.createUpdate("UPDATE Payments SET PaymentStatus = :status, updated_at = NOW() WHERE OrderID = :orderId")
                         .bind("orderId", orderId)
                         .bind("status", status)
                         .execute() > 0
         );
     }
+
     // Hàm truy vấn thông tin thanh toán theo OrderID
     public Payments getPaymentByOrderId(int orderId) {
         String sql = "SELECT * FROM Payments WHERE OrderID = :orderId";

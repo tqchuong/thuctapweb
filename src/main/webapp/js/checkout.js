@@ -72,6 +72,8 @@ function updateTotal(shippingFee) {
     document.getElementById("checkout-cart-price-final").textContent = `${finalTotal.toLocaleString()} ₫`;
     document.getElementById("shippingFeeInput").value = shippingFee;
     phiVanChuyenElement.textContent = `${shippingFee.toLocaleString()} ₫`;
+
+    document.getElementById("totalAmountInput").value = finalTotal;
 }
 
 function calculateTotalWeight() {
