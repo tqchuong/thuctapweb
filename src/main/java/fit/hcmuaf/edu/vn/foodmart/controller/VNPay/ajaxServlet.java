@@ -1,11 +1,5 @@
 package fit.hcmuaf.edu.vn.foodmart.controller.VNPay;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 
 import java.io.IOException;import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,10 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-/**
- *
- * @author CTT VNPAY
- */
+
 @WebServlet(name = "ajaxServlet", value = "/vnpay-payment")
 public class ajaxServlet extends HttpServlet {
     @Override
