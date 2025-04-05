@@ -1085,70 +1085,94 @@
         </div>
     </div>
 
-    <div class="modal add-voucher">
-        <div class="modal-container4">
-            <h3 class="modal-container-title add-voucher-e">THÊM MỚI VOUCHER</h3>
-            <h3 class="modal-container-title edit-voucher-e">CHỈNH SỬA VOUCHER</h3>
-            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-                <form action="${pageContext.request.contextPath}/addVoucher" method="POST" class="add-voucher-form">
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="coupon-code" class="form-label">Mã giảm giá</label>
-                            <input id="coupon-code" name="couponCode" type="text" placeholder="Nhập mã giảm giá" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="discount-amount" class="form-label">Số tiền giảm giá</label>
-                            <input id="discount-amount" name="discountAmount" type="number" step="0.01" placeholder="Nhập số tiền giảm giá" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="description" class="form-label">Mô tả</label>
-                            <textarea id="description" name="description" placeholder="Nhập mô tả voucher..." class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="start-date" class="form-label">Ngày bắt đầu</label>
-                            <input id="start-date" name="startDate" type="date" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="end-date" class="form-label">Ngày hết hạn</label>
-                            <input id="end-date" name="endDate" type="date" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="min-order-amount" class="form-label">Số tiền đơn hàng tối thiểu</label>
-                            <input id="min-order-amount" name="minOrderAmount" type="number" step="0.01" placeholder="Nhập số tiền đơn hàng tối thiểu" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="discount-type" class="form-label">Loại giảm giá</label>
-                            <select name="discountType" id="discount-type" class="form-control" required>
-                                <option value="Percentage">Giảm theo phần trăm</option>
-                                <option value="FixedAmount">Giảm theo số tiền</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="max-usage" class="form-label">Số lần sử dụng tối đa</label>
-                            <input id="max-usage" name="maxUsage" type="number" placeholder="Nhập số lần sử dụng tối đa" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="status" class="form-label">Trạng thái</label>
-                            <select name="status" id="status" class="form-control" required>
-                                <option value="Active">Đang hoạt động</option>
-                                <option value="Inactive">Ngừng hoạt động</option>
-                            </select>
-                        </div>
+     <div class="modal add-voucher">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-voucher-e">THÊM MỚI VOUCHER</h3>
+             <h3 class="modal-container-title edit-voucher-e">CHỈNH SỬA VOUCHER</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/couponController" method="POST" class="add-voucher-form">
+                     <input type="hidden" id="actionType" name="actionType" value="add">
+                     <input type="hidden" id="coupon-id" name="couponId">
 
-                        <button type="submit" class="form-submit btn-add-voucher-form add-voucher-e">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM VOUCHER</span>
-                        </button>
-                        <button type="submit" class="form-submit btn-update-voucher-form edit-voucher-e">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="coupon-code">Mã giảm giá</label>
+                             <input id="coupon-code" name="couponCode" type="text" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="discount-type">Loại giảm giá</label>
+                             <select name="discountType" id="discount-type" class="form-control" required>
+                                 <option value="Percentage">Giảm theo phần trăm (%)</option>
+                                 <option value="FixedAmount">Giảm theo số tiền cố định (₫)</option>
+                             </select>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="discount-amount">Giá trị giảm giá</label>
+                             <input id="discount-amount" name="discountAmount" type="number" step="0.01" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="max-discount-amount">Số tiền giảm tối đa (nếu giảm theo %)</label>
+                             <input id="max-discount-amount" name="maxDiscountAmount" type="number" step="0.01" class="form-control">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="description">Mô tả</label>
+                             <textarea id="description" name="description" class="form-control" required></textarea>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="start-date">Ngày bắt đầu</label>
+                             <input id="start-date" name="startDate" type="date" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="end-date">Ngày hết hạn</label>
+                             <input id="end-date" name="endDate" type="date" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="min-order-amount">Số tiền đơn hàng tối thiểu</label>
+                             <input id="min-order-amount" name="minOrderAmount" type="number" step="0.01" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="max-usage">Số lần sử dụng tối đa (tổng cộng)</label>
+                             <input id="max-usage" name="maxUsage" type="number" class="form-control">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="max-usage-per-user">Số lần sử dụng tối đa mỗi người</label>
+                             <input id="max-usage-per-user" name="maxUsagePerUser" type="number" class="form-control">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="status">Trạng thái</label>
+                             <select name="status" id="status" class="form-control" required>
+                                 <option value="Active">Đang hoạt động</option>
+                                 <option value="Inactive">Ngừng hoạt động</option>
+                             </select>
+                         </div>
+
+                         <button type="submit" class="form-submit btn-add-voucher-form add-voucher-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM VOUCHER</span>
+                         </button>
+
+                         <button type="submit" class="form-submit btn-update-voucher-form edit-voucher-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+
  </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

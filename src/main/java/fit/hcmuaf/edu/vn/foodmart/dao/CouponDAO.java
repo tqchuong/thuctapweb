@@ -13,170 +13,146 @@ public class CouponDAO {
 
     // Lấy danh sách các mã giảm giá còn hiệu lực
     public List<Coupon> getActiveCoupons() {
-        String sql = "SELECT " +
-                "c.Id AS couponID, " +
-                "c.CouponCode AS couponCode, " +
-                "c.DiscountAmount AS discountAmount, " +
-                "c.Description AS shortDescription, " +
-                "c.StartDate AS startDate, " +
-                "c.EndDate AS endDate, " +
-                "c.MinOrderAmount AS minOrderAmount, " +
-                "c.DiscountType AS discountType, " +
-                "c.MaxUsage AS maxUsage, " +
-                "c.UsedCount AS usedCount, " +
-                "c.Status AS status " +
-                "FROM Coupons c " +
-                "WHERE c.StartDate <= CURRENT_DATE " +
-                "AND c.EndDate >= CURRENT_DATE " +
-                "AND c.Status = 'Active' " +
-                "ORDER BY c.StartDate DESC";
+        String sql = "SELECT * FROM Coupons " +
+                "WHERE StartDate <= CURRENT_DATE " +
+                "AND EndDate >= CURRENT_DATE " +
+                "AND Status = 'Active' " +
+                "ORDER BY StartDate DESC";
 
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
-                    .map((rs, ctx) -> {
-                        Coupon coupon = new Coupon();
-                        coupon.setId(rs.getInt("couponID"));
-                        coupon.setCouponCode(rs.getString("couponCode"));
-                        coupon.setDiscountAmount(rs.getDouble("discountAmount"));
-                        coupon.setDescription(rs.getString("shortDescription"));
-                        coupon.setStartDate(rs.getTimestamp("startDate"));
-                        coupon.setEndDate(rs.getTimestamp("endDate"));
-                        coupon.setMinOrderAmount(rs.getDouble("minOrderAmount"));
-                        coupon.setDiscountType(rs.getString("discountType"));
-                        coupon.setMaxUsage(rs.getInt("maxUsage"));
-                        coupon.setUsedCount(rs.getInt("usedCount"));
-                        coupon.setStatus(rs.getString("status"));
-                        return coupon;
-                    })
+                    .mapToBean(Coupon.class)
                     .list();
         } catch (Exception e) {
-            System.err.println("Lỗi khi truy vấn danh sách coupon: " + e.getMessage());
+            System.err.println("Lỗi khi lấy danh sách coupon còn hiệu lực: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
 
-    // Lấy mã giảm giá theo mã
+    // Lấy mã giảm giá theo CouponCode
     public Coupon getCouponByCode(String couponCode) {
         String sql = "SELECT * FROM Coupons WHERE CouponCode = :couponCode";
 
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
-                    .bind("couponCode", couponCode) // Gắn giá trị tham số
-                    .map((rs, ctx) -> {
-                        Coupon coupon = new Coupon();
-                        coupon.setId(rs.getInt("Id"));
-                        coupon.setCouponCode(rs.getString("CouponCode"));
-                        coupon.setDiscountAmount(rs.getDouble("DiscountAmount"));
-                        coupon.setDescription(rs.getString("Description"));
-                        coupon.setStartDate(rs.getTimestamp("StartDate"));
-                        coupon.setEndDate(rs.getTimestamp("EndDate"));
-                        coupon.setMinOrderAmount(rs.getDouble("MinOrderAmount"));
-                        coupon.setDiscountType(rs.getString("DiscountType"));
-                        coupon.setMaxUsage(rs.getInt("MaxUsage"));
-                        coupon.setUsedCount(rs.getInt("UsedCount"));
-                        coupon.setStatus(rs.getString("Status"));
-                        return coupon;
-                    })
-                    .findOne() // Trả về một kết quả (nếu có)
-                    .orElse(null); // Nếu không có kết quả, trả về null
+                    .bind("couponCode", couponCode)
+                    .mapToBean(Coupon.class)
+                    .findOne()
+                    .orElse(null);
         } catch (Exception e) {
-            System.err.println("Lỗi khi truy vấn coupon với mã: " + couponCode);
+            System.err.println("Lỗi khi truy vấn coupon: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
 
-    // Tạo mã giảm giá mới
+    // Lấy mã giảm giá theo ID
+    public Coupon getCouponById(int id) {
+        String sql = "SELECT * FROM Coupons WHERE Id = :id";
+
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind("id", id)
+                    .mapToBean(Coupon.class)
+                    .findOne()
+                    .orElse(null);
+        } catch (Exception e) {
+            System.err.println("Lỗi khi lấy coupon theo ID: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Thêm coupon mới vào database
     public void createCoupon(Coupon coupon) {
-        String sql = "INSERT INTO Coupons (CouponCode, DiscountAmount, Description, StartDate, EndDate, MinOrderAmount, DiscountType, MaxUsage, UsedCount, Status) " +
-                "VALUES (:couponCode, :discountAmount, :description, :startDate, :endDate, :minOrderAmount, :discountType, :maxUsage, :usedCount, :status)";
+        String sql = "INSERT INTO Coupons (CouponCode, DiscountAmount, Description, StartDate, EndDate, MinOrderAmount, DiscountType, MaxUsage, UsedCount, MaxUsagePerUser, MaxDiscountAmount, Status) " +
+                "VALUES (:couponCode, :discountAmount, :description, :startDate, :endDate, :minOrderAmount, :discountType, :maxUsage, :usedCount, :maxUsagePerUser, :maxDiscountAmount, :status)";
 
         try (Handle handle = jdbi.open()) {
             handle.createUpdate(sql)
-                    .bind("couponCode", coupon.getCouponCode())
-                    .bind("discountAmount", coupon.getDiscountAmount())
-                    .bind("description", coupon.getDescription())
-                    .bind("startDate", coupon.getStartDate())
-                    .bind("endDate", coupon.getEndDate())
-                    .bind("minOrderAmount", coupon.getMinOrderAmount())
-                    .bind("discountType", coupon.getDiscountType())
-                    .bind("maxUsage", coupon.getMaxUsage())
-                    .bind("usedCount", coupon.getUsedCount())
-                    .bind("status", coupon.getStatus())
+                    .bindBean(coupon)
                     .execute();
         } catch (Exception e) {
-            System.err.println("Lỗi khi thêm mã giảm giá: " + e.getMessage());
+            System.err.println("Lỗi khi thêm coupon mới: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Cập nhật mã giảm giá
+    // Cập nhật coupon
     public void updateCoupon(Coupon coupon) {
         String sql = "UPDATE Coupons SET " +
-                "CouponCode = :couponCode, " +
-                "DiscountAmount = :discountAmount, " +
-                "Description = :description, " +
-                "StartDate = :startDate, " +
-                "EndDate = :endDate, " +
-                "MinOrderAmount = :minOrderAmount, " +
-                "DiscountType = :discountType, " +
-                "MaxUsage = :maxUsage, " +
-                "UsedCount = :usedCount, " +
-                "Status = :status " +
+                "CouponCode = :couponCode, DiscountAmount = :discountAmount, Description = :description, " +
+                "StartDate = :startDate, EndDate = :endDate, MinOrderAmount = :minOrderAmount, " +
+                "DiscountType = :discountType, MaxUsage = :maxUsage, UsedCount = :usedCount, " +
+                "MaxUsagePerUser = :maxUsagePerUser, MaxDiscountAmount = :maxDiscountAmount, Status = :status " +
                 "WHERE Id = :id";
 
         try (Handle handle = jdbi.open()) {
             handle.createUpdate(sql)
-                    .bind("id", coupon.getId())
-                    .bind("couponCode", coupon.getCouponCode())
-                    .bind("discountAmount", coupon.getDiscountAmount())
-                    .bind("description", coupon.getDescription())
-                    .bind("startDate", coupon.getStartDate())
-                    .bind("endDate", coupon.getEndDate())
-                    .bind("minOrderAmount", coupon.getMinOrderAmount())
-                    .bind("discountType", coupon.getDiscountType())
-                    .bind("maxUsage", coupon.getMaxUsage())
-                    .bind("usedCount", coupon.getUsedCount())
-                    .bind("status", coupon.getStatus())
+                    .bindBean(coupon)
                     .execute();
         } catch (Exception e) {
-            System.err.println("Lỗi khi cập nhật mã giảm giá: " + e.getMessage());
+            System.err.println("Lỗi khi cập nhật coupon: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Xóa mã giảm giá
-    public void deleteCoupon(int couponId) {
+    // Xóa coupon theo ID
+    public boolean  deleteCoupon(int id) {
         String sql = "DELETE FROM Coupons WHERE Id = :id";
 
-        try (Handle handle = jdbi.open()) {
-            handle.createUpdate(sql)
-                    .bind("id", couponId)
-                    .execute();
-        } catch (Exception e) {
-            System.err.println("Lỗi khi xóa mã giảm giá: " + e.getMessage());
-            e.printStackTrace();
-        }
+        return jdbi.withHandle(handle -> handle.createUpdate(sql)
+                .bind("id", id)
+                .execute() > 0);
     }
 
+
+
+
+    // Test các chức năng
     public static void main(String[] args) {
         CouponDAO dao = new CouponDAO();
 
-        // Ví dụ: Lấy danh sách các mã giảm giá còn hiệu lực
-        List<Coupon> activeCoupons = dao.getActiveCoupons();
-        if (activeCoupons != null && !activeCoupons.isEmpty()) {
-            System.out.println("Danh sách coupon còn hiệu lực:");
-            for (Coupon coupon : activeCoupons) {
-                System.out.println("Mã coupon: " + coupon.getCouponCode() +
-                        ", Giảm giá: " + coupon.getDiscountAmount() +
-                        ", Mô tả: " + coupon.getDescription() +
-                        ", Điều kiện tối thiểu: " + coupon.getMinOrderAmount() +
-                        ", Thời gian áp dụng: Từ " + coupon.getStartDate() + " đến " + coupon.getEndDate() +
-                        ", Trạng thái: " + coupon.getStatus() );
-            }
+        // Test: lấy tất cả coupon đang hoạt động
+        List<Coupon> coupons = dao.getActiveCoupons();
+        if (coupons != null) {
+            coupons.forEach(System.out::println);
         } else {
-            System.out.println("Không có coupon nào còn hiệu lực hoặc có lỗi khi truy vấn.");
+            System.out.println("Không lấy được danh sách coupon.");
+        }
+
+        // Test: thêm coupon
+        Coupon newCoupon = new Coupon();
+        newCoupon.setCouponCode("TESTCOUPON10");
+        newCoupon.setDiscountAmount(10);
+        newCoupon.setDescription("Giảm 10% cho đơn hàng test");
+        newCoupon.setStartDate(java.sql.Timestamp.valueOf("2025-05-01 00:00:00"));
+        newCoupon.setEndDate(java.sql.Timestamp.valueOf("2025-05-31 23:59:59"));
+        newCoupon.setMinOrderAmount(100000);
+        newCoupon.setDiscountType("Percentage");
+        newCoupon.setMaxUsage(100);
+        newCoupon.setUsedCount(0);
+        newCoupon.setMaxUsagePerUser(1);
+        newCoupon.setMaxDiscountAmount(50000.0);
+        newCoupon.setStatus("Active");
+
+        dao.createCoupon(newCoupon);
+        System.out.println("Đã thêm coupon mới.");
+
+        // Test: cập nhật coupon
+        Coupon existing = dao.getCouponByCode("TESTCOUPON10");
+        if (existing != null) {
+            existing.setDescription("Cập nhật mô tả coupon 10%");
+            existing.setMaxUsage(200);
+            dao.updateCoupon(existing);
+            System.out.println("Đã cập nhật coupon.");
+        }
+
+        // Test: xóa coupon
+        if (existing != null) {
+            dao.deleteCoupon(existing.getId());
+            System.out.println("Đã xóa coupon.");
         }
     }
 }

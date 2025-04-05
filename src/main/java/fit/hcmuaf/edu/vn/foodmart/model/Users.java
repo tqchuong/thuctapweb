@@ -51,6 +51,11 @@ public class Users implements Serializable {
         this.is_verified = b;
     }
 
+    public Users(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
     public Timestamp getLockTime() {
         return lockTime;
     }

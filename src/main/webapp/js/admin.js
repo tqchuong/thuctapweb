@@ -667,4 +667,150 @@ document.querySelectorAll(".product-order-detail").forEach(button => {
 // Đóng modal khi nhấn nút đóng
 document.querySelector(".modal-close").addEventListener("click", function () {
     document.querySelector(".modal.detail-order-product").classList.remove("open");
+
 });
+
+
+
+
+
+
+
+
+
+// Mở modal thêm mới voucher
+document.getElementById("btn-add-voucher").addEventListener("click", function () {
+    closeAllModals();
+    const modal = document.querySelector(".modal.add-voucher");
+    modal.classList.add("show");
+
+    // Hiển thị giao diện thêm mới voucher
+    document.querySelector(".add-voucher-e").style.display = "block";
+    document.querySelector(".edit-voucher-e").style.display = "none";
+
+    resetVoucherForm();
+
+    // Chuyển action form sang Add
+    document.querySelector(".add-voucher-form").action = `${window.location.origin}/project/couponController`;
+    document.getElementById("actionType").value = "add";
+});
+
+// Reset form voucher (khi thêm mới)
+function resetVoucherForm() {
+    document.getElementById("coupon-id").value = '';
+    document.getElementById("coupon-code").value = '';
+    document.getElementById("discount-amount").value = '';
+    document.getElementById("max-discount-amount").value = '';
+    document.getElementById("description").value = '';
+    document.getElementById("start-date").value = '';
+    document.getElementById("end-date").value = '';
+    document.getElementById("min-order-amount").value = '';
+    document.getElementById("max-usage").value = '';
+    document.getElementById("max-usage-per-user").value = '';
+    document.getElementById("discount-type").value = 'Percentage';
+    document.getElementById("status").value = 'Active';
+}
+
+// Đóng tất cả modal đang mở
+function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('show');
+    });
+}
+
+// Đóng modal khi nhấn nút đóng
+document.querySelectorAll(".modal-close").forEach(button => {
+    button.addEventListener("click", function () {
+        button.closest(".modal").classList.remove("show");
+    });
+});
+
+// Xử lý sự kiện khi nhấn nút chỉnh sửa voucher
+document.querySelectorAll(".btn-edit-coupon").forEach(button => {
+    button.addEventListener("click", function () {
+        closeAllModals();
+        const modal = document.querySelector(".modal.add-voucher");
+        modal.classList.add("show");
+
+        // Hiển thị giao diện chỉnh sửa voucher
+        document.querySelector(".add-voucher-e").style.display = "none";
+        document.querySelector(".edit-voucher-e").style.display = "block";
+
+        // Lấy dữ liệu voucher từ hàng tương ứng trong bảng
+        const voucherRow = button.closest("tr");
+        const id = voucherRow.dataset.id;
+        const couponCode = voucherRow.cells[1].textContent.trim();
+        const discountAmount = parseFloat(voucherRow.cells[2].textContent.replace(/[^0-9.-]+/g, ""));
+        const description = voucherRow.cells[3].textContent.trim();
+        const status = voucherRow.cells[4].textContent.trim();
+
+        // Điền dữ liệu vào form
+        document.getElementById("coupon-id").value = id;
+        document.getElementById("coupon-code").value = couponCode;
+        document.getElementById("discount-amount").value = discountAmount;
+        document.getElementById("description").value = description;
+        document.getElementById("status").value = (status === "Active" || status === "Đang hoạt động") ? "Active" : "Inactive";
+
+        // Chuyển action form sang Edit
+        document.querySelector(".add-voucher-form").action = `${window.location.origin}/project/couponController`;
+        document.getElementById("actionType").value = "edit";
+
+        // Lấy các thông tin bổ sung qua AJAX
+        fetch(`${window.location.origin}/project/getVoucherDetails?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("start-date").value = data.startDate.split('T')[0]; // format yyyy-mm-dd
+                document.getElementById("end-date").value = data.endDate.split('T')[0];
+                document.getElementById("min-order-amount").value = data.minOrderAmount;
+                document.getElementById("discount-type").value = data.discountType;
+                document.getElementById("max-usage").value = data.maxUsage || '';
+                document.getElementById("max-usage-per-user").value = data.maxUsagePerUser || '';
+                document.getElementById("max-discount-amount").value = data.maxDiscountAmount || '';
+            })
+            .catch(err => console.error("Không thể lấy dữ liệu voucher: ", err));
+    });
+});
+
+
+// Xử lý sự kiện khi nhấn nút xóa voucher
+document.querySelectorAll(".btn-delete").forEach(button => {
+    button.addEventListener("click", function () {
+        const voucherRow = button.closest("tr");
+        const id = voucherRow.dataset.id;  // Lấy id voucher từ thuộc tính data-id
+
+        // Hiển thị hộp thoại xác nhận
+        if (confirm("Bạn có chắc chắn muốn xóa không?")) {
+            // Gửi yêu cầu AJAX để xóa voucher
+            fetch(`${window.location.origin}/project/delete-voucher`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: id }) // Gửi id voucher dưới dạng JSON
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Voucher đã được xóa thành công.");
+                        voucherRow.remove();  // Xóa dòng voucher khỏi bảng
+                    } else {
+                        alert("Xóa voucher không thành công.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Không thể xóa voucher:", err);
+                    alert("Có lỗi xảy ra khi xóa voucher.");
+                });
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
