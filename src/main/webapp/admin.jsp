@@ -400,12 +400,8 @@
                         </td>
                         <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->
                         <td>
-                            <select class="order-status" data-order-id="<%= order.getId() %>">
-                                <option value="Chưa xử lý" <%= order.getOrderStatus().equals("Chưa xử lý") ? "selected" : "" %>>Chưa xử lý</option>
-                                <option value="Đã xử lý" <%= order.getOrderStatus().equals("Đã xử lý") ? "selected" : "" %>>Đã xử lý</option>
-                                <option value="Đã vận chuyển" <%= order.getOrderStatus().equals("Đã vận chuyển") ? "selected" : "" %>>Đã vận chuyển</option>
-                                <option value="Đã hủy đơn hàng" <%= order.getOrderStatus().equals("Đã hủy đơn hàng") ? "selected" : "" %>>Đã hủy đơn hàng</option>
-                            </select>
+                            <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>
+                          </span>
                         </td>
                         <td class="control">
                             <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
