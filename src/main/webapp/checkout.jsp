@@ -101,17 +101,17 @@
                                 <span class="form-message"></span>
                             </div>
                             <div class="form-group">
-                                <select id="province" name="province" class="form-control" required>
+                                <select id="province" name="province" class="form-control" >
                                     <option value="">Chọn tỉnh/thành phố</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select id="district" name="district" class="form-control" required>
+                                <select id="district" name="district" class="form-control" >
                                     <option value="">Chọn quận/huyện</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <select id="ward" name="ward" class="form-control" required>
+                                <select id="ward" name="ward" class="form-control" >
                                     <option value="">Chọn phường/xã</option>
                                 </select>
                             </div>
