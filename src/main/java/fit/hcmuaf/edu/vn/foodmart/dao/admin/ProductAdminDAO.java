@@ -4,6 +4,7 @@ import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Products;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import fit.hcmuaf.edu.vn.foodmart.model.Category;
+import fit.hcmuaf.edu.vn.foodmart.model.Warehouse;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,17 +55,17 @@ public class ProductAdminDAO {
 
     // 2. Thêm sản phẩm mới
     public boolean addProduct(Products product) {
-        String sql = "INSERT INTO Products (ProductName, CategoryID,IsSale, DiscountPercentage, Price, ImageURL, ShortDescription, StockQuantity) " +
-                "VALUES (?, ?, ?, ?, ?, ?,?,?)";
+        String insertProductSql = "INSERT INTO Products " +
+                "(ProductName, CategoryID, IsSale, DiscountPercentage, Price, ImageURL, ShortDescription, Weight) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        String insertWarehouseSql = "INSERT INTO warehouse (product_id, quantity, import_date) " +
+                "VALUES (?, ?, CURDATE())";
+
         try (Handle handle = jdbi.open()) {
-            System.out.println("SQL: INSERT INTO Products (ProductName, CategoryID, Price, ImageURL, ShortDescription, StockQuantity)");
-            System.out.println("ProductName: " + product.getProductName());
-            System.out.println("CategoryID: " + product.getCategoryID());
-            System.out.println("Price: " + product.getPrice());
-            System.out.println("ImageURL: " + product.getImageURL());
-            System.out.println("ShortDescription: " + product.getShortDescription());
-            System.out.println("StockQuantity: " + product.getWeight());
-            handle.createUpdate(sql)
+            handle.begin();
+
+            int productId = handle.createUpdate(insertProductSql)
                     .bind(0, product.getProductName())
                     .bind(1, product.getCategoryID())
                     .bind(2, product.getIsSale())
@@ -73,14 +74,45 @@ public class ProductAdminDAO {
                     .bind(5, product.getImageURL())
                     .bind(6, product.getShortDescription())
                     .bind(7, product.getWeight())
+                    .executeAndReturnGeneratedKeys("Id")
+                    .mapTo(int.class)
+                    .one();
+
+            int quantity = (product.getWarehouse() != null) ? product.getWarehouse().getQuantity() : 0;
+
+            handle.createUpdate(insertWarehouseSql)
+                    .bind(0, productId)
+                    .bind(1, quantity)
+                    .execute();
+
+            handle.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean addToWarehouse(Warehouse warehouse) {
+        String sql = "INSERT INTO warehouse (product_id, quantity, import_date) VALUES (?, ?, CURDATE())";
+        try (Handle handle = jdbi.open()) {
+            handle.createUpdate(sql)
+                    .bind(0, warehouse.getProductId())
+                    .bind(1, warehouse.getQuantity())
                     .execute();
             return true;
         } catch (Exception e) {
-            // Ghi log lỗi
             e.printStackTrace();
-            return false; // Trả về false nếu có lỗi
+            return false;
         }
     }
+
+
+
+
+
+
 
     // 3. Cập nhật sản phẩm
     public boolean updateProduct(Products product) {
@@ -89,10 +121,18 @@ public class ProductAdminDAO {
             return false;
         }
 
-        String sql = "UPDATE Products SET ProductName=?, CategoryID=? , IsSale =?, DiscountPercentage=?, Price=?, ImageURL=?, ShortDescription=?, StockQuantity=? " +
-                "WHERE Id=?";
+        String updateProductSql = "UPDATE Products SET ProductName = ?, CategoryID = ?, IsSale = ?, " +
+                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ? " +
+                "WHERE Id = ?";
+
+        String updateWarehouseSql = "UPDATE warehouse SET quantity = ?, import_date = CURDATE() WHERE product_id = ?";
+
+
         try (Handle handle = jdbi.open()) {
-            handle.createUpdate(sql)
+            handle.begin();
+
+            // 1. Cập nhật thông tin sản phẩm
+            handle.createUpdate(updateProductSql)
                     .bind(0, product.getProductName())
                     .bind(1, product.getCategoryID())
                     .bind(2, product.getIsSale())
@@ -103,12 +143,27 @@ public class ProductAdminDAO {
                     .bind(7, product.getWeight())
                     .bind(8, product.getID())
                     .execute();
+
+            // 2. Nếu có thông tin warehouse và quantity > 0 → xử lý tồn kho
+            if (product.getWarehouse() != null && product.getWarehouse().getQuantity() > 0) {
+                int rowsAffected = handle.createUpdate(updateWarehouseSql)
+                        .bind(0, product.getWarehouse().getQuantity())
+                        .bind(1, product.getID())
+                        .execute();
+
+
+            }
+
+            handle.commit();
             return true;
         } catch (Exception e) {
             System.out.println("Lỗi khi cập nhật sản phẩm: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
+
+
 
 
     // 4. Xóa sản phẩm
@@ -125,7 +180,7 @@ public class ProductAdminDAO {
         String sql = "SELECT p.Id AS id, p.ProductName AS productName, " +
                 "p.CategoryID AS categoryId, p.Price AS price, " +
                 "p.ImageURL AS imageUrl, c.CategoryName AS categoryName, " +
-                "p.StockQuantity AS stockQuantity, p.ShortDescription AS shortDescription " +
+                "p.Weight AS Weight, p.ShortDescription AS shortDescription " +
                 "FROM products p " +
                 "LEFT JOIN categories c ON p.CategoryID = c.CategoryID " +
                 "WHERE p.Id = ?";
@@ -144,7 +199,7 @@ public class ProductAdminDAO {
                         p.setPrice(rs.getDouble("price"));
                         p.setImageURL(rs.getString("imageUrl"));
                         p.setShortDescription(rs.getString("shortDescription"));
-                        p.setWeight(rs.getInt("stockQuantity"));
+                        p.setWeight(rs.getInt("Weight"));
 
                         // Kiểm tra và set categoryName nếu tồn tại
                         String categoryName = rs.getString("categoryName");
