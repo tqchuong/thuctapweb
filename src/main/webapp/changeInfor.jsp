@@ -102,9 +102,10 @@
                 <%
                     Users user = (Users) session.getAttribute("auth");
                     boolean isGoogleUser = user != null && "google".equals(user.getLoginType());
+                    boolean isFacebookUser = user != null && "facebook".equals(user.getLoginType());
                 %>
 
-                <div class="main-account-body-col" <% if (isGoogleUser) { %> style="display: none;" <% } %> >
+                <div class="main-account-body-col" <% if (isGoogleUser || isFacebookUser) { %> style="display: none;" <% } %> >
                     <form action="change?action=password" method="post" class="change-password">
 
                         <!-- Các trường mật khẩu -->
