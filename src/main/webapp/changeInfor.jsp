@@ -1,4 +1,4 @@
-
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Users" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="vi">
@@ -98,7 +98,13 @@
                         </button>
                     </form>
                 </div>
-                <div class="main-account-body-col">
+
+                <%
+                    Users user = (Users) session.getAttribute("auth");
+                    boolean isGoogleUser = user != null && "google".equals(user.getLoginType());
+                %>
+
+                <div class="main-account-body-col" <% if (isGoogleUser) { %> style="display: none;" <% } %> >
                     <form action="change?action=password" method="post" class="change-password">
 
                         <!-- Các trường mật khẩu -->

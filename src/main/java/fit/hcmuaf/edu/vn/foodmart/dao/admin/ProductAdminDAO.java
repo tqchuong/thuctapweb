@@ -63,9 +63,11 @@ public class ProductAdminDAO {
                 "VALUES (?, ?, CURDATE())";
 
         try (Handle handle = jdbi.open()) {
+
             handle.begin();
 
             int productId = handle.createUpdate(insertProductSql)
+
                     .bind(0, product.getProductName())
                     .bind(1, product.getCategoryID())
                     .bind(2, product.getIsSale())
@@ -74,6 +76,7 @@ public class ProductAdminDAO {
                     .bind(5, product.getImageURL())
                     .bind(6, product.getShortDescription())
                     .bind(7, product.getWeight())
+
                     .executeAndReturnGeneratedKeys("Id")
                     .mapTo(int.class)
                     .one();
@@ -83,6 +86,7 @@ public class ProductAdminDAO {
             handle.createUpdate(insertWarehouseSql)
                     .bind(0, productId)
                     .bind(1, quantity)
+
                     .execute();
 
             handle.commit();
@@ -199,6 +203,7 @@ public class ProductAdminDAO {
                         p.setPrice(rs.getDouble("price"));
                         p.setImageURL(rs.getString("imageUrl"));
                         p.setShortDescription(rs.getString("shortDescription"));
+
                         p.setWeight(rs.getInt("Weight"));
 
                         // Kiểm tra và set categoryName nếu tồn tại

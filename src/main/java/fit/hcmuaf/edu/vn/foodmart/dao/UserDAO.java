@@ -316,7 +316,7 @@ public class UserDAO implements ObjectDAO {
         }
     }
 
-    ////kiểm tra username, email có tồn tại không
+    //kiểm tra username, email có tồn tại không
     public boolean isUserExist(String username, String email) {
         // Câu lệnh SQL kiểm tra sự tồn tại của người dùng
         String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND email = ?";
@@ -517,6 +517,27 @@ public class UserDAO implements ObjectDAO {
                     .execute();
         }
     }
+    //khi dang nhap gg insert user
+    public void insert(Users user) {
+        String sql = "INSERT INTO users ( Username, Password, Email, FullName, is_verified, login_type) " +
+                "VALUES ( :username, :password, :email, :fullName, :isVerified, :loginType)";
+
+        try (Handle handle = jdbi.open()) {
+                handle.createUpdate(sql)
+                        .bind("username", user.getUsername())
+                        .bind("password", user.getPassword())
+                        .bind("email", user.getEmail())
+                        .bind("fullName", user.getFullName())
+                        .bind("isVerified", user.getIs_verified())
+                        .bind("loginType", user.getLoginType())
+                        .execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
     // Phương thức main để kiểm tra và truy vấn dữ liệu

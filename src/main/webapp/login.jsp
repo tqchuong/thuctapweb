@@ -83,13 +83,16 @@
 
                 <button type="submit" id="login-button" class="login__button" value="login">Đăng nhập</button>
                 <div class="login_gg_fb">
-                    <div id="g_id_onload"
-                         data-client_id="677800086189-ntqafhoaddalkskih5jot4u56ngsa5ck.apps.googleusercontent.com"
-                         data-login_uri="http://localhost:8080/project/loginGoogle"
-                         data-auto_prompt="false">
-                    </div>
-                    <button class="login_gg" id="googleLogin"><i class="fa-brands fa-google"></i></button>
-                    <button class="login_fb"><i class="fa-brands fa-facebook"></i></button>
+                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid
+
+&redirect_uri=http://localhost:8080/project/loginGoogle
+
+&response_type=code
+
+&client_id=677800086189-ntqafhoaddalkskih5jot4u56ngsa5ck.apps.googleusercontent.com
+
+&approval_prompt=force" class="login_gg" id="googleLogin"><i class="fa-brands fa-google"></i></a>
+                    <a class="login_fb"><i class="fa-brands fa-facebook"></i></a>
                 </div>
                 <p>
                     <button id="forgotPasswordLink" class="forgotPasswordLink">Quên Mật khẩu?</button>
