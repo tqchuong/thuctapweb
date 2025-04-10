@@ -32,6 +32,7 @@ async function calculateShippingFee() {
     if (!toDistrictId || !toWardCode) {
         alert("Vui lòng chọn địa chỉ nhận hàng.");
         return;
+
     }
     console.log("Dữ liệu gửi đi:", {
         from_district_id: fromDistrictId,
@@ -72,6 +73,9 @@ function updateTotal(shippingFee) {
     document.getElementById("checkout-cart-price-final").textContent = `${finalTotal.toLocaleString()} ₫`;
     document.getElementById("shippingFeeInput").value = shippingFee;
     phiVanChuyenElement.textContent = `${shippingFee.toLocaleString()} ₫`;
+
+    document.getElementById("totalAmountInput").value = finalTotal;
+
 }
 
 function calculateTotalWeight() {

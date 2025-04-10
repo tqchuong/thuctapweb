@@ -1,48 +1,41 @@
-package fit.hcmuaf.edu.vn.foodmart.controller;
+package fit.hcmuaf.edu.vn.foodmart.controller.VNPay;
 
 import com.google.gson.JsonObject;
-import fit.hcmuaf.edu.vn.foodmart.utils.Config;
-import jakarta.servlet.ServletException;
+import fit.hcmuaf.edu.vn.foodmart.dao.PaymentDAO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/vnpay-ipn")
 public class VnPayReturn extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Map<String, String> fields = new HashMap<>();
-        for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
-            String fieldName = params.nextElement();
-            String fieldValue = request.getParameter(fieldName);
-            fields.put(fieldName, fieldValue);
-        }
-
-        String vnp_SecureHash = request.getParameter("vnp_SecureHash");
-        fields.remove("vnp_SecureHashType");
-        fields.remove("vnp_SecureHash");
-
-        String signValue = Config.hashAllFields(fields);
-        JsonObject jsonResponse = new JsonObject();
-
-        if (signValue.equals(vnp_SecureHash)) {
-            String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
-            if ("00".equals(vnp_ResponseCode)) {
-                jsonResponse.addProperty("RspCode", "00");
-                jsonResponse.addProperty("Message", "Transaction successful");
-            } else {
-                jsonResponse.addProperty("RspCode", "01");
-                jsonResponse.addProperty("Message", "Transaction failed");
-            }
-        } else {
-            jsonResponse.addProperty("RspCode", "97");
-            jsonResponse.addProperty("Message", "Invalid checksum");
-        }
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 1. Chuẩn bị response
         response.setContentType("application/json");
-        response.getWriter().write(jsonResponse.toString());
+
+        try {
+            String vnp_TxnRef = request.getParameter("vnp_TxnRef");
+            String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
+
+            PaymentDAO paymentDAO = new PaymentDAO();
+            boolean updated;
+
+            if ("00".equals(vnp_ResponseCode)) {
+                updated = paymentDAO.updatePaymentStatus(Integer.parseInt(vnp_TxnRef), "Đã thanh toán");
+            } else {
+                updated = paymentDAO.updatePaymentStatus(Integer.parseInt(vnp_TxnRef), "Thanh toán thất bại");
+            }
+            // 2. Chuyển hướng về trang home.jsp
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
+
+        } catch (Exception e) {
+            // Nếu có lỗi vẫn chuyển hướng về home nhưng có thể thêm thông báo lỗi
+            response.sendRedirect(request.getContextPath() + "/home.jsp?error=payment_error");
+        }
     }
-}
+    }

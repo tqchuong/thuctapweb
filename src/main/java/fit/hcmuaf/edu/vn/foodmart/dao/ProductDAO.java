@@ -397,7 +397,33 @@ LEFT JOIN sales s ON p.ID = s.ProductID
             return false;  // Trả về false nếu có lỗi
         }
 
+
     }
+    public boolean hasUserPurchasedProduct(int userId, int productId) {
+        String sql = """
+        SELECT COUNT(*) FROM order_detail od
+        JOIN orders o ON od.order_id = o.id
+        JOIN payments p ON o.id = p.order_id
+        WHERE o.user_id = :userId 
+          AND od.product_id = :productId 
+          AND p.status = 'Đã thanh toán'
+    """;
+
+        try (Handle handle = jdbi.open()) {
+            int count = handle.createQuery(sql)
+                    .bind("userId", userId)
+                    .bind("productId", productId)
+                    .mapTo(Integer.class)
+                    .one();
+
+            return count > 0;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi kiểm tra đã mua hàng: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Test phương thức getAllProducts() và getProductDetailsById()
     public static void main(String[] args) {
         ProductDAO dao = new ProductDAO();

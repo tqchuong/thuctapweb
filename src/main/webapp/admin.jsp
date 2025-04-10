@@ -210,7 +210,7 @@
             <div id="show-product">
                 <% for (Products product : products) { %>
                 <div class="list" data-id="<%= product.getID() %>"
-                     data-product='{"id": <%= product.getID() %>, "productName": "<%= product.getProductName() %>", "price": "<%= product.getPrice() %>", "stockQuantity": "<%= product.getStockQuantity() %>", "shortDescription": "<%= product.getShortDescription() %>", "categoryID": "<%= product.getCategoryID() %>", "imageURL": "<%= product.getImageURL() %>"}'>
+                     data-product='{"id": <%= product.getID() %>, "productName": "<%= product.getProductName() %>", "price": "<%= product.getPrice() %>", "stockQuantity": "<%= product.getWeight() %>", "shortDescription": "<%= product.getShortDescription() %>", "categoryID": "<%= product.getCategoryID() %>", "imageURL": "<%= product.getImageURL() %>"}'>
                     <div class="list-left">
                         <img src="<%= product.getImageURL() %> " alt="<%= product.getProductName() %>">
 
@@ -222,7 +222,7 @@
 
                             <span class="list-category"
                                   data-category-id="<%= product.getCategoryID() %>"><%= product.getCategory().getCategoryName() %></span>
-                            <span class="list-slkho"><%= product.getStockQuantity() %></span>
+                            <span class="list-slkho"><%= product.getWeight() %></span>
                         </div>
                     </div>
                     <div class="list-right">
@@ -400,12 +400,8 @@
                         </td>
                         <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->
                         <td>
-                            <select class="order-status" data-order-id="<%= order.getId() %>">
-                                <option value="Chưa xử lý" <%= order.getOrderStatus().equals("Chưa xử lý") ? "selected" : "" %>>Chưa xử lý</option>
-                                <option value="Đã xử lý" <%= order.getOrderStatus().equals("Đã xử lý") ? "selected" : "" %>>Đã xử lý</option>
-                                <option value="Đã vận chuyển" <%= order.getOrderStatus().equals("Đã vận chuyển") ? "selected" : "" %>>Đã vận chuyển</option>
-                                <option value="Đã hủy đơn hàng" <%= order.getOrderStatus().equals("Đã hủy đơn hàng") ? "selected" : "" %>>Đã hủy đơn hàng</option>
-                            </select>
+                            <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>
+                          </span>
                         </td>
                         <td class="control">
                             <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
@@ -524,8 +520,9 @@
                                 </p>
                             </div>
                         </td>
-                        <td><%= product.getStockQuantity() %>
+                        <td><%= product.getWeight() %>
                         </td>
+
                         <td><%= product.getPrice() %>
                         </td>
                         <td>
@@ -950,8 +947,14 @@
                             <span class="form-message"></span>
                         </div>
                         <div class="form-group">
+                            <label for="khoi-luong" class="form-label">Khối lượng</label>
+                            <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng"
+                                   class="form-control" required>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
                             <label for="so-luong" class="form-label">Số lượng</label>
-                            <input id="so-luong" name="stockQuantity" type="number" placeholder="Nhập số lượng"
+                            <input id="so-luong" name="quantity" type="number" placeholder="Nhập số lượng"
                                    class="form-control" required>
                             <span class="form-message"></span>
                         </div>
