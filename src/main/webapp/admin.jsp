@@ -29,7 +29,7 @@
         </div>
     </button>
 </header>
-<div class="container">
+ <div class="container">
     <aside class="sidebar open">
         <div class="top-sidebar">
             <a href="#" class="channel-logo">
@@ -654,22 +654,22 @@
                 <div class="admin-control-center">
                     <form action="" class="form-search">
                         <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-user" type="text" class="form-search-input" placeholder="Tìm kiếm mã giảm giá...">
+                        <input id="form-search-voucher" type="text" class="form-search-input" placeholder="Tìm kiếm mã giảm giá...">
                     </form>
                 </div>
                 <div class="admin-control-right">
                     <form action="" class="fillter-date">
                         <div>
                             <label for="time-start">Từ</label>
-                            <input type="date" class="form-control-date" id="time-start-user">
+                            <input type="date" class="form-control-date" id="time-start-voucher">
                         </div>
                         <div>
                             <label for="time-end">Đến</label>
-                            <input type="date" class="form-control-date" id="time-end-user">
+                            <input type="date" class="form-control-date" id="time-end-voucher">
                         </div>
                     </form>
                     <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
-                    <button id="btn-add-user" class="btn-control-large"><i class="fa-light fa-plus"></i><span>Thêm Mã</span></button>
+                    <button id="btn-add-voucher" class="btn-control-large"><i class="fa-light fa-plus"></i><span>Thêm Mã</span></button>
                 </div>
             </div>
 
@@ -681,15 +681,13 @@
                         <td>Mã giảm giá</td>
                         <td>Số tiền giảm giá</td>
                         <td>Miêu tả</td>
-                        <td>Loại giảm giá</td>
-                        <td>Số lần sử dụng</td>
                         <td>Trạng thái</td>
                         <td>Hạn sử dụng</td>
                         <td></td>
                     </tr>
                     </thead>
 
-                    <tbody id="show-user">
+                    <tbody id="show-voucher">
                     <%
                         CouponDAO couponDAO = new CouponDAO();
                         List<Coupon> coupons = couponDAO.getActiveCoupons();
@@ -701,8 +699,6 @@
                         <td><%= coupon.getCouponCode() %></td>
                         <td><%= coupon.getDiscountAmount() %></td>
                         <td><%= coupon.getDescription() %></td>
-                        <td><%= coupon.getDiscountType() %></td> <!-- Loại giảm giá -->
-                        <td><%= coupon.getMaxUsage() %></td> <!-- Số lần sử dụng -->
                         <td>
                         <span class="<%= (coupon.getStatus().equals("Active")) ? "status-complete" : "status-no-complete" %>">
                             <%= coupon.getStatus() %>
@@ -729,7 +725,7 @@
                             <button class="btn-edit-coupon" id="edit-coupon">
                                 <i class="fa-light fa-pen-to-square"></i>
                             </button>
-                            <button class="btn-deletee" data-type="user" data-id="<%= coupon.getId() %>">
+                            <button class="btn-delete" data-type="voucher" data-id="<%= coupon.getId() %>">
                                 <i class="fa-regular fa-trash"></i>
                             </button>
                         </td>
@@ -1093,77 +1089,95 @@
         </div>
     </div>
 
+     <div class="modal add-voucher">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-voucher-e">THÊM MỚI VOUCHER</h3>
+             <h3 class="modal-container-title edit-voucher-e">CHỈNH SỬA VOUCHER</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/couponController" method="POST" class="add-voucher-form">
+                     <input type="hidden" id="actionType" name="actionType" value="add">
+                     <input type="hidden" id="coupon-id" name="couponId">
 
-    <div class="modal add-voucher">
-        <div class="modal-container">
-            <h3 class="modal-container-title add-voucher-e">THÊM MỚI SẢN PHẨM</h3>
-            <h3 class="modal-container-title edit-voucher-e">CHỈNH SỬA SẢN PHẨM</h3>
-            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-                <form action="" class="add-voucher-form">
-                    <div class="modal-content-left">
-                        <img src="image/admin/blank-image.png" alt="" class="upload-image-preview">
-                        <div class="form-group file">
-                            <label for="up-hinh-anh" class="form-label-file"><i
-                                    class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
-                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh"
-                                   type="file" class="form-control">
-                        </div>
-                    </div>
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-                            <input id="ten-mon" name="ten-mon" type="text" placeholder="Nhập tên sản phẩm"
-                                   class="form-control">
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="category" class="form-label">Danh mục</label>
-                            <select name="category" id="chon-mon">
-                                <option>Gạo</option>
-                                <option>Lương khô</option>
-                                <option>text3</option>
-                                <option>text4</option>
-                                <option>text5</option>
-                                <option>text6</option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="gia-moi" class="form-label">Giá bán</label>
-                            <input id="gia-moi" name="gia-moi" type="text" placeholder="Nhập giá bán"
-                                   class="form-control">
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="so-luong" class="form-label">Số lượng</label>
-                            <input id="so-luong" name="so-luong" type="text" placeholder="Nhập số lượng"
-                                   class="form-control">
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="mo-ta" class="form-label">Mô tả</label>
-                            <textarea class="voucher-desc" id="mo-ta"
-                                      placeholder="Nhập mô tả sản phẩm..."></textarea>
-                            <span class="form-message"></span>
-                        </div>
-                        <button class="form-submit btn-add-voucher-form add-voucher-e" id="add-voucher-button">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM SẢN PHẨM</span>
-                        </button>
-                        <button class="form-submit btn-update-voucher-form edit-voucher-e"
-                                id="update-voucher-button">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="toast"></div>
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="coupon-code">Mã giảm giá</label>
+                             <input id="coupon-code" name="couponCode" type="text" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="discount-type">Loại giảm giá</label>
+                             <select name="discountType" id="discount-type" class="form-control" required>
+                                 <option value="Percentage">Giảm theo phần trăm (%)</option>
+                                 <option value="FixedAmount">Giảm theo số tiền cố định (₫)</option>
+                             </select>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="discount-amount">Giá trị giảm giá</label>
+                             <input id="discount-amount" name="discountAmount" type="number" step="0.01" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="max-discount-amount">Số tiền giảm tối đa (nếu giảm theo %)</label>
+                             <input id="max-discount-amount" name="maxDiscountAmount" type="number" step="0.01" class="form-control">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="description">Mô tả</label>
+                             <textarea id="description" name="description" class="form-control" required></textarea>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="start-date">Ngày bắt đầu</label>
+                             <input id="start-date" name="startDate" type="date" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="end-date">Ngày hết hạn</label>
+                             <input id="end-date" name="endDate" type="date" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="min-order-amount">Số tiền đơn hàng tối thiểu</label>
+                             <input id="min-order-amount" name="minOrderAmount" type="number" step="0.01" class="form-control" required>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="max-usage">Số lần sử dụng tối đa (tổng cộng)</label>
+                             <input id="max-usage" name="maxUsage" type="number" class="form-control">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="max-usage-per-user">Số lần sử dụng tối đa mỗi người</label>
+                             <input id="max-usage-per-user" name="maxUsagePerUser" type="number" class="form-control">
+                         </div>
+
+                         <div class="form-group">
+                             <label for="status">Trạng thái</label>
+                             <select name="status" id="status" class="form-control" required>
+                                 <option value="Active">Đang hoạt động</option>
+                                 <option value="Inactive">Ngừng hoạt động</option>
+                             </select>
+                         </div>
+
+                         <button type="submit" class="form-submit btn-add-voucher-form add-voucher-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM VOUCHER</span>
+                         </button>
+
+                         <button type="submit" class="form-submit btn-update-voucher-form edit-voucher-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+
+ </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

@@ -1,5 +1,4 @@
-const PHIVANCHUYEN = 30000;
-const PHIVANCHUYEN_DOUOI_5 = 50000; // Phí vận chuyển mới khi totalQuantity > 5
+
 let priceFinal = document.getElementById("checkout-cart-price-final");
 let phiVanChuyenElement = document.querySelector(".chk-free-ship span");
 let cartTotalElement = document.getElementById("checkout-cart-total");
@@ -8,24 +7,84 @@ let totalAmountInput = document.getElementById("totalAmountInput");
 
 
 
-// Hàm cập nhật tổng tiền
-function updateTotal(isGiaoTanNoi) {
-    let cartTotal = parseInt(cartTotalElement.textContent.replace(/\D/g, ""));
-    let totalQuantityElement = document.querySelector(".count-1");
-    let phiVanChuyen = isGiaoTanNoi ? (parseInt(totalQuantityElement.textContent) > 5 ? PHIVANCHUYEN_DOUOI_5 : PHIVANCHUYEN) : 0;
-    let finalTotal = cartTotal + phiVanChuyen;
+document.addEventListener("DOMContentLoaded", function () {
+    const shippingMethodRadios = document.querySelectorAll('input[name="shippingMethod"]');
+    shippingMethodRadios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            if (this.value === "Giao tận nơi") {
+                calculateShippingFee();
+            } else {
+                updateTotal(0);
+            }
+        });
+    });
+});
 
-    if (isGiaoTanNoi) {
-        phiVanChuyenElement.textContent = `${phiVanChuyen.toLocaleString()} ₫`; // Hiển thị phí vận chuyển
-    } else {
-        phiVanChuyenElement.textContent = "0 ₫";
+async function calculateShippingFee() {
+    let fromDistrictId = 1442;
+    let toDistrictId = parseInt(document.getElementById("district").value) || 0;
+
+    let toWardCode = parseInt(document.getElementById("ward").value);
+    let serviceId = 2;
+    let insuranceValue = parseInt(document.getElementById("totalAmountInput").value) || 0;
+    let weight = calculateTotalWeight();
+
+    if (!toDistrictId || !toWardCode) {
+        alert("Vui lòng chọn địa chỉ nhận hàng.");
+        return;
     }
+    console.log("Dữ liệu gửi đi:", {
+        from_district_id: fromDistrictId,
+        to_district_id: toDistrictId,
+        to_ward_code: toWardCode,
+        service_type_id: serviceId,
+        insurance_value: insuranceValue,
+        weight: weight
+    });
 
-    priceFinal.textContent = `${finalTotal.toLocaleString()} ₫`;
-    totalAmountInput.value = finalTotal;
-    document.getElementById("shippingFeeInput").value = phiVanChuyen;
+    let response = await fetch("calculate-shipping", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `from_district_id=${fromDistrictId}&to_district_id=${toDistrictId}&to_ward_code=${toWardCode}&service_type_id=${serviceId}&insurance_value=${insuranceValue}&weight=${weight}`
+    });
+
+    try {
+        let data = await response.json();
+        console.log("Phản hồi từ GHN:", data); // Xem API trả về gì
+        if (data.code === 200) {
+            let shippingFee = data.data.total || 0;
+            updateTotal(shippingFee);
+        } else {
+            console.error("GHN trả về lỗi:", data);
+            updateTotal(0);
+        }
+    } catch (error) {
+        console.error("Lỗi khi phân tích JSON:", error);
+        console.error("Phản hồi gốc:", await response.text()); // Log response gốc nếu JSON bị lỗi
+        updateTotal(0);
+    }
 }
 
+function updateTotal(shippingFee) {
+    let cartTotal = parseInt(document.getElementById("checkout-cart-total").textContent.replace(/\D/g, "")) || 0;
+    let finalTotal = cartTotal + shippingFee;
+
+    document.getElementById("checkout-cart-price-final").textContent = `${finalTotal.toLocaleString()} ₫`;
+    document.getElementById("shippingFeeInput").value = shippingFee;
+    phiVanChuyenElement.textContent = `${shippingFee.toLocaleString()} ₫`;
+}
+
+function calculateTotalWeight() {
+    let items = document.querySelectorAll(".food-total");
+    let totalWeight = 0;
+    items.forEach(item => {
+        let weightText = item.querySelector(".weight").textContent;
+        let weight = parseInt(weightText.replace(/\D/g, "")) || 0;
+        let quantity = parseInt(item.querySelector(".count").textContent) || 1;
+        totalWeight += weight * quantity;
+    });
+    return totalWeight;
+}
 // Hàm chuyển đổi giao diện giữa các tùy chọn giao hàng
 function toggleDeliveryOptions() {
     const btnGiaoTanNoi = document.getElementById("giaotannoi");
@@ -127,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function populateOptions(elementId, data, valueField, textField) {
         const select = document.getElementById(elementId);
-        select.innerHTML = "<option value=''>Chọn...</option>";
+
         data.forEach(item => {
             let option = document.createElement("option");
             option.value = item[valueField];

@@ -10,10 +10,12 @@ public class CartProduct {
         private int userId;          // ID của người dùng
         private int productId;       // ID của sản phẩm
         private int quantity;        // Số lượng sản phẩm
+    private int weight;
         private double price;    // Giá sản phẩm
         private Date createdAt; // Thời gian tạo
         private Date updatedAt; // Thời gian cập nhật
     private String productName;
+
     private String imageURL;
 
 
@@ -21,7 +23,7 @@ public class CartProduct {
         // Constructor không tham số
         public CartProduct() {}
         // Constructor có tham số
-        public CartProduct(int id, int userId, int productId, int quantity, double price, Date createdAt, Date updatedAt, String productName, String imageURL) {
+        public CartProduct(int id, int userId,int weight, int productId, int quantity, double price, Date createdAt, Date updatedAt, String productName, String imageURL) {
             this.id = id;
             this.userId = userId;
             this.productId = productId;
@@ -29,11 +31,20 @@ public class CartProduct {
             this.price = price;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
+            this.weight = weight;
 
             this.productName = productName;
             this.imageURL = imageURL;
 
         }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
 
     public String getImageURL() {
         return imageURL;

@@ -9,13 +9,14 @@ public class Products {
     private double price;
     private String imageURL;
     private String shortDescription; // Mô tả ngắn
-    private int stockQuantity;       // Số lượng tồn kho
+    private int weight;       // Trọng lượng sản phẩm
     private Category category;       // Đối tượng danh mục
     private List<ProductImages> images; // Danh sách hình ảnh
     private ProductsDetail productsDetail;
     private List<Reviews> reviews; // Danh sách đánh giá
     private int productViews;
     private double averageRating; // Thêm thuộc tính averageRating
+    private Warehouse warehouse;
 
     private double discountPercentage; // Thêm thuộc tính discountPercentage
     private Sale sales;
@@ -33,7 +34,7 @@ public class Products {
                     double price,
                     String imageURL,
                     String shortDescription,
-                    int stockQuantity,
+                    int weight,
                     Category category,
                     List<ProductImages> images,
                     ProductsDetail productsDetail,
@@ -49,20 +50,27 @@ public class Products {
         this.price = price;
         this.imageURL = imageURL;
         this.shortDescription = shortDescription;
-        this.stockQuantity = stockQuantity;
+        this.weight = weight;
         this.category = category;
         this.images = images;
         this.productsDetail = productsDetail;
         this.reviews = reviews;
         this.productViews = productViews;
         this.averageRating = averageRating;
-        this.IsSale =IsSale;
+        this.IsSale = IsSale;
         this.discountPercentage = discountPercentage;
         this.sales = sales;
     }
 
     public int getSalePrice() {
         return salePrice;
+    }
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
     public void setSalePrice(int salePrice) {
@@ -76,8 +84,6 @@ public class Products {
     public void setID(int ID) {
         this.ID = ID;
     }
-
-
 
     public Sale getSales() {
         return sales;
@@ -94,8 +100,6 @@ public class Products {
     public void setDiscountPercentage(double discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
-
-
 
     public double getAverageRating() {
         return averageRating;
@@ -145,12 +149,12 @@ public class Products {
         this.category = category;
     }
 
-    public int getStockQuantity() {
-        return stockQuantity;
+    public int getWeight() {
+        return weight;
     }
 
-    public void setStockQuantity(int stockQuantity) {
-        this.stockQuantity = stockQuantity;
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public String getShortDescription() {
@@ -200,7 +204,7 @@ public class Products {
     }
 
     @Override
-    public String   toString() {
+    public String toString() {
         return "Products{" +
                 "ID=" + ID +
                 ", productName='" + productName + '\'' +
@@ -208,7 +212,7 @@ public class Products {
                 ", price=" + price +
                 ", imageURL='" + imageURL + '\'' +
                 ", shortDescription='" + shortDescription + '\'' +
-                ", stockQuantity=" + stockQuantity +
+                ", weight=" + weight +
                 ", category=" + category +
                 ", images=" + images +
                 ", productsDetail=" + productsDetail +
