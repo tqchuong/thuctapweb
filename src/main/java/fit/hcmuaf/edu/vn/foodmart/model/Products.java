@@ -22,6 +22,7 @@ public class Products {
     private Sale sales;
     private int IsSale;
     private int salePrice;
+    private  int BrandID;
 
     // Constructor mặc định
     public Products() {
@@ -43,7 +44,8 @@ public class Products {
                     double averageRating,
                     int IsSale,
                     double discountPercentage,
-                    Sale sales) {
+                    Sale sales, int BrandID) {
+        this.BrandID = BrandID;
         this.ID = ID;
         this.productName = productName;
         this.categoryID = categoryID;
@@ -60,6 +62,14 @@ public class Products {
         this.IsSale = IsSale;
         this.discountPercentage = discountPercentage;
         this.sales = sales;
+    }
+
+    public int getBrandID() {
+        return BrandID;
+    }
+
+    public void setBrandID(int brandID) {
+        BrandID = brandID;
     }
 
     public int getSalePrice() {
