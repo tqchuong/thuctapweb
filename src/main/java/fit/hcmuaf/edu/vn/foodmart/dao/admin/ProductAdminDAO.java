@@ -1,10 +1,7 @@
 package fit.hcmuaf.edu.vn.foodmart.dao.admin;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
-import fit.hcmuaf.edu.vn.foodmart.model.Products;
-import fit.hcmuaf.edu.vn.foodmart.model.Users;
-import fit.hcmuaf.edu.vn.foodmart.model.Category;
-import fit.hcmuaf.edu.vn.foodmart.model.Warehouse;
+import fit.hcmuaf.edu.vn.foodmart.model.*;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -252,6 +249,34 @@ public class ProductAdminDAO {
             e.printStackTrace();
             return 0; // Trả về 0 nếu xảy ra lỗi
         }
+    }
+
+    public List<Category> getAllCategories() {
+        String sql = "SELECT * FROM categories";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .map((rs, ctx) -> {
+                            Category c = new Category();
+                            c.setCategoryID(rs.getInt("CategoryID"));
+                            c.setCategoryName(rs.getString("CategoryName"));
+                            return c;
+                        })
+                        .list()
+        );
+    }
+
+
+    public List<Brands> getAllBrands() {
+        String sql = "SELECT * FROM brands";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .map((rs, ctx) -> {
+                            Brands b = new Brands();
+                            b.setId(rs.getInt("id"));
+                            b.setName(rs.getString("name"));
+                            return b;
+                        }).list()
+        );
     }
 
 
