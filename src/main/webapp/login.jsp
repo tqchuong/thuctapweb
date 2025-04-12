@@ -130,6 +130,12 @@
                     <i class="ri-eye-off-fill login__icon login__password" id="loginPasswordCreate"></i>
                     <span class="form-message-password form-message"></span>
                 </div>
+                <div class="login__box">
+                    <input type="text" id="passwordConfirm" name="passwordConfirm" required placeholder=" " class="login__input" aria-label="Password">
+                    <label for="passwordConfirm" class="login__label">Xác nhận mật khẩu</label>
+                    <i class="ri-eye-off-fill login__icon login__password" id="loginpasswordConfirm"></i>
+                    <span class="form-message-password form-message"></span>
+                </div>
                 <button type="submit" class="login__button" id="signup-button">Tạo tài khoản</button>
             </form>
             <p class="login__switch">
