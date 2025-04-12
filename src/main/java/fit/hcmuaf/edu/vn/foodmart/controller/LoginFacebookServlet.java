@@ -37,7 +37,7 @@ public class LoginFacebookServlet extends HttpServlet {
             user = new Users();
             user.setUsername(acc.getName());
             user.setPassword("FACEBOOK_OAUTH");
-            user.setEmail(null);
+            user.setEmail(acc.getEmail());
             user.setFullName(acc.getName());
             user.setIs_verified(true);
             user.setLoginType("facebook");
