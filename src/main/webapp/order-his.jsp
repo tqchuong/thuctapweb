@@ -117,6 +117,13 @@
                                             <h4>${detail.productName}</h4>
 
                                             <p class="order-history-quantity">x${detail.quantity}</p>
+                                            <!-- ✅ Nút đánh giá -->
+                                            <form action="productDetails" method="get" style="margin-top: 8px;">
+                                                <input type="hidden" name="id" value="${detail.productId}">
+                                                <button type="submit" class="btn btn-sm btn-outline-dark">
+                                                    <i class="fa-regular fa-pen-to-square"></i> Đánh giá
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                     <div class="order-history-right">
