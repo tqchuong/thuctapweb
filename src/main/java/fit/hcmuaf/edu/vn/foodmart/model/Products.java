@@ -18,6 +18,8 @@ public class Products {
     private double averageRating; // Thêm thuộc tính averageRating
     private Warehouse warehouse;
 
+    private Brands brands;
+
     private double discountPercentage; // Thêm thuộc tính discountPercentage
     private Sale sales;
     private int IsSale;
@@ -29,23 +31,9 @@ public class Products {
     }
 
     // Constructor đầy đủ (thêm discountPercentage)
-    public Products(int ID,
-                    String productName,
-                    int categoryID,
-                    double price,
-                    String imageURL,
-                    String shortDescription,
-                    int weight,
-                    Category category,
-                    List<ProductImages> images,
-                    ProductsDetail productsDetail,
-                    List<Reviews> reviews,
-                    int productViews,
-                    double averageRating,
-                    int IsSale,
-                    double discountPercentage,
-                    Sale sales, int BrandID) {
-        this.BrandID = BrandID;
+
+
+    public Products(int ID, String productName, int categoryID, double price, String imageURL, String shortDescription, int weight, Category category, List<ProductImages> images, ProductsDetail productsDetail, List<Reviews> reviews, int productViews, double averageRating, Warehouse warehouse, Brands brands, double discountPercentage, Sale sales, int isSale, int salePrice, int brandID) {
         this.ID = ID;
         this.productName = productName;
         this.categoryID = categoryID;
@@ -59,9 +47,21 @@ public class Products {
         this.reviews = reviews;
         this.productViews = productViews;
         this.averageRating = averageRating;
-        this.IsSale = IsSale;
+        this.warehouse = warehouse;
+        this.brands = brands;
         this.discountPercentage = discountPercentage;
         this.sales = sales;
+        IsSale = isSale;
+        this.salePrice = salePrice;
+        BrandID = brandID;
+    }
+
+    public Brands getBrands() {
+        return brands;
+    }
+
+    public void setBrands(Brands brands) {
+        this.brands = brands;
     }
 
     public int getBrandID() {

@@ -33,6 +33,7 @@ public class AddProductServlet extends HttpServlet {
         String shortDescription = request.getParameter("shortDescription");
         String idParam = request.getParameter("id");
         String quantityParam = request.getParameter("quantity");
+        String brands = request.getParameter("brandsID");
 
         // Xử lý dữ liệu
         int id = (idParam != null && !idParam.isEmpty()) ? Integer.parseInt(idParam) : 0;
@@ -40,6 +41,7 @@ public class AddProductServlet extends HttpServlet {
         double price = (priceParam != null && !priceParam.isEmpty()) ? Double.parseDouble(priceParam) : 0.0;
         int Weight = (weight != null && !weight.isEmpty()) ? Integer.parseInt(weight) : 0;
         int quantity = (quantityParam != null && !quantityParam.isEmpty()) ? Integer.parseInt(quantityParam) : 0;
+        int brandsID = (brands != null && !brands.isEmpty()) ? Integer.parseInt(brands) : 0;
 
         // Tính giá bán sau giảm
         if (isSale && discountPercentage > 0) {
@@ -73,6 +75,7 @@ public class AddProductServlet extends HttpServlet {
             Products newProduct = new Products();
             newProduct.setProductName(productName);
             newProduct.setCategoryID(categoryID);
+            newProduct.setBrandID(brandsID);
             newProduct.setIsSale(isSale ? 1 : 0);
             newProduct.setDiscountPercentage(discountPercentage);
             newProduct.setPrice(price);
@@ -97,9 +100,10 @@ public class AddProductServlet extends HttpServlet {
             if (existingProduct != null) {
                 existingProduct.setProductName(productName);
                 existingProduct.setCategoryID(categoryID);
+                existingProduct.setPrice(price);
                 existingProduct.setIsSale(isSale ? 1 : 0);
                 existingProduct.setDiscountPercentage(discountPercentage);
-                existingProduct.setPrice(price);
+                existingProduct.setBrandID(brandsID);
                 existingProduct.setWeight(Weight);
                 existingProduct.setShortDescription(shortDescription);
                 if (imageURL != null) existingProduct.setImageURL(imageURL);
