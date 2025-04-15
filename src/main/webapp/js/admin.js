@@ -808,111 +808,134 @@ document.querySelectorAll(".btn-delete").forEach(button => {
 
 
 
-
-
-
-
-
-
-
-
-
-// Mở modal thêm mới voucher
-document.getElementById("btn-add-voucher").addEventListener("click", function () {
-    closeAllModals();
-    const modal = document.querySelector(".modal.add-voucher");
-    modal.classList.add("show");
-
-    // Hiển thị giao diện thêm mới voucher
-    document.querySelector(".add-voucher-e").style.display = "block";
-    document.querySelector(".edit-voucher-e").style.display = "none";
-
-    resetVoucherForm();
-
-    // Chuyển action form sang Add
-    document.querySelector(".add-voucher-form").action = `${window.location.origin}/project/couponController`;
-    document.getElementById("actionType").value = "add";
-});
-
-// Reset form voucher (khi thêm mới)
-function resetVoucherForm() {
-    document.getElementById("coupon-id").value = '';
-    document.getElementById("coupon-code").value = '';
-    document.getElementById("discount-amount").value = '';
-    document.getElementById("max-discount-amount").value = '';
-    document.getElementById("description").value = '';
-    document.getElementById("start-date").value = '';
-    document.getElementById("end-date").value = '';
-    document.getElementById("min-order-amount").value = '';
-    document.getElementById("max-usage").value = '';
-    document.getElementById("max-usage-per-user").value = '';
-    document.getElementById("discount-type").value = 'Percentage';
-    document.getElementById("status").value = 'Active';
-}
-
-// Đóng tất cả modal đang mở
-function closeAllModals() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.remove('show');
-    });
-}
-
-// Đóng modal khi nhấn nút đóng
-document.querySelectorAll(".modal-close").forEach(button => {
-    button.addEventListener("click", function () {
-        button.closest(".modal").classList.remove("show");
-    });
-});
-
-// Xử lý sự kiện khi nhấn nút chỉnh sửa voucher
-document.querySelectorAll(".btn-edit-coupon").forEach(button => {
-    button.addEventListener("click", function () {
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("btn-add-brand").addEventListener("click", function () {
         closeAllModals();
-        const modal = document.querySelector(".modal.add-voucher");
-        modal.classList.add("show");
+        const modal = document.querySelector(".modal.add-brand");
+        modal.classList.add("show", "mode-add");
+        modal.classList.remove("mode-edit");
+        resetBrandForm();
 
-        // Hiển thị giao diện chỉnh sửa voucher
-        document.querySelector(".add-voucher-e").style.display = "none";
-        document.querySelector(".edit-voucher-e").style.display = "block";
+        document.getElementById("action1").value = "add";
 
-        // Lấy dữ liệu voucher từ hàng tương ứng trong bảng
-        const voucherRow = button.closest("tr");
-        const id = voucherRow.dataset.id;
-        const couponCode = voucherRow.cells[1].textContent.trim();
-        const discountAmount = parseFloat(voucherRow.cells[2].textContent.replace(/[^0-9.-]+/g, ""));
-        const description = voucherRow.cells[3].textContent.trim();
-        const status = voucherRow.cells[4].textContent.trim();
+        document.querySelector(".add-brand-e").style.display = "block";
+        document.querySelector(".edit-brand-e").style.display = "none";
 
-        // Điền dữ liệu vào form
-        document.getElementById("coupon-id").value = id;
-        document.getElementById("coupon-code").value = couponCode;
-        document.getElementById("discount-amount").value = discountAmount;
-        document.getElementById("description").value = description;
-        document.getElementById("status").value = (status === "Active" || status === "Đang hoạt động") ? "Active" : "Inactive";
+        document.querySelector(".btn-add-brand-form").style.display = "inline-flex";
+        document.querySelector(".btn-update-brand-form").style.display = "none";
 
-        // Chuyển action form sang Edit
-        document.querySelector(".add-voucher-form").action = `${window.location.origin}/project/couponController`;
-        document.getElementById("actionType").value = "edit";
+        console.log("🟢 modal trạng thái thêm brand mới");
+    });
 
-        // Lấy các thông tin bổ sung qua AJAX
-        fetch(`${window.location.origin}/project/getVoucherDetails?id=${id}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("start-date").value = data.startDate.split('T')[0]; // format yyyy-mm-dd
-                document.getElementById("end-date").value = data.endDate.split('T')[0];
-                document.getElementById("min-order-amount").value = data.minOrderAmount;
-                document.getElementById("discount-type").value = data.discountType;
-                document.getElementById("max-usage").value = data.maxUsage || '';
-                document.getElementById("max-usage-per-user").value = data.maxUsagePerUser || '';
-                document.getElementById("max-discount-amount").value = data.maxDiscountAmount || '';
-            })
-            .catch(err => console.error("Không thể lấy dữ liệu voucher: ", err));
+    document.querySelectorAll(".btn-edit-brand").forEach(button => {
+        button.addEventListener("click", function () {
+            closeAllModals();
+            const modal = document.querySelector(".modal.add-brand");
+            modal.classList.add("show", "mode-edit");
+            modal.classList.remove("mode-add");
+
+            const row = button.closest("tr");
+            const brandId = row.getAttribute("data-id");
+            const brandName = row.cells[1].textContent.trim();
+
+            document.getElementById("brand-id").value = brandId;
+            document.getElementById("brand-code").value = brandName;
+
+            // Quan trọng nhất, phải đúng dòng này
+            document.getElementById("action1").value = "edit";
+
+            document.querySelector(".add-brand-e").style.display = "none";
+            document.querySelector(".edit-brand-e").style.display = "block";
+
+            document.querySelector(".btn-add-brand-form").style.display = "none";
+            document.querySelector(".btn-update-brand-form").style.display = "inline-flex";
+
+            console.log("🟡 modal trạng thái edit brand ID:", brandId);
+        });
+    });
+
+    function resetBrandForm() {
+        document.getElementById("brand-id").value = '';
+        document.getElementById("brand-code").value = '';
+        document.getElementById("action").value = 'add';
+    }
+
+    function closeAllModals() {
+        document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('show'));
+    }
+
+    document.querySelectorAll(".modal-close").forEach(button => {
+        button.addEventListener("click", function () {
+            button.closest(".modal").classList.remove("show");
+        });
     });
 });
 
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Mở modal thêm mới categories
+    document.getElementById("btn-add-categories").addEventListener("click", function () {
+        closeAllModals();
+        const modal = document.querySelector(".modal.add-categories");
+        modal.classList.add("show", "mode-add");
+        modal.classList.remove("mode-edit");
+        resetCategoriesForm();
 
+        document.getElementById("action2").value = "add";
 
+        document.querySelector(".add-categories-e").style.display = "block";
+        document.querySelector(".edit-categories-e").style.display = "none";
 
+        document.querySelector(".btn-add-categories-form").style.display = "inline-flex";
+        document.querySelector(".btn-update-categories-form").style.display = "none";
 
+        console.log("🟢 Mở modal thêm categories mới");
+    });
+
+    // Mở modal chỉnh sửa categories
+    const editCategoriesButtons = document.querySelectorAll(".btn-edit-categories");
+    editCategoriesButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            closeAllModals();
+            const modal = document.querySelector(".modal.add-categories");
+            modal.classList.add("show", "mode-edit");
+            modal.classList.remove("mode-add");
+
+            const row = button.closest("tr");
+            const categoriesId = row.getAttribute("data-id");
+            const categoriesName = row.cells[1].textContent.trim();
+
+            document.getElementById("categories-id").value = categoriesId;
+            document.getElementById("categories-code").value = categoriesName;
+
+            document.getElementById("action2").value = "edit";
+
+            document.querySelector(".add-categories-e").style.display = "none";
+            document.querySelector(".edit-categories-e").style.display = "block";
+
+            document.querySelector(".btn-add-categories-form").style.display = "none";
+            document.querySelector(".btn-update-categories-form").style.display = "inline-flex";
+
+            console.log("🟡 Mở modal chỉnh sửa categories:", categoriesId, categoriesName);
+        });
+    });
+
+    // Reset form khi thêm mới
+    function resetCategoriesForm() {
+        document.getElementById("categories-id").value = '';
+        document.getElementById("categories-code").value = '';
+        document.getElementById("action2").value = 'add';
+    }
+
+    // Đóng modal
+    function closeAllModals() {
+        document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('show'));
+    }
+
+    document.querySelectorAll(".modal-close").forEach(button => {
+        button.addEventListener("click", function () {
+            button.closest(".modal").classList.remove("show");
+        });
+    });
+});

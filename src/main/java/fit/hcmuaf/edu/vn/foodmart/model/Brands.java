@@ -27,4 +27,12 @@ public class Brands {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Brands{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

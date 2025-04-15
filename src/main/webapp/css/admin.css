@@ -1667,3 +1667,107 @@ div.hidden-sidebar {
     gap: 5px;
     text-align: center;
 }
+
+
+
+#chon-brand {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+select {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/*brand*/
+.modal.add-brand {
+    display: none; /* Ẩn modal mặc định */
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 750px; /* Chiều rộng modal */
+    max-height: 90vh;
+    overflow-y: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+
+    flex-direction: column;
+    z-index: 1000;
+}
+
+
+/* Khi lớp 'show' được thêm vào, modal sẽ hiển thị */
+.modal.add-brand.show {
+    display: flex;
+}
+
+/* Ẩn mặc định cả 2 nút */
+.add-brand-e,
+.edit-brand-e {
+    display: none;
+}
+
+/* Khi modal ở chế độ thêm */
+.modal.add-brand.mode-add .add-brand-e {
+    display: block;
+}
+
+/* Khi modal ở chế độ sửa */
+.modal.add-brand.mode-edit .edit-brand-e {
+    display: block;
+}
+
+
+
+/*categories*/
+.modal.add-categories {
+    display: none; /* Ẩn modal mặc định */
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 750px; /* Chiều rộng modal */
+    max-height: 90vh;
+    overflow-y: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+
+    flex-direction: column;
+    z-index: 1000;
+}
+
+
+/* Khi lớp 'show' được thêm vào, modal sẽ hiển thị */
+.modal.add-categories.show {
+    display: flex;
+}
+
+/* Ẩn mặc định cả 2 nút */
+.add-categories-e,
+.edit-categories-e {
+    display: none;
+}
+
+/* Khi modal ở chế độ thêm */
+.modal.add-categories.mode-add .add-categories-e {
+    display: block;
+}
+
+/* Khi modal ở chế độ sửa */
+.modal.add-categories.mode-edit .edit-categories-e {
+    display: block;
+}

@@ -4,9 +4,12 @@
 <%@ page import="java.util.List" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.CouponDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.*" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.BrandAdminDAO" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -639,26 +642,6 @@
 
         <!--categories-->
         <div class="section">
-<%--            <div class="admin-control">--%>
-<%--                <div class="admin-control-left">--%>
-<%--                    <select name="the-loai" id="the-loai">--%>
-<%--                        <option>Tất cả</option>--%>
-<%--                        <option>Sản phẩm gần hết hàng</option>--%>
-<%--                    </select>--%>
-<%--                </div>--%>
-<%--                <div class="admin-control-center">--%>
-<%--                    <form action="" class="form-search">--%>
-<%--                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>--%>
-<%--                        <input id="form-search-ncc" type="text" class="form-search-input"--%>
-<%--                               placeholder="Tìm kiếm tên sản phẩm...">--%>
-<%--                    </form>--%>
-<%--                </div>--%>
-<%--                <div class="admin-control-right">--%>
-<%--                    <button class="btn-control-large" id="btn-cancel-ncc"><i class="fa-light fa-rotate-right"></i> Làm mới</button>--%>
-<%--                    <button class="btn-control-large" id="btn-add-ncc"><i class="fa-light fa-plus"></i> Thêm sản phẩm</button>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-
             <div class="table" style="display: flex; gap: 30px;">
                 <!-- Danh mục -->
                 <div style="flex: 1;">
@@ -672,13 +655,16 @@
                         <div class="admin-control-center">
                             <form action="" class="form-search">
                                 <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                                <input id="form-search-ncc" type="text" class="form-search-input"
+                                <input id="form-search-categories" type="text" class="form-search-input"
                                        placeholder="Tìm kiếm...">
                             </form>
                         </div>
                         <div class="admin-control-right">
-                            <button class="btn-control-large" id="btn-add-ncc"><i class="fa-light fa-plus"></i> Thêm sản phẩm</button>
+                            <button class="btn-control-large" id="btn-add-categories">
+                                <i class="fa-light fa-plus"></i> Thêm danh mục
+                            </button>
                         </div>
+
                     </div>
                     <h3>Danh mục sản phẩm</h3>
                     <table width="100%">
@@ -713,7 +699,6 @@
                     </table>
                 </div>
 
-                <!-- Thương hiệu -->
                 <div style="flex: 1;">
                     <div class="admin-control">
                         <div class="admin-control-left">
@@ -725,12 +710,13 @@
                         <div class="admin-control-center">
                             <form action="" class="form-search">
                                 <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                                <input id="form-search-ncc" type="text" class="form-search-input"
+                                <input id="form-search-brand" type="text" class="form-search-input"
                                        placeholder="Tìm kiếm...">
                             </form>
                         </div>
                         <div class="admin-control-right">
-                            <button class="btn-control-large" id="btn-add-ncc"><i class="fa-light fa-plus"></i> Thêm sản phẩm</button>
+                            <button class="btn-control-large" id="btn-add-brand"><i class="fa-light fa-plus"></i> Thêm thương hiệu</button>
+
                         </div>
                     </div>
                     <h3>Thương hiệu (Brands)</h3>
@@ -744,7 +730,8 @@
                         </thead>
                         <tbody>
                         <%
-                            List<Brands> brands = productAdminDAO.getAllBrands();
+                            BrandAdminDAO brandAdminDAO = new BrandAdminDAO();
+                            List<Brands> brands = brandAdminDAO.getAllBrands();
                             int stt2 = 1;
                             for (Brands brand : brands) {
                         %>
@@ -752,17 +739,17 @@
                             <td><%= stt2++ %></td>
                             <td><%= brand.getName() %></td>
                             <td class="control control-table">
-                                <button class="btn-edit-brands" id="edit-brands">
+                                <button class="btn-edit-brand" id="edit-brand">
                                     <i class="fa-light fa-pen-to-square"></i>
                                 </button>
-                                <button class="btn-delete" data-type="brands" data-id="<%= brand.getId() %>">
+                                <button class="btn-delete" data-type="brand" data-id="<%= brand.getId() %>">
                                     <i class="fa-regular fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
                         <% } %>
                         </tbody>
-                    </table>
+                    </table>   <!-- Thương hiệu -->
                 </div>
             </div>
         </div>
@@ -835,121 +822,111 @@
 
     </main>
 
-    <div class="modal add-product">
-        <div class="modal-container">
-            <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
-            <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
-            <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
+     <div class="modal add-product">
+         <div class="modal-container">
+             <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
+             <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
+             <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
 
-                <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct"
-                      enctype="multipart/form-data">
-                    <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
-                    <input type="hidden" name="action" id="action" value="add">
-                    <input type="hidden" id="product-id" name="id" value="">
+                 <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct" enctype="multipart/form-data">
+                     <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
+                     <input type="hidden" name="action" id="action" value="add">
+                     <input type="hidden" id="product-id" name="id" value="">
 
+                     <div class="modal-content-left" style="margin: 0 auto;">
+                         <img src="image/admin/blank-image.png" alt="" class="upload-image-preview" id="preview-image">
+                         <div class="form-group file">
+                             <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
+                             <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" style="display: none;">
+                         </div>
+                     </div>
 
-                    <div class="modal-content-left" style="margin: 0 auto;">
-                        <img src="image/admin/blank-image.png" alt="" class="upload-image-preview"
-                             id="preview-image">
-                        <div class="form-group file">
-                            <label for="up-hinh-anh" class="form-label-file"><i
-                                    class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
-                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh"
-                                   type="file" class="form-control" style="display: none !important;">
-                        </div>
-                    </div>
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-                            <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm"
-                                   class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="category" class="form-label">Danh mục</label>
-                            <select name="categoryID" id="chon-mon">
-                                <option value="1"> Gạo</option>
-                                <option value="2">Lương khô</option>
-                                <option value="3"> text3</option>
-                                <option value="4">text4</option>
-                                <option value="5">text5</option>
-                                <option value="6">text6</option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+                             <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="brands" class="form-label">Thương hiệu</label>
-                            <select name="brands" id="chon-brands">
-                                <option value="1"> HoaBanFood</option>
-                                <option value="2">ABC</option>
-                                <option value="3"> text3</option>
-                                <option value="4">text4</option>
-                                <option value="5">text5</option>
-                                <option value="6">text6</option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
+                         <!-- Danh mục -->
+                         <div class="form-group">
+                             <label for="category" class="form-label">Danh mục</label>
+                             <select name="categoryID" id="chon-mon">
+                                 <option value="1">Gạo</option>
+                                 <option value="2">Lương khô</option>
+                                 <option value="3">Text 3</option>
+                                 <option value="4">Text 4</option>
+                                 <option value="5">Text 5</option>
+                                 <option value="6">Text 6</option>
+                             </select>
+                             <span class="form-message"></span>
+                         </div>
 
+                         <!-- Thương hiệu -->
+                         <div class="form-group">
+                             <label for="brands" class="form-label">Thương hiệu</label>
+                             <select name="brandsID" id="chon-brands">
+                                 <option value="">Chọn thương hiệu</option>
+                             </select>
+                             <span class="form-message"></span>
+                         </div>
 
+                         <!-- Các trường khác -->
+                         <div class="form-group">
+                             <label for="IsSale" class="form-label">Chọn sale</label>
+                             <select name="IsSale" id="chon-sale">
+                                 <option value="1">Có</option>
+                                 <option value="0">Không</option>
+                             </select>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="IsSale" class="form-label">Chọn sale</label>
-                            <select name="IsSale" id="chon-sale">
-                                <option value="1">Có</option>
-                                <option value="0">Không</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="phan-tram-giam" class="form-label">% giảm giá</label>
-                            <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01"
-                                   placeholder="Nhập %"
-                                   class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="gia-moi" class="form-label">Giá bán</label>
-                            <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán"
-                                   class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="khoi-luong" class="form-label">Khối lượng</label>
-                            <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng"
-                                   class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="so-luong" class="form-label">Số lượng</label>
-                            <input id="so-luong" name="quantity" type="number" placeholder="Nhập số lượng"
-                                   class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="mo-ta" class="form-label">Mô tả</label>
-                            <textarea class="product-desc" name="shortDescription" id="mo-ta"
-                                      placeholder="Nhập mô tả sản phẩm..." required></textarea>
-                            <span class="form-message"></span>
-                        </div>
-                        <button type="submit" class="form-submit btn-add-product-form add-product-e"
-                                id="add-product-button">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM SẢN PHẨM</span>
-                        </button>
-                        <button type="submit" class="form-submit btn-update-product-form edit-product-e"
-                                id="update-product-button">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
+                         <div class="form-group">
+                             <label for="phan-tram-giam" class="form-label">% giảm giá</label>
+                             <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01" placeholder="Nhập %" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
 
-                    </div>
-                </form>
-            </div>
-            </form>
-        </div>
-    </div>
-    <div class="modal detail-order">
+                         <div class="form-group">
+                             <label for="gia-moi" class="form-label">Giá bán</label>
+                             <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="khoi-luong" class="form-label">Khối lượng</label>
+                             <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="so-luong" class="form-label">Số lượng</label>
+                             <input id="so-luong" name="quantity" type="number" placeholder="Nhập số lượng" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="mo-ta" class="form-label">Mô tả</label>
+                             <textarea class="product-desc" name="shortDescription" id="mo-ta" placeholder="Nhập mô tả sản phẩm..." required></textarea>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <!-- Nút Submit -->
+                         <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM SẢN PHẨM</span>
+                         </button>
+                         <button type="submit" class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+     <div class="modal detail-order">
         <div class="modal-container3">
             <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
             <button class="modal-close" onclick="closeModal()"><i class="fa-regular fa-xmark"></i></button>
@@ -1148,6 +1125,68 @@
      </div>
 
 
+
+
+     <div class="modal add-brand">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-brand-e">THÊM MỚI BRANDS</h3>
+             <h3 class="modal-container-title edit-brand-e">CHỈNH SỬA BRANDS</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/brandController" method="POST" id="brand-form">
+                     <input type="hidden" id="action1" name="action1" value="add">
+                     <input type="hidden" id="brand-id" name="brandId" value="">
+
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="brand-code">Tên brand</label>
+                             <input id="brand-code" name="brandName" type="text" class="form-control" required>
+                         </div>
+                         <button type="submit" class="form-submit btn-add-brand-form add-brand-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM BRAND</span>
+                         </button>
+                         <button type="submit" class="form-submit btn-update-brand-form edit-brand-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+
+     <div class="modal add-categories">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-categories-e">THÊM MỚI CATEGORIES</h3>
+             <h3 class="modal-container-title edit-categories-e">CHỈNH SỬA CATEGORIES</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/categoriesController" method="POST" id="categories-form">
+                     <input type="hidden" id="action2" name="action2" value="add">
+                     <input type="hidden" id="categories-id" name="categoriesId" value="">
+
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="categories-code">Tên categories</label>
+                             <input id="categories-code" name="categoriesName" type="text" class="form-control" required>
+                         </div>
+                         <button type="submit" class="form-submit btn-add-categories-form add-categories-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM CATEGORIES</span>
+                         </button>
+                         <button type="submit" class="form-submit btn-update-categories-form edit-categories-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+
  </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -1201,6 +1240,7 @@
             });
     }, 3000); // Kiểm tra mỗi 3 giây
 </script>
+
 
 </body>
 
