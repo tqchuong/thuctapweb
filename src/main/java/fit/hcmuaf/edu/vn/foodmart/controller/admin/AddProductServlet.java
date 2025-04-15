@@ -29,7 +29,9 @@ public class AddProductServlet extends HttpServlet {
         boolean isSale = "1".equals(request.getParameter("IsSale"));
         double discountPercentage = Double.parseDouble(request.getParameter("DiscountPercentage"));
         String priceParam = request.getParameter("price");
+
         String weight = request.getParameter("weight");
+
         String shortDescription = request.getParameter("shortDescription");
         String idParam = request.getParameter("id");
         String quantityParam = request.getParameter("quantity");
@@ -40,8 +42,10 @@ public class AddProductServlet extends HttpServlet {
         int categoryID = (category != null && !category.isEmpty()) ? Integer.parseInt(category) : 0;
         double price = (priceParam != null && !priceParam.isEmpty()) ? Double.parseDouble(priceParam) : 0.0;
         int Weight = (weight != null && !weight.isEmpty()) ? Integer.parseInt(weight) : 0;
+
         int quantity = (quantityParam != null && !quantityParam.isEmpty()) ? Integer.parseInt(quantityParam) : 0;
         int brandsID = (brands != null && !brands.isEmpty()) ? Integer.parseInt(brands) : 0;
+
 
         // Tính giá bán sau giảm
         if (isSale && discountPercentage > 0) {

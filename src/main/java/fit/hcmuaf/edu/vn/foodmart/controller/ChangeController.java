@@ -101,7 +101,7 @@ public class ChangeController extends HttpServlet {
 
 
             String usernameFromSession = userFromSession.getUsername();
-
+            System.out.println(usernameFromSession);
             // Kiểm tra các trường trống
             if (fullName == null || fullName.trim().isEmpty() ||
                     phone == null || phone.trim().isEmpty() ||

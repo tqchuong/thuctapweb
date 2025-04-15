@@ -99,6 +99,7 @@ public class CouponDAO {
     }
 
     // Xóa coupon theo ID
+
     public boolean  deleteCoupon(int id) {
         String sql = "DELETE FROM Coupons WHERE Id = :id";
 

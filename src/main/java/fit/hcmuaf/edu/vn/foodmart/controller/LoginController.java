@@ -98,10 +98,18 @@ public class LoginController extends HttpServlet {
             String phone = request.getParameter("phone");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
+            String passwordConfirm = request.getParameter("passwordConfirm");
 
             // Kiểm tra mật khẩu tối thiểu 6 ký tự
             if (password == null || password.length() < 6) {
                 request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
+                request.setAttribute("showRegisterForm", true);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+            // Kiểm tra mật khẩu mới khớp với xác nhận mật khẩu
+            if(passwordConfirm == null || !passwordConfirm.equals(password)) {
+                request.setAttribute("error", "Mật khẩu không giống nhau.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
