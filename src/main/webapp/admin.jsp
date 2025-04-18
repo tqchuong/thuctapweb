@@ -1026,7 +1026,7 @@
                         <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
                     <label for="customer-role" class="switch"></label>
                 </div>
-
+kou
 
                 <!-- Nút Hành Động -->
                 <button type="submit" class="form-submit add-account-e" id="signup-button">Đăng ký</button>
