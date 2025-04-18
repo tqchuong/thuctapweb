@@ -5,6 +5,7 @@
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.CouponDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.*" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.BrandAdminDAO" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -21,6 +22,7 @@
     <link rel="stylesheet" href="css/admin.css">
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
+    <script src="js/admin.js"></script>
     <title>Quản lý cửa hàng</title>
 </head>
 
@@ -93,7 +95,12 @@
                         <div class="hidden-sidebar">Vận chuyển</div>
                     </a>
                 </li>
-
+                <li class="sidebar-list-item tab-content">
+                    <a href="#" class="sidebar-link">
+                        <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
+                        <div class="hidden-sidebar">Nhật kí hoạt động</div>
+                    </a>
+                </li>
 
             </ul>
         </div>
@@ -820,6 +827,57 @@
             </div>
         </div>
 
+        <%--Show log--%>
+        <div class="section log">
+            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
+            <div class="table-container">
+                <table id="logTable" class="log-table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Người dùng</th>
+                        <th>Hành động</th>
+                        <th>Mức độ</th>
+                        <th>IP</th>
+                        <th>Thời gian</th>
+                        <th>Trang</th>
+                        <th>Tài nguyên</th>
+                        <th>Dữ liệu cũ</th>
+                        <th>Dữ liệu mới</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        List<Activity_log> logs = Activity_logDAO.getAllLogs();
+                        int stt = 1;
+                        if (logs != null && !logs.isEmpty()) {
+                            for (Activity_log log : logs) {
+                    %>
+                    <tr>
+                        <td><%= stt++ %></td>
+                        <td><%= log.getUsername() %></td>
+                        <td><%= log.getAction() %></td>
+                        <td><%= log.getLevel_log() %></td>
+                        <td><%= log.getIp_address() %></td>
+                        <td><%= log.getTime_log() %></td>
+                        <td><%= log.getSource_page() %></td>
+                        <td><%= log.getResource() %></td>
+                        <td><%= log.getOld_data() %></td>
+                        <td><%= log.getNew_data() %></td>
+                    </tr>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <tr><td colspan="10">Không có dữ liệu nhật ký.</td></tr>
+                    <%
+                        }
+                    %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </main>
 
      <div class="modal add-product">
@@ -1223,7 +1281,7 @@
 </script>
 
 
-<script src="js/admin.js"></script>
+
 <script>
     setInterval(() => {
         fetch('<%=request.getContextPath()%>/checkSession')
@@ -1240,8 +1298,32 @@
             });
     }, 3000); // Kiểm tra mỗi 3 giây
 </script>
-
-
+<%--table showlog--%>
+<script>
+    $(document).ready(function() {
+        $('#logTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "Tìm kiếm:",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Tiếp",
+                    previous: "Trước"
+                },
+                lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                infoEmpty: "Không có bản ghi nào",
+                emptyTable: "Không có dữ liệu trong bảng"
+            }
+        });
+    });
+</script>
+<script src="js/admin.js"></script>
 </body>
 
 </html>
