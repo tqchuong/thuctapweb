@@ -201,7 +201,7 @@
             <table id="logTable" class="log-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>STT</th>
                     <th>Người dùng</th>
                     <th>Hành động</th>
                     <th>Mức độ</th>
@@ -216,11 +216,12 @@
                 <tbody>
                 <%
                     List<Activity_log> logs = Activity_logDAO.getAllLogs();
+                    int stt = 1;
                     if (logs != null && !logs.isEmpty()) {
                         for (Activity_log log : logs) {
                 %>
                 <tr>
-                    <td><%= log.getUser_id() %></td>
+                    <td><%= stt++ %></td>
                     <td><%= log.getUsername() %></td>
                     <td><%= log.getAction() %></td>
                     <td><%= log.getLevel_log() %></td>
