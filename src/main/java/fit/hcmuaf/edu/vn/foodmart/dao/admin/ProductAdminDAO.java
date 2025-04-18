@@ -20,8 +20,10 @@ public class ProductAdminDAO {
 
     // 1. Lấy tất cả sản phẩm (kèm CategoryName)
     public List<Products> getAllProducts() {
-        String sql = "SELECT p.*, c.CategoryName FROM Products p " +
-                "JOIN Categories c ON p.CategoryID = c.CategoryID";
+        String sql = "SELECT p.*, c.CategoryName, b.name FROM Products p " +
+                "JOIN Categories c ON p.CategoryID = c.CategoryID " +  // Đã sửa lỗi thiếu dấu cách
+                "JOIN brands b ON b.id = p.BrandID";
+
         List<Products> products = jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .map((rs, ctx) -> {
@@ -33,12 +35,19 @@ public class ProductAdminDAO {
                             product.setImageURL(rs.getString("ImageURL"));
                             product.setShortDescription(rs.getString("ShortDescription"));
                             product.setWeight(rs.getInt("Weight"));
+                            product.setBrandID(rs.getInt("BrandID"));
 
                             // Tạo đối tượng Category và gán categoryName
                             Category category = new Category();
                             category.setCategoryID(rs.getInt("CategoryID"));
                             category.setCategoryName(rs.getString("CategoryName"));
                             product.setCategory(category);
+
+                            // Tạo đối tượng Brands và gán name
+                            Brands brands = new Brands();
+                            brands.setId(rs.getInt("id"));
+                            brands.setName(rs.getString("name"));
+                            product.setBrands(brands);
 
                             return product;
                         })
@@ -50,21 +59,20 @@ public class ProductAdminDAO {
     }
 
 
+
     // 2. Thêm sản phẩm mới
     public boolean addProduct(Products product) {
         String insertProductSql = "INSERT INTO Products " +
-                "(ProductName, CategoryID, IsSale, DiscountPercentage, Price, ImageURL, ShortDescription, Weight) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "(ProductName, CategoryID, IsSale, DiscountPercentage, Price, ImageURL, ShortDescription, Weight, BrandID) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         String insertWarehouseSql = "INSERT INTO warehouse (product_id, quantity, import_date) " +
                 "VALUES (?, ?, CURDATE())";
 
         try (Handle handle = jdbi.open()) {
-
             handle.begin();
 
             int productId = handle.createUpdate(insertProductSql)
-
                     .bind(0, product.getProductName())
                     .bind(1, product.getCategoryID())
                     .bind(2, product.getIsSale())
@@ -73,7 +81,7 @@ public class ProductAdminDAO {
                     .bind(5, product.getImageURL())
                     .bind(6, product.getShortDescription())
                     .bind(7, product.getWeight())
-
+                    .bind(8, product.getBrandID())
                     .executeAndReturnGeneratedKeys("Id")
                     .mapTo(int.class)
                     .one();
@@ -83,7 +91,6 @@ public class ProductAdminDAO {
             handle.createUpdate(insertWarehouseSql)
                     .bind(0, productId)
                     .bind(1, quantity)
-
                     .execute();
 
             handle.commit();
@@ -123,7 +130,7 @@ public class ProductAdminDAO {
         }
 
         String updateProductSql = "UPDATE Products SET ProductName = ?, CategoryID = ?, IsSale = ?, " +
-                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ? " +
+                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ? , BrandID = ?" +
                 "WHERE Id = ?";
 
         String updateWarehouseSql = "UPDATE warehouse SET quantity = ?, import_date = CURDATE() WHERE product_id = ?";
@@ -142,7 +149,8 @@ public class ProductAdminDAO {
                     .bind(5, product.getImageURL())
                     .bind(6, product.getShortDescription())
                     .bind(7, product.getWeight())
-                    .bind(8, product.getID())
+                    .bind(8, product.getBrandID())
+                    .bind(9, product.getID())
                     .execute();
 
             // 2. Nếu có thông tin warehouse và quantity > 0 → xử lý tồn kho
@@ -200,7 +208,6 @@ public class ProductAdminDAO {
                         p.setPrice(rs.getDouble("price"));
                         p.setImageURL(rs.getString("imageUrl"));
                         p.setShortDescription(rs.getString("shortDescription"));
-
                         p.setWeight(rs.getInt("Weight"));
 
                         // Kiểm tra và set categoryName nếu tồn tại
@@ -270,19 +277,35 @@ public class ProductAdminDAO {
         );
     }
 
-
-    public List<Brands> getAllBrands() {
-        String sql = "SELECT * FROM brands";
-        return jdbi.withHandle(handle ->
-                handle.createQuery(sql)
-                        .map((rs, ctx) -> {
-                            Brands b = new Brands();
-                            b.setId(rs.getInt("id"));
-                            b.setName(rs.getString("name"));
-                            return b;
-                        }).list()
-        );
+    public boolean addCategories(Category category) {
+        String sql = "INSERT INTO categories (CategoryName) VALUES (?)";
+        try (Handle handle = jdbi.open()) {
+            int rowsAffected = handle.createUpdate(sql)
+                    .bind(0, category.getCategoryName())  // Gán giá trị cho cột name
+                    .execute();
+            return rowsAffected > 0; // Nếu có ảnh hưởng dòng, trả về true
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Nếu có lỗi xảy ra, trả về false
+        }
     }
+
+    // 2. Cập nhật thông tin brand
+    public boolean updateCategories(Category category) {
+        String sql = "UPDATE categories SET CategoryName = ? WHERE CategoryID = ?";
+        try (Handle handle = jdbi.open()) {
+            int rowsAffected = handle.createUpdate(sql)
+                    .bind(0, category.getCategoryName())
+                    .bind(1, category.getCategoryID())
+                    .execute();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 
     public static void main(String[] args) {
