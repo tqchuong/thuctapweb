@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="css/admin.css">
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
+    <!-- Thêm CDN cho DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <title>Log</title>
 
     <style>
@@ -61,8 +65,34 @@
             background: #B5292F;
             color: rgb(249, 249, 249);
         }
-    </style>
 
+        /* Tùy chỉnh giao diện DataTables */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #B5292F;
+            color: white !important;
+            border: 1px solid #B5292F;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            padding: 5px;
+            margin-left: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
 <header class="header">
@@ -134,13 +164,7 @@
                     </a>
                 </li>
                 <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
-                        <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                        <div class="hidden-sidebar">Vận chuyển</div>
-                    </a>
-                </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+                    <a href="showLog.jsp" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
                         <div class="hidden-sidebar">Nhật kí hoạt động</div>
                     </a>
@@ -174,7 +198,7 @@
     <div class="log-section">
         <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
         <div class="table-container">
-            <table class="log-table">
+            <table id="logTable" class="log-table">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -219,8 +243,32 @@
             </table>
         </div>
     </div>
-
 </div>
+
 <script src="js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#logTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "Tìm kiếm:",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Tiếp",
+                    previous: "Trước"
+                },
+                lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                infoEmpty: "Không có bản ghi nào",
+                emptyTable: "Không có dữ liệu trong bảng"
+            }
+        });
+    });
+</script>
 </body>
 </html>
