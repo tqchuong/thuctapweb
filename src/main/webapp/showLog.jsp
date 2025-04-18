@@ -18,7 +18,7 @@
     <title>Log</title>
 
     <style>
-        .log-section {
+        .log log {
             padding: 20px;
             background-color: #fff;
             border-radius: 12px;
@@ -26,7 +26,7 @@
             margin: 20px;
         }
 
-        .log-section h2 {
+        .log h2 {
             font-size: 1.5rem;
             margin-bottom: 16px;
             display: flex;
