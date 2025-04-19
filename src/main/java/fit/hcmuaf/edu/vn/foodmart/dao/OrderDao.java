@@ -110,7 +110,7 @@ public class OrderDao {
 
                         // Tạo đối tượng OrderDetail và thêm vào Order
                         OrderDetails orderDetail = new OrderDetails();
-                        orderDetail.setId(rs.getInt("productID"));
+                        orderDetail.setProductID(rs.getInt("productID"));
                         orderDetail.setProductName(rs.getString("productName"));
                         orderDetail.setImg(rs.getString("imageURL"));
                         orderDetail.setQuantity(rs.getInt("quantity"));

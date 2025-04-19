@@ -2,6 +2,7 @@ package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.ProductDAO;
 import fit.hcmuaf.edu.vn.foodmart.model.Products;
+import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import fit.hcmuaf.edu.vn.foodmart.service.ProductService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -35,6 +36,16 @@ public class ProductDetailsServlet extends HttpServlet {
                 Products productDetails = productService.getProductDetailsById(productId);
 
                 if (productDetails != null) {
+                    // 🔥 Kiểm tra user đã đăng nhập và đã mua hàng chưa
+                    HttpSession session = request.getSession();
+                    Users auth = (Users) session.getAttribute("auth");
+
+                    if (auth != null) {
+                        int userId = auth.getId();
+                        ProductDAO productDAO2 = new ProductDAO();
+                        boolean hasPurchased = productDAO2.hasUserPurchasedProduct(userId, productId);
+                        request.setAttribute("hasPurchased", hasPurchased);
+                    }
                     // Tính toán các giá trị
                     double averageRating = productService.getAverageRating(productId);
                     int reviewCount = (productDetails.getReviews() != null) ? productDetails.getReviews().size() : 0;
@@ -64,6 +75,7 @@ public class ProductDetailsServlet extends HttpServlet {
             // Xử lý lỗi khi không có productId
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID is required");
         }
+
     }
 
     @Override

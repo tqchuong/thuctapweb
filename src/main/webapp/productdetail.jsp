@@ -262,29 +262,38 @@
                                     <p>Không có đánh giá nào.</p>
                                 </c:if>
                             </div>
+                            <c:if test="${not empty auth}">
+                                <c:choose>
+                                    <c:when test="${hasPurchased}">
+                                        <div class="add-review mt-5">
+                                            <h3>Đánh giá của bạn</h3>
+                                            <p>Vui lòng điền những dòng *</p>
+                                            <form action="review" method="post" class="form-group" name="form">
+                                                <input type="hidden" name="productId" value="${product.ID}">
+                                                <input type="hidden" name="rating" id="ratingInput" value="0">
+                                                <input type="hidden" name="userId" value="${auth.id}">
+                                                <div class="stars" id="starRating">
+                                                    <span data-value="1">&#9733;</span>
+                                                    <span data-value="2">&#9733;</span>
+                                                    <span data-value="3">&#9733;</span>
+                                                    <span data-value="4">&#9733;</span>
+                                                    <span data-value="5">&#9733;</span>
+                                                </div>
+                                                <p>Đánh giá: <span id="ratingValue">0</span> sao</p>
+                                                <div class="pb-3">
+                                                    <label>Thêm nhận xét *</label>
+                                                    <textarea class="form-control" name="reviewText" placeholder="Thêm nhận xét của bạn"></textarea>
+                                                </div>
+                                                <button type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-100">Gửi</button>
+                                            </form>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p class="alert alert-warning">⚠ Bạn chỉ có thể đánh giá khi đã mua sản phẩm này.</p>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
 
-                            <div class="add-review mt-5">
-                                <h3>Đánh giá của bạn</h3>
-                                <p>Vui lòng điền những dòng *</p>
-                                <form action="review" method="post" class="form-group" name="form">
-                                <input type="hidden" name="productId" value="${product.ID}">
-                                    <input type="hidden" name="rating" id="ratingInput" value="0">
-                                    <input type="hidden" name="userId" value="${auth.id}">
-                                    <div class="stars" id="starRating">
-                                        <span data-value="1">&#9733;</span>
-                                        <span data-value="2">&#9733;</span>
-                                        <span data-value="3">&#9733;</span>
-                                        <span data-value="4">&#9733;</span>
-                                        <span data-value="5">&#9733;</span>
-                                    </div>
-                                    <p>Đánh giá: <span id="ratingValue">0</span> sao</p>
-                                    <div class="pb-3">
-                                        <label>Thêm nhận xét *</label>
-                                        <textarea class="form-control" name="reviewText" placeholder="Thêm nhận xét của bạn"></textarea>
-                                    </div>
-                                    <button type="submit" name="submit" class="btn btn-dark btn-large text-uppercase w-100">Gửi</button>
-                                </form>
-                            </div>
                         </div>
                     </div>
                 </div>

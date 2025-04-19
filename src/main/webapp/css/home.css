@@ -421,3 +421,19 @@ ul li {
 .text {
     font-size: 12px; /* Giảm kích thước chữ */
 }
+.btn-review {
+    display: inline-block;
+    background-color: #f0ad4e;
+    color: white;
+    padding: 5px 10px;
+    margin-top: 8px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+.btn-review:hover {
+    background-color: #ec971f;
+    color: white;
+}
+

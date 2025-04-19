@@ -117,11 +117,19 @@
                                             <h4>${detail.productName}</h4>
 
                                             <p class="order-history-quantity">x${detail.quantity}</p>
+
                                         </div>
                                     </div>
                                     <div class="order-history-right">
                                         <div class="order-history-price">
+
                                             <span class="order-history-current-price"><fmt:formatNumber value="${detail.unitPrice}" type="number" pattern="#,###" />&nbsp;₫</span>
+                                            <a href="productDetails?id=${detail.productID}" class="btn-review">
+                                                <i class="fa-solid fa-star"></i> Đánh giá
+                                            </a>
+                                        </div>
+
+                                    </div>
                                         </div>
                                     </div>
                                 </div>
