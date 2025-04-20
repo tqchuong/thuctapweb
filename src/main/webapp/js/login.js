@@ -15,7 +15,8 @@ const togglePasswordVisibility = (passwordId, eyeIconId) => {
  // Apply show/hide password for login and register forms
  togglePasswordVisibility('login-password', 'loginPassword');         // Login password visibility toggle
  togglePasswordVisibility('passwordCreate', 'loginPasswordCreate');   // Register password visibility toggle
- 
+ togglePasswordVisibility('passwordConfirm', 'loginpasswordConfirm');
+
  // SWITCH BETWEEN LOGIN, REGISTER, AND FORGOT PASSWORD FORMS
  const loginForm = document.getElementById('loginForm');
  const registerForm = document.getElementById('registerForm');

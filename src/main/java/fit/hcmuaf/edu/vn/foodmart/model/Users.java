@@ -21,6 +21,7 @@ public class Users implements Serializable {
     private Timestamp token_expiry; //thời hạn xác thực
     private int loginAttempts; // Số lần đăng nhập sai
     private Timestamp lockTime; // Thời gian bị khóa
+    private String loginType;
 
     public Users() {
     }
@@ -97,7 +98,7 @@ public class Users implements Serializable {
 //    }
 
 
-    public boolean isIs_verified() {
+    public boolean getIs_verified() {
         return is_verified;
     }
 
@@ -185,6 +186,14 @@ public class Users implements Serializable {
         this.created_at = created_at;
     }
 
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
+    }
+
     @Override
     public String toString() {
         return "Users{" +
@@ -203,6 +212,7 @@ public class Users implements Serializable {
                 ", token_expiry=" + token_expiry +
                 ", loginAttempts=" + loginAttempts +
                 ", lockTime=" + lockTime +
+                ", loginType='" + loginType + '\'' +
                 '}';
     }
 }

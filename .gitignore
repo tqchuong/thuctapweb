@@ -36,3 +36,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Bỏ qua file chứa thông tin nhạy cảm
+src/main/java/fit/hcmuaf/edu/vn/foodmart/Constant/IconstantLocal.java
+.env
+config.json
