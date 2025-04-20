@@ -119,9 +119,6 @@ public class ProductAdminDAO {
 
 
 
-
-
-
     // 3. Cập nhật sản phẩm
     public boolean updateProduct(Products product) {
         if (product.getCategoryID() <= 0) {
@@ -130,8 +127,9 @@ public class ProductAdminDAO {
         }
 
         String updateProductSql = "UPDATE Products SET ProductName = ?, CategoryID = ?, IsSale = ?, " +
-                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ? , BrandID = ?" +
+                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ?, BrandID = ? " + // thêm dấu cách ở đây
                 "WHERE Id = ?";
+
 
         String updateWarehouseSql = "UPDATE warehouse SET quantity = ?, import_date = CURDATE() WHERE product_id = ?";
 
