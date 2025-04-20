@@ -8,6 +8,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
 
@@ -792,30 +794,7 @@
 
                     </tr>
                     </thead>
-<%--                    <%--%>
-<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
-<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
-<%--                    %>--%>
-<%--                    <tbody id="showOrder">--%>
-<%--                    <% for (Order order : orders) { %>--%>
-<%--                    <tr>--%>
-<%--                        <td>DH<%= order.getId() %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= order.getReceiverPhone() %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
-<%--                        <td>--%>
-<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
-<%--                          </span>--%>
-<%--                        </td>--%>
-<%--                        <td class="control">--%>
-<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
-<%--                        </td>--%>
-<%--                    </tr>--%>
-<%--                    <% } %>--%>
-<%--                    </tbody>--%>
+
                 </table>
             </div>
         </div>
@@ -853,21 +832,17 @@
                          <div class="form-group">
                              <label for="category" class="form-label">Danh mục</label>
                              <select name="categoryID" id="chon-mon">
-                                 <option value="1">Gạo</option>
-                                 <option value="2">Lương khô</option>
-                                 <option value="3">Text 3</option>
-                                 <option value="4">Text 4</option>
-                                 <option value="5">Text 5</option>
-                                 <option value="6">Text 6</option>
+                                 < value=""></>
                              </select>
                              <span class="form-message"></span>
                          </div>
 
-                         <!-- Thương hiệu -->
+
+
                          <div class="form-group">
                              <label for="brands" class="form-label">Thương hiệu</label>
                              <select name="brandsID" id="chon-brands">
-                                 <option value="">Chọn thương hiệu</option>
+                                 <option value=""></option>
                              </select>
                              <span class="form-message"></span>
                          </div>
@@ -1026,7 +1001,7 @@
                         <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
                     <label for="customer-role" class="switch"></label>
                 </div>
-
+kou
 
                 <!-- Nút Hành Động -->
                 <button type="submit" class="form-submit add-account-e" id="signup-button">Đăng ký</button>
@@ -1239,6 +1214,36 @@
                 window.location.href = '<%=request.getContextPath()%>/login.jsp';
             });
     }, 3000); // Kiểm tra mỗi 3 giây
+</script>
+<script>
+    fetch('<%=request.getContextPath()%>/brandController')
+        .then(response => response.json())
+        .then(brands => {
+            const select = document.getElementById('chon-brands');
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand.id;         // Sửa brandID -> id
+                option.textContent = brand.name; // Sửa brandName -> name
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading brands:', error));
+</script>
+
+<script>
+    fetch('<%=request.getContextPath()%>/categoriesController')
+        .then(response => response.json())
+        .then(categories => {
+            const select = document.getElementById('chon-mon');
+            select.innerHTML = '<option value="">Chọn danh mục</option>'; // Clear trước
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.categoryID; // đúng field
+                option.textContent = category.categoryName; // đúng field
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading categories:', error));
 </script>
 
 
