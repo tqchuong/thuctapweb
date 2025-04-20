@@ -1,5 +1,7 @@
 package fit.hcmuaf.edu.vn.foodmart.dao.admin;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Collections;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
@@ -74,7 +76,7 @@ public class OrderAdminDAO {
     }
     public List<Products> getSoldListProducts() {
         String sql = """
-                     SELECT p.Id, p.ProductName, p.Price, SUM(od.Quantity) AS TotalQuantity, p.ImageURL
+                     SELECT p.Id, p.ProductName, p.Price, p.ImageURL
                     FROM Products p
                     JOIN OrderDetails od ON p.Id = od.ProductID
                     JOIN Orders o ON od.OrderID = o.Id
@@ -91,7 +93,7 @@ public class OrderAdminDAO {
                         product.setID(result.getInt("Id"));
                         product.setProductName(result.getString("ProductName"));
                         product.setPrice(result.getDouble("Price"));
-                        product.setWeight(result.getInt("Weight"));
+//                        product.setWeight(result.getInt("Weight"));
                         product.setImageURL(result.getString("ImageURL"));
                         return product;
                     })
@@ -231,6 +233,26 @@ public class OrderAdminDAO {
         );
     }
 
+
+    public boolean updateShippingStatus(int orderId, String newStatus) {
+        String sql = "UPDATE shipping SET ShippingStatus = :newStatus WHERE OrderID = :orderId";
+
+        try (Handle handle = jdbi.open()) {
+            System.out.println("SQL Query: " + sql);
+            System.out.println("Thực thi với orderId: " + orderId + ", newStatus: " + newStatus);
+
+            int rowsUpdated = handle.createUpdate(sql)
+                    .bind("newStatus", newStatus)
+                    .bind("orderId", orderId)
+                    .execute();
+
+            System.out.println("Rows affected: " + rowsUpdated);
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 

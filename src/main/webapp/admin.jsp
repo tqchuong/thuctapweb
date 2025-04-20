@@ -210,7 +210,7 @@
             <div id="show-product">
                 <% for (Products product : products) { %>
                 <div class="list" data-id="<%= product.getID() %>"
-                     data-product='{"id": <%= product.getID() %>, "productName": "<%= product.getProductName() %>", "price": "<%= product.getPrice() %>", "stockQuantity": "<%= product.getStockQuantity() %>", "shortDescription": "<%= product.getShortDescription() %>", "categoryID": "<%= product.getCategoryID() %>", "imageURL": "<%= product.getImageURL() %>"}'>
+                     data-product='{"id": <%= product.getID() %>, "productName": "<%= product.getProductName() %>", "price": "<%= product.getPrice() %>", "stockQuantity": "<%= product.getWeight() %>", "shortDescription": "<%= product.getShortDescription() %>", "categoryID": "<%= product.getCategoryID() %>", "imageURL": "<%= product.getImageURL() %>"}'>
                     <div class="list-left">
                         <img src="<%= product.getImageURL() %> " alt="<%= product.getProductName() %>">
 
@@ -222,7 +222,7 @@
 
                             <span class="list-category"
                                   data-category-id="<%= product.getCategoryID() %>"><%= product.getCategory().getCategoryName() %></span>
-                            <span class="list-slkho"><%= product.getStockQuantity() %></span>
+                            <span class="list-slkho"><%= product.getWeight() %></span>
                         </div>
                     </div>
                     <div class="list-right">
@@ -382,6 +382,7 @@
                         <td>Ngày đặt</td>
                         <td>Tổng tiền</td>
                         <td>Trạng thái</td>
+
                         <td>Thao tác</td>
                     </tr>
                     </thead>
@@ -404,7 +405,10 @@
                           </span>
                         </td>
                         <td class="control">
-                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
+                            <button class="btn-detail" data-order-id="<%= order.getId() %>">
+                                <i class="fa-regular fa-eye"></i> Chi tiết
+                            </button>
+
                         </td>
                     </tr>
                     <% } %>
@@ -520,7 +524,7 @@
                                 </p>
                             </div>
                         </td>
-                        <td><%= product.getStockQuantity() %>
+                        <td><%= product.getWeight() %>
                         </td>
                         <td><%= product.getPrice() %>
                         </td>
@@ -988,9 +992,15 @@
                     <span class="footer-price" id="order-total">0 ₫</span>
                 </div>
                 <div class="footer-right">
-                    <button class="footer-btn btn-status" id="order-status" onclick="toggleOrderStatus(this, 1)">
+                    <button class="footer-btn btn-status" id="order-status" onclick="toggleOrderStatus(this)">
                         Chưa xử lý
                     </button>
+                </div>
+                <div class="footer-right">
+                    <button class="footer-btn btn-shipping" id="shipping-status" onclick="updateShippingStatus(this)">
+                        Chưa giao
+                    </button>
+
                 </div>
             </div>
         </div>
