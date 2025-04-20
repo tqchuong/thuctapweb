@@ -832,7 +832,7 @@
                          <div class="form-group">
                              <label for="category" class="form-label">Danh mục</label>
                              <select name="categoryID" id="chon-mon">
-                                 <option value=""></option>
+                                 < value=""></>
                              </select>
                              <span class="form-message"></span>
                          </div>
