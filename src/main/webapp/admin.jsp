@@ -5,12 +5,14 @@
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.CouponDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.*" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.BrandAdminDAO" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Activity_log" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
 
 
 <!DOCTYPE html>
@@ -99,12 +101,14 @@
                     </a>
                 </li>
 
+
                 <li class="sidebar-list-item tab-content">
-                    <a href="showLog.jsp" class="sidebar-link">
+                    <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
                         <div class="hidden-sidebar">Nhật kí hoạt động</div>
                     </a>
                 </li>
+
 
 
             </ul>
@@ -809,27 +813,59 @@
             </div>
         </div>
 
-        <!--Log-->
 
+        <!--Log-->
         <div class="section">
-            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
-            <div class="table-container">
-                <table id="logTable" class="log-table">
+            <!-- Bộ lọc và tìm kiếm nhật ký -->
+            <div class="admin-control">
+                <div class="admin-control-left">
+                    <select name="level-log-filter" id="level-log-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="info">Thông tin</option>
+                        <option value="warning">Cảnh báo</option>
+                        <option value="error">Lỗi</option>
+                    </select>
+                </div>
+                <div class="admin-control-center">
+                    <form action="" class="form-search">
+                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
+                        <input id="form-search-log" type="text" class="form-search-input" placeholder="Tìm kiếm người dùng...">
+                    </form>
+                </div>
+                <div class="admin-control-right">
+                    <form action="" class="fillter-date">
+                        <div>
+                            <label for="time-start-log">Từ</label>
+                            <input type="date" class="form-control-date" id="time-start-log">
+                        </div>
+                        <div>
+                            <label for="time-end-log">Đến</label>
+                            <input type="date" class="form-control-date" id="time-end-log">
+                        </div>
+                    </form>
+                    <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Bảng nhật ký hoạt động -->
+            <div class="table" style="margin-top: 10px;">
+                <table width="100%">
                     <thead>
                     <tr>
-                        <th>STT</th>
-                        <th>Người dùng</th>
-                        <th>Hành động</th>
-                        <th>Mức độ</th>
-                        <th>IP</th>
-                        <th>Thời gian</th>
-                        <th>Trang</th>
-                        <th>Tài nguyên</th>
-                        <th>Dữ liệu cũ</th>
-                        <th>Dữ liệu mới</th>
+                        <td>STT</td>
+                        <td>Người dùng</td>
+                        <td>Hành động</td>
+                        <td>Mức độ</td>
+                        <td>IP</td>
+                        <td>Thời gian</td>
+                        <td>Trang</td>
+                        <td>Tài nguyên</td>
+                        <td>Dữ liệu cũ</td>
+                        <td>Dữ liệu mới</td>
                     </tr>
                     </thead>
-                    <tbody>
+
+                    <tbody id="log-activity-body">
                     <%
                         List<Activity_log> logs = Activity_logDAO.getAllLogs();
                         int stt = 1;
@@ -860,7 +896,6 @@
                 </table>
             </div>
         </div>
-
 
     </main>
 
@@ -1064,7 +1099,7 @@
                         <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
                     <label for="customer-role" class="switch"></label>
                 </div>
-kou
+
 
                 <!-- Nút Hành Động -->
                 <button type="submit" class="form-submit add-account-e" id="signup-button">Đăng ký</button>
@@ -1227,7 +1262,6 @@ kou
 
  </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(".btn-detail").click(function () {
         const orderId = $(this).closest("tr").find("td:first").text().replace("DH", "").trim();
@@ -1256,12 +1290,7 @@ kou
     $(".modal-close").click(function () {
         $(".modal.detail-order").hide();
     });
-
-
 </script>
-
-
-<script src="js/admin.js"></script>
 <script>
     setInterval(() => {
         fetch('<%=request.getContextPath()%>/checkSession')
@@ -1292,7 +1321,6 @@ kou
         })
         .catch(error => console.error('Error loading brands:', error));
 </script>
-
 <script>
     fetch('<%=request.getContextPath()%>/categoriesController')
         .then(response => response.json())
@@ -1309,7 +1337,31 @@ kou
         .catch(error => console.error('Error loading categories:', error));
 </script>
 
-
+<%--table showlog--%>
+<script>
+    $(document).ready(function() {
+        $('#logTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "Tìm kiếm:",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Tiếp",
+                    previous: "Trước"
+                },
+                lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                infoEmpty: "Không có bản ghi nào",
+                emptyTable: "Không có dữ liệu trong bảng"
+            }
+        });
+    });
+</script>
+<script src="js/admin.js"></script>
 </body>
-
 </html>
