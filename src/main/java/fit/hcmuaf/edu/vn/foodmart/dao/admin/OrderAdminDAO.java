@@ -5,10 +5,7 @@ import java.sql.PreparedStatement;
 import java.util.Collections;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
-import fit.hcmuaf.edu.vn.foodmart.model.Order;
-import fit.hcmuaf.edu.vn.foodmart.model.Users;
-import fit.hcmuaf.edu.vn.foodmart.model.Products;
-import fit.hcmuaf.edu.vn.foodmart.model.OrderDetails;
+import fit.hcmuaf.edu.vn.foodmart.model.*;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import java.util.ArrayList;
@@ -22,18 +19,35 @@ public class OrderAdminDAO {
         jdbi = DBConnect.getJdbi(); // Kết nối với DB thông qua DBConnect
     }
 
-    // 1. Lấy tất cả người dùng
     public List<Order> getAllOrders() {
-        String sql = "SELECT * FROM orders";
+        String sql = """
+        SELECT o.*, s.ShippingStatus 
+        FROM orders o 
+        LEFT JOIN shipping s ON o.Id = s.OrderId
+    """;
+
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
-                    .mapToBean(Order.class) // Đổi sang ánh xạ với lớp Order
-                    .list(); // Trả về danh sách tất cả đơn hàng
+                    .map((rs, ctx) -> {
+                        Order order = new Order();
+                        order.setId(rs.getInt("Id"));
+                        order.setOrderDate(rs.getTimestamp("OrderDate"));
+                        order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                        order.setTotalAmount(rs.getDouble("TotalAmount"));
+                        order.setOrderStatus(rs.getString("OrderStatus"));
+                        // Gán Shipping
+                        Shipping shipping = new Shipping();
+                        shipping.setShippingStatus(rs.getString("ShippingStatus"));
+                        order.setShipping(shipping);
+                        return order;
+                    })
+                    .list();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
 
     public Order getOrderById(int orderId) {
         String sql = "SELECT * FROM orders WHERE Id = ?";

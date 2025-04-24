@@ -562,18 +562,31 @@ document.addEventListener("DOMContentLoaded", function () {
     detailButtons.forEach(button => {
         button.addEventListener("click", function () {
             const orderId = this.getAttribute("data-order-id");
+            const orderStatus = this.getAttribute("data-order-status");
+            const shippingStatus = this.getAttribute("data-shipping-status");
 
-            // Gán orderId vào modal để dùng sau
             const modal = document.querySelector(".modal.detail-order");
             modal.setAttribute("data-order-id", orderId);
 
-            // Mở modal
-            modal.style.display = "flex";
+            // Gán trạng thái đơn hàng
+            const orderStatusBtn = document.getElementById("order-status");
+            orderStatusBtn.textContent = orderStatus;
+            orderStatusBtn.setAttribute("data-order-id", orderId);
+            orderStatusBtn.style.backgroundColor = orderStatus === "Đã xử lý" ? "#2ecc71" : "#e74c3c";
 
-            // Bạn có thể gọi thêm loadOrderDetails(orderId) ở đây nếu cần
+            // Gán trạng thái giao hàng
+            const shippingStatusBtn = document.getElementById("shipping-status");
+            shippingStatusBtn.textContent = shippingStatus;
+            shippingStatusBtn.setAttribute("data-order-id", orderId);
+            shippingStatusBtn.classList.toggle("shipped", shippingStatus === "Đã giao");
+            shippingStatusBtn.disabled = shippingStatus === "Đã giao";
+
+            // Hiển thị modal
+            modal.style.display = "flex";
         });
     });
 });
+
 
 // ✅ Không còn truyền orderId cứng nữa
 function toggleOrderStatus(button) {
