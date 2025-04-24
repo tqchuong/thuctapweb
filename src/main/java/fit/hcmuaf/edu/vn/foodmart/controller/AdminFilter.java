@@ -22,7 +22,8 @@ public class AdminFilter implements Filter {
                 Users user = (Users) currentUser;
 
                 // Kiểm tra quyền truy cập
-                if ("Admin".equals(user.getRole())) {
+                String role = user.getRole();
+                if ("Admin".equals(role) || "WarehouseManager".equals(role) || "OrderConfirmator".equals(role)) {
                     chain.doFilter(request, response); // Cho phép truy cập
                     return;
                 }

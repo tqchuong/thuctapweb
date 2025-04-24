@@ -13,8 +13,6 @@ public class Activity_log {
     private String old_data;
     private String new_data;
 
-    public Activity_log() {
-    }
 
     public Activity_log(int id, Integer user_id, String username, String action, String level_log, String ip_address, String time_log, String source_page, String resource, String old_data, String new_data) {
         this.id = id;
@@ -28,6 +26,9 @@ public class Activity_log {
         this.resource = resource;
         this.old_data = old_data;
         this.new_data = new_data;
+    }
+
+    public Activity_log() {
     }
 
     public int getId() {
