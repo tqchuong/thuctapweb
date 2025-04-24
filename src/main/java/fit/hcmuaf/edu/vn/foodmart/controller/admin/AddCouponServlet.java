@@ -83,7 +83,9 @@ public class AddCouponServlet extends HttpServlet {
             }
 
             // Redirect về trang quản lý voucher
+
             resp.sendRedirect(req.getContextPath() + "/admin.jsp");
+
 
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Dữ liệu số không hợp lệ!");

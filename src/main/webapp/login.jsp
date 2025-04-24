@@ -83,13 +83,9 @@
 
                 <button type="submit" id="login-button" class="login__button" value="login">Đăng nhập</button>
                 <div class="login_gg_fb">
-                    <div id="g_id_onload"
-                         data-client_id="677800086189-ntqafhoaddalkskih5jot4u56ngsa5ck.apps.googleusercontent.com"
-                         data-login_uri="http://localhost:8080/project/loginGoogle"
-                         data-auto_prompt="false">
-                    </div>
-                    <button class="login_gg" id="googleLogin"><i class="fa-brands fa-google"></i></button>
-                    <button class="login_fb"><i class="fa-brands fa-facebook"></i></button>
+                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/project/loginGoogle&response_type=code&client_id=677800086189-ntqafhoaddalkskih5jot4u56ngsa5ck.apps.googleusercontent.com&approval_prompt=force" class="login_gg" id="googleLogin"><i class="fa-brands fa-google"></i></a>
+
+                    <a href="https://www.facebook.com/v19.0/dialog/oauth?fields=id,name,email&client_id=1136905471526375&redirect_uri=http://localhost:8080/project/loginFacebook" class="login_fb"><i class="fa-brands fa-facebook"></i></a>
                 </div>
                 <p>
                     <button id="forgotPasswordLink" class="forgotPasswordLink">Quên Mật khẩu?</button>
@@ -132,6 +128,12 @@
                     <input type="text" id="passwordCreate" name="password" required placeholder=" " class="login__input" aria-label="Password">
                     <label for="passwordCreate" class="login__label">Mật khẩu</label>
                     <i class="ri-eye-off-fill login__icon login__password" id="loginPasswordCreate"></i>
+                    <span class="form-message-password form-message"></span>
+                </div>
+                <div class="login__box">
+                    <input type="text" id="passwordConfirm" name="passwordConfirm" required placeholder=" " class="login__input" aria-label="Password">
+                    <label for="passwordConfirm" class="login__label">Xác nhận mật khẩu</label>
+                    <i class="ri-eye-off-fill login__icon login__password" id="loginpasswordConfirm"></i>
                     <span class="form-message-password form-message"></span>
                 </div>
                 <button type="submit" class="login__button" id="signup-button">Tạo tài khoản</button>

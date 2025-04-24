@@ -2,9 +2,11 @@ package fit.hcmuaf.edu.vn.foodmart.controller.admin;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.admin.ProductAdminDAO;
 import fit.hcmuaf.edu.vn.foodmart.model.Products;
+import fit.hcmuaf.edu.vn.foodmart.model.Warehouse;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -27,9 +29,13 @@ public class AddProductServlet extends HttpServlet {
         boolean isSale = "1".equals(request.getParameter("IsSale"));
         double discountPercentage = Double.parseDouble(request.getParameter("DiscountPercentage"));
         String priceParam = request.getParameter("price");
-        String weight = request.getParameter("Weight");
+
+        String weight = request.getParameter("weight");
+
         String shortDescription = request.getParameter("shortDescription");
         String idParam = request.getParameter("id");
+        String quantityParam = request.getParameter("quantity");
+        String brands = request.getParameter("brandsID");
 
         // Xử lý dữ liệu
         int id = (idParam != null && !idParam.isEmpty()) ? Integer.parseInt(idParam) : 0;
@@ -37,18 +43,22 @@ public class AddProductServlet extends HttpServlet {
         double price = (priceParam != null && !priceParam.isEmpty()) ? Double.parseDouble(priceParam) : 0.0;
         int Weight = (weight != null && !weight.isEmpty()) ? Integer.parseInt(weight) : 0;
 
+        int quantity = (quantityParam != null && !quantityParam.isEmpty()) ? Integer.parseInt(quantityParam) : 0;
+        int brandsID = (brands != null && !brands.isEmpty()) ? Integer.parseInt(brands) : 0;
 
-        // Tính giá bán sau giảm và lưu trực tiếp vào giá bán (price)
+
+        // Tính giá bán sau giảm
         if (isSale && discountPercentage > 0) {
             price = price - (price * discountPercentage / 100);
         } else {
             discountPercentage = 0;
         }
-        // Đường dẫn lưu file vào thư mục image/products
-        String uploadPath = getServletContext().getRealPath("/") + "image/img-khoai1"; // Lưu vào thư mục đúng
+
+        // Xử lý upload ảnh
+        String uploadPath = getServletContext().getRealPath("/") + "image/img-khoai1";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
-            uploadDir.mkdirs(); // Tạo thư mục nếu chưa tồn tại
+            uploadDir.mkdirs();
         }
 
         String imageURL = null;
@@ -56,46 +66,61 @@ public class AddProductServlet extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = filePart.getSubmittedFileName();
             String filePath = uploadPath + File.separator + fileName;
-            filePart.write(filePath); // Lưu file vào server
-            imageURL = "image/img-khoai1/" + fileName; // URL để lưu vào database
+            filePart.write(filePath);
+            imageURL = "image/img-khoai1/" + fileName;
         }
 
-
-        // Gọi DAO để thêm hoặc chỉnh sửa sản phẩm
+        // DAO
         ProductAdminDAO productDao = new ProductAdminDAO();
         boolean isSuccess = false;
 
         if ("add".equals(action)) {
+            // Tạo đối tượng sản phẩm
             Products newProduct = new Products();
             newProduct.setProductName(productName);
             newProduct.setCategoryID(categoryID);
+            newProduct.setBrandID(brandsID);
             newProduct.setIsSale(isSale ? 1 : 0);
             newProduct.setDiscountPercentage(discountPercentage);
             newProduct.setPrice(price);
             newProduct.setWeight(Weight);
             newProduct.setShortDescription(shortDescription);
-            if (imageURL != null) {
-                newProduct.setImageURL(imageURL);
-            }
+            if (imageURL != null) newProduct.setImageURL(imageURL);
 
+            // Gán warehouse
+            Warehouse warehouse = new Warehouse();
+            warehouse.setQuantity(quantity);
+            newProduct.setWarehouse(warehouse);
+
+
+
+
+            // Thêm sản phẩm + nhập kho
             isSuccess = productDao.addProduct(newProduct);
             response.sendRedirect("admin.jsp#");
+
         } else if ("edit".equals(action)) {
             Products existingProduct = productDao.getProductById(id);
             if (existingProduct != null) {
                 existingProduct.setProductName(productName);
                 existingProduct.setCategoryID(categoryID);
-                existingProduct.setIsSale(isSale ? 1 : 0); // Chuyển boolean sang int (0 hoặc 1)
-                existingProduct.setDiscountPercentage(discountPercentage);
                 existingProduct.setPrice(price);
+                existingProduct.setIsSale(isSale ? 1 : 0);
+                existingProduct.setDiscountPercentage(discountPercentage);
+                existingProduct.setBrandID(brandsID);
                 existingProduct.setWeight(Weight);
                 existingProduct.setShortDescription(shortDescription);
+                if (imageURL != null) existingProduct.setImageURL(imageURL);
 
-                if (imageURL != null) {
-                    existingProduct.setImageURL(imageURL);
+                if (quantity > 0) {
+                    Warehouse warehouse = new Warehouse();
+                    warehouse.setProductId(existingProduct.getID());
+                    warehouse.setQuantity(quantity);
+                    existingProduct.setWarehouse(warehouse);
                 }
 
                 boolean isUpdated = productDao.updateProduct(existingProduct);
+
                 response.sendRedirect("admin.jsp#");
             } else {
                 response.sendRedirect("admin.jsp#");

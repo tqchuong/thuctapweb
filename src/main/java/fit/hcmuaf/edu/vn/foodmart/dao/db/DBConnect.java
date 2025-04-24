@@ -6,24 +6,20 @@ import fit.hcmuaf.edu.vn.foodmart.model.Products;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 
 import java.util.List;
-import java.util.TimeZone;
 
 public class DBConnect {
 
     private static Jdbi jdbi;
-
 
     static {
         try {
             // Cấu hình thông tin kết nối MySQL trực tiếp trong lớp DBConnect
             String host = "localhost";  // Địa chỉ host MySQL
             int port = 3306;  // Cổng kết nối MySQL
-
-            String dbname = "test1";  // Tên cơ sở dữ liệu
+            String dbname = "luongthuc3";  // Tên cơ sở dữ liệu
             String username = "root";  // Tên đăng nhập MySQL
-            String password = "";
+            String password = "123456";
             String options = "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";  // Các tùy chọn kết nối
-
 
             // Tạo URL kết nối
             String url = "jdbc:mysql://" + host + ":" + port + "/" + dbname + "?" + options;
@@ -92,7 +88,7 @@ public class DBConnect {
 
     public static void main(String[] args) {
         // Hiển thị các sản phẩm và người dùng khi chạy chương trình
-        //displayProducts();
+        displayProducts();
 
     }
 }

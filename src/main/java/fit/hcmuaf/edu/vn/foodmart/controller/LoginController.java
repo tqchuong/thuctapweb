@@ -3,25 +3,22 @@ package fit.hcmuaf.edu.vn.foodmart.controller;
 import fit.hcmuaf.edu.vn.foodmart.dao.UserDAO;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
+import fit.hcmuaf.edu.vn.foodmart.utils.LoggerUtil;
 import fit.hcmuaf.edu.vn.foodmart.utils.PasswordUtils;
 import fit.hcmuaf.edu.vn.foodmart.utils.SessionManager;
 import fit.hcmuaf.edu.vn.foodmart.utils.TokenGenerator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.jdbi.v3.core.Handle;
+
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
-import static com.google.gson.internal.bind.TypeAdapters.UUID;
 
 
 @WebServlet(name = "LoginController", value = "/login")
@@ -59,6 +56,10 @@ public class LoginController extends HttpServlet {
             if (!userCaptcha.equals(correctCaptcha)) {
                 request.setAttribute("loginError", "Mã CAPTCHA không đúng!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+
+                // Ghi log khi CAPTCHA sai
+                LoggerUtil.log(request, "Login Failed", "ERROR", "login.jsp", "CAPTCHA", "", "Incorrect CAPTCHA");
+
             }else if (loginStatus.equals("LOGIN_SUCCESS")) {
                 // Nếu đăng nhập thành công, lấy thông tin người dùng từ cơ sở dữ liệu
                 Users user = userDAO.getUserByUsername(username);
@@ -67,20 +68,27 @@ public class LoginController extends HttpServlet {
                 //HttpSession session = request.getSession(true);
                 session.setAttribute("auth", user);
                 SessionManager.addSession(user.getUsername(), session);
+
+                // Ghi log khi đăng nhập thành công
+                LoggerUtil.log(request, "Login Success", "INFO", "login.jsp", "User Login", "", "");
+
                 // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
                 response.sendRedirect("home.jsp");
             } else {
                 // Nếu đăng nhập không thành công, thông báo lỗi
                 String errorMessage = "";
+                String level_log ="DANGER";
                 switch (loginStatus) {
                     case "ACCOUNT_LOCKED":
                         errorMessage = "Tài khoản của bạn đã bị khóa!";
+                        level_log = "DANGER";
                         break;
                     case "INCORRECT_PASSWORD":
                         errorMessage = "Tài khoản hoặc mật khẩu không đúng!";
                         break;
                     case "ACCOUNT_TEMP_LOCKED":
                         errorMessage = "Tài khoản bị khóa tạm thời do đăng nhập sai quá 5 lần.\n Vui lòng thử lại sau 5 phút!";
+                        level_log = "DANGER";
                         break;
                     case "ERROR":
                         errorMessage = "Đã có lỗi xảy ra, vui lòng thử lại!";
@@ -91,6 +99,10 @@ public class LoginController extends HttpServlet {
                 }
                 request.setAttribute("loginError", errorMessage);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+
+                // Ghi log khi đăng nhập thất bại
+                LoggerUtil.log(request, "Login Failed", level_log, "login.jsp", "User Login", "", errorMessage);
+
             }
         } else if (action.equals("res")) {
             // Xử lý hành động đăng ký
@@ -98,12 +110,28 @@ public class LoginController extends HttpServlet {
             String phone = request.getParameter("phone");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
+            String passwordConfirm = request.getParameter("passwordConfirm");
 
             // Kiểm tra mật khẩu tối thiểu 6 ký tự
             if (password == null || password.length() < 6) {
                 request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+
+                // Ghi log khi mật khẩu quá ngắn
+                LoggerUtil.log(request, "Registration Failed", "ERROR", "login.jsp", "User Registration", "", "Password too short");
+
+                return;
+            }
+            // Kiểm tra mật khẩu mới khớp với xác nhận mật khẩu
+            if(passwordConfirm == null || !passwordConfirm.equals(password)) {
+                request.setAttribute("error", "Mật khẩu không giống nhau.");
+                request.setAttribute("showRegisterForm", true);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+
+                // Ghi log khi mật khẩu xác nhận không khớp
+                LoggerUtil.log(request, "Registration Failed", "ERROR", "login.jsp", "User Registration", "", "Password mismatch");
+
                 return;
             }
             String hashedPassword = PasswordUtils.hashPassword(password);
@@ -115,6 +143,10 @@ public class LoginController extends HttpServlet {
                 request.setAttribute("error", "Tên người dùng hoặc email đã tồn tại.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+
+                // Ghi log khi tên đăng nhập hoặc email đã tồn tại
+                LoggerUtil.log(request, "Registration Failed", "ERROR", "login.jsp", "User Registration", "", "Username or email already exists");
+
                 return;
             }
 
@@ -142,10 +174,18 @@ public class LoginController extends HttpServlet {
 
 
                 response.sendRedirect("verify.jsp?email=" + email);
+
+                // Ghi log khi đăng ký thành công
+                LoggerUtil.log(request, "Registration Success", "INFO", "login.jsp", "User Registration", "", "");
+
             } else {
                 request.setAttribute("error", "Có lỗi xảy ra trong quá trình đăng ký.");
                 request.setAttribute("showRegisterForm", true);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+
+                // Ghi log khi đăng ký thất bại
+                LoggerUtil.log(request, "Registration Failed", "ERROR", "login.jsp", "User Registration", "", "Registration error");
+
             }
 
 
@@ -161,6 +201,9 @@ public class LoginController extends HttpServlet {
                 session.invalidate();
             }
             response.sendRedirect("home.jsp");
+
+            // Ghi log khi đăng xuất
+            LoggerUtil.log(request, "Logout", "INFO", "home.jsp", "User Logout", "", "");
         }else if(action.equals("forgetPass")) {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
@@ -194,6 +237,8 @@ public class LoginController extends HttpServlet {
                         + "Trân trọng,\nFoodMart Team";
                 new Thread(() -> UserDAO.sendMail(email, subject, message)).start();
 
+                // Ghi log khi gửi lại mật khẩu
+                LoggerUtil.log(request, "Password Recovery", "INFO", "login.jsp", "Password Recovery", "", "");
 
                 // Chuyển hướng với thông báo thành công
                 response.sendRedirect("login.jsp?message=" + URLEncoder.encode("Link xác thực đã được gửi đến email của bạn!", StandardCharsets.UTF_8.toString()));
