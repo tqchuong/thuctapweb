@@ -401,6 +401,7 @@
                         <td>Ngày đặt</td>
                         <td>Tổng tiền</td>
                         <td>Trạng thái</td>
+
                         <td>Thao tác</td>
                     </tr>
                     </thead>
@@ -411,19 +412,22 @@
                     <tbody id="showOrder">
                     <% for (Order order : orders) { %>
                     <tr>
-                        <td>DH<%= order.getId() %>
-                        </td>
-                        <td><%= order.getReceiverPhone() %>
-                        </td>
-                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>
-                        </td>
-                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->
+                        <td>DH<%= order.getId() %></td>
+                        <td><%= order.getReceiverPhone() %></td>
+                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %></td>
+                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td>
                         <td>
-                            <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>
-                          </span>
+            <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>">
+                <%= order.getOrderStatus() %>
+            </span>
                         </td>
                         <td class="control">
-                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
+                            <button class="btn-detail"
+                                    data-order-id="<%= order.getId() %>"
+                                    data-order-status="<%= order.getOrderStatus() %>"
+                                    data-shipping-status="<%= order.getShipping().getShippingStatus() %>">
+                                <i class="fa-regular fa-eye"></i> Chi tiết
+                            </button>
                         </td>
                     </tr>
                     <% } %>
@@ -556,7 +560,9 @@
             </div>
         </div>
 
+
         <!--Voucher-->
+
         <div class="section">
             <!-- Bộ lọc và tìm kiếm -->
             <div class="admin-control">
@@ -1013,9 +1019,15 @@
                     <span class="footer-price" id="order-total">0 ₫</span>
                 </div>
                 <div class="footer-right">
-                    <button class="footer-btn btn-status" id="order-status" onclick="toggleOrderStatus(this, 1)">
-                        Chưa xử lý
+                    <button class="footer-btn btn-status" id="order-status" onclick="toggleOrderStatus(this)">
+
                     </button>
+                </div>
+                <div class="footer-right">
+                    <button class="footer-btn btn-shipping" id="shipping-status" onclick="updateShippingStatus(this)">
+
+                    </button>
+
                 </div>
             </div>
         </div>
