@@ -23,6 +23,9 @@
     <link rel="stylesheet" href="css/admin.css">
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <title>Quản lý cửa hàng</title>
 </head>
 
@@ -93,6 +96,13 @@
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
                         <div class="hidden-sidebar">Vận chuyển</div>
+                    </a>
+                </li>
+
+                <li class="sidebar-list-item tab-content">
+                    <a href="showLog.jsp" class="sidebar-link">
+                        <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
+                        <div class="hidden-sidebar">Nhật kí hoạt động</div>
                     </a>
                 </li>
 
@@ -798,6 +808,59 @@
                 </table>
             </div>
         </div>
+
+        <!--Log-->
+
+        <div class="section">
+            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
+            <div class="table-container">
+                <table id="logTable" class="log-table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Người dùng</th>
+                        <th>Hành động</th>
+                        <th>Mức độ</th>
+                        <th>IP</th>
+                        <th>Thời gian</th>
+                        <th>Trang</th>
+                        <th>Tài nguyên</th>
+                        <th>Dữ liệu cũ</th>
+                        <th>Dữ liệu mới</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                        List<Activity_log> logs = Activity_logDAO.getAllLogs();
+                        int stt = 1;
+                        if (logs != null && !logs.isEmpty()) {
+                            for (Activity_log log : logs) {
+                    %>
+                    <tr>
+                        <td><%= stt++ %></td>
+                        <td><%= log.getUsername() %></td>
+                        <td><%= log.getAction() %></td>
+                        <td><%= log.getLevel_log() %></td>
+                        <td><%= log.getIp_address() %></td>
+                        <td><%= log.getTime_log() %></td>
+                        <td><%= log.getSource_page() %></td>
+                        <td><%= log.getResource() %></td>
+                        <td><%= log.getOld_data() %></td>
+                        <td><%= log.getNew_data() %></td>
+                    </tr>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <tr><td colspan="10">Không có dữ liệu nhật ký.</td></tr>
+                    <%
+                        }
+                    %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
 
     </main>
 
