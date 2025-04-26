@@ -401,6 +401,7 @@
                         <td>Ngày đặt</td>
                         <td>Tổng tiền</td>
                         <td>Trạng thái</td>
+
                         <td>Thao tác</td>
                     </tr>
                     </thead>
@@ -411,19 +412,22 @@
                     <tbody id="showOrder">
                     <% for (Order order : orders) { %>
                     <tr>
-                        <td>DH<%= order.getId() %>
-                        </td>
-                        <td><%= order.getReceiverPhone() %>
-                        </td>
-                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>
-                        </td>
-                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->
+                        <td>DH<%= order.getId() %></td>
+                        <td><%= order.getReceiverPhone() %></td>
+                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %></td>
+                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td>
                         <td>
-                            <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>
-                          </span>
+            <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>">
+                <%= order.getOrderStatus() %>
+            </span>
                         </td>
                         <td class="control">
-                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>
+                            <button class="btn-detail"
+                                    data-order-id="<%= order.getId() %>"
+                                    data-order-status="<%= order.getOrderStatus() %>"
+                                    data-shipping-status="<%= order.getShipping().getShippingStatus() %>">
+                                <i class="fa-regular fa-eye"></i> Chi tiết
+                            </button>
                         </td>
                     </tr>
                     <% } %>
@@ -556,7 +560,9 @@
             </div>
         </div>
 
+
         <!--Voucher-->
+
         <div class="section">
             <!-- Bộ lọc và tìm kiếm -->
             <div class="admin-control">
@@ -816,6 +822,7 @@
 
         <!--Log-->
         <div class="section">
+
             <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
             <!-- Bảng nhật ký hoạt động -->
             <div class="table" style="margin-top: 10px;">
@@ -868,107 +875,109 @@
         </div>
     </main>
 
-    <div class="modal add-product">
-        <div class="modal-container">
-            <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
-            <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
-            <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
 
-                <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct" enctype="multipart/form-data">
-                    <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
-                    <input type="hidden" name="action" id="action" value="add">
-                    <input type="hidden" id="product-id" name="id" value="">
+     <div class="modal add-product">
+         <div class="modal-container">
+             <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
+             <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
+             <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
 
-                    <div class="modal-content-left" style="margin: 0 auto;">
-                        <img src="image/admin/blank-image.png" alt="" class="upload-image-preview" id="preview-image">
-                        <div class="form-group file">
-                            <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
-                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" style="display: none;">
-                        </div>
-                    </div>
+                 <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct" enctype="multipart/form-data">
+                     <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
+                     <input type="hidden" name="action" id="action" value="add">
+                     <input type="hidden" id="product-id" name="id" value="">
 
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-                            <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm" class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
+                     <div class="modal-content-left" style="margin: 0 auto;">
+                         <img src="image/admin/blank-image.png" alt="" class="upload-image-preview" id="preview-image">
+                         <div class="form-group file">
+                             <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
+                             <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" style="display: none;">
+                         </div>
+                     </div>
 
-                        <!-- Danh mục -->
-                        <div class="form-group">
-                            <label for="category" class="form-label">Danh mục</label>
-                            <select name="categoryID" id="chon-mon">
-                                < value=""></>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+                             <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <!-- Danh mục -->
+                         <div class="form-group">
+                             <label for="category" class="form-label">Danh mục</label>
+                             <select name="categoryID" id="chon-mon">
+                                 < value=""></>
+                             </select>
+                             <span class="form-message"></span>
+                         </div>
 
 
 
-                        <div class="form-group">
-                            <label for="brands" class="form-label">Thương hiệu</label>
-                            <select name="brandsID" id="chon-brands">
-                                <option value=""></option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
+                         <div class="form-group">
+                             <label for="brands" class="form-label">Thương hiệu</label>
+                             <select name="brandsID" id="chon-brands">
+                                 <option value=""></option>
+                             </select>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <!-- Các trường khác -->
-                        <div class="form-group">
-                            <label for="IsSale" class="form-label">Chọn sale</label>
-                            <select name="IsSale" id="chon-sale">
-                                <option value="1">Có</option>
-                                <option value="0">Không</option>
-                            </select>
-                        </div>
+                         <!-- Các trường khác -->
+                         <div class="form-group">
+                             <label for="IsSale" class="form-label">Chọn sale</label>
+                             <select name="IsSale" id="chon-sale">
+                                 <option value="1">Có</option>
+                                 <option value="0">Không</option>
+                             </select>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="phan-tram-giam" class="form-label">% giảm giá</label>
-                            <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01" placeholder="Nhập %" class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
+                         <div class="form-group">
+                             <label for="phan-tram-giam" class="form-label">% giảm giá</label>
+                             <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01" placeholder="Nhập %" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="gia-moi" class="form-label">Giá bán</label>
-                            <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán" class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
+                         <div class="form-group">
+                             <label for="gia-moi" class="form-label">Giá bán</label>
+                             <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="khoi-luong" class="form-label">Khối lượng</label>
-                            <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng" class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
+                         <div class="form-group">
+                             <label for="khoi-luong" class="form-label">Khối lượng</label>
+                             <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="so-luong" class="form-label">Số lượng</label>
-                            <input id="so-luong" name="quantity" type="number" placeholder="Nhập số lượng" class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
+                         <div class="form-group">
+                             <label for="so-luong" class="form-label">Số lượng</label>
+                             <input id="so-luong" name="quantity" type="number" placeholder="Nhập số lượng" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="mo-ta" class="form-label">Mô tả</label>
-                            <textarea class="product-desc" name="shortDescription" id="mo-ta" placeholder="Nhập mô tả sản phẩm..." required></textarea>
-                            <span class="form-message"></span>
-                        </div>
+                         <div class="form-group">
+                             <label for="mo-ta" class="form-label">Mô tả</label>
+                             <textarea class="product-desc" name="shortDescription" id="mo-ta" placeholder="Nhập mô tả sản phẩm..." required></textarea>
+                             <span class="form-message"></span>
+                         </div>
 
-                        <!-- Nút Submit -->
-                        <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM SẢN PHẨM</span>
-                        </button>
-                        <button type="submit" class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                         <!-- Nút Submit -->
+                         <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM SẢN PHẨM</span>
+                         </button>
+                         <button type="submit" class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
 
-    <div class="modal detail-order">
+     <div class="modal detail-order">
+
         <div class="modal-container3">
             <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
             <button class="modal-close" onclick="closeModal()"><i class="fa-regular fa-xmark"></i></button>
@@ -982,9 +991,15 @@
                     <span class="footer-price" id="order-total">0 ₫</span>
                 </div>
                 <div class="footer-right">
-                    <button class="footer-btn btn-status" id="order-status" onclick="toggleOrderStatus(this, 1)">
-                        Chưa xử lý
+                    <button class="footer-btn btn-status" id="order-status" onclick="toggleOrderStatus(this)">
+
                     </button>
+                </div>
+                <div class="footer-right">
+                    <button class="footer-btn btn-shipping" id="shipping-status" onclick="updateShippingStatus(this)">
+
+                    </button>
+
                 </div>
             </div>
         </div>
@@ -1079,156 +1094,159 @@
         </div>
     </div>
 
-    <div class="modal add-voucher">
-        <div class="modal-container4">
-            <h3 class="modal-container-title add-voucher-e">THÊM MỚI VOUCHER</h3>
-            <h3 class="modal-container-title edit-voucher-e">CHỈNH SỬA VOUCHER</h3>
-            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-                <form action="${pageContext.request.contextPath}/couponController" method="POST" class="add-voucher-form">
-                    <input type="hidden" id="actionType" name="actionType" value="add">
-                    <input type="hidden" id="coupon-id" name="couponId">
 
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="coupon-code">Mã giảm giá</label>
-                            <input id="coupon-code" name="couponCode" type="text" class="form-control" required>
-                        </div>
+     <div class="modal add-voucher">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-voucher-e">THÊM MỚI VOUCHER</h3>
+             <h3 class="modal-container-title edit-voucher-e">CHỈNH SỬA VOUCHER</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/couponController" method="POST" class="add-voucher-form">
+                     <input type="hidden" id="actionType" name="actionType" value="add">
+                     <input type="hidden" id="coupon-id" name="couponId">
 
-                        <div class="form-group">
-                            <label for="discount-type">Loại giảm giá</label>
-                            <select name="discountType" id="discount-type" class="form-control" required>
-                                <option value="Percentage">Giảm theo phần trăm (%)</option>
-                                <option value="FixedAmount">Giảm theo số tiền cố định (₫)</option>
-                            </select>
-                        </div>
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="coupon-code">Mã giảm giá</label>
+                             <input id="coupon-code" name="couponCode" type="text" class="form-control" required>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="discount-amount">Giá trị giảm giá</label>
-                            <input id="discount-amount" name="discountAmount" type="number" step="0.01" class="form-control" required>
-                        </div>
+                         <div class="form-group">
+                             <label for="discount-type">Loại giảm giá</label>
+                             <select name="discountType" id="discount-type" class="form-control" required>
+                                 <option value="Percentage">Giảm theo phần trăm (%)</option>
+                                 <option value="FixedAmount">Giảm theo số tiền cố định (₫)</option>
+                             </select>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="max-discount-amount">Số tiền giảm tối đa (nếu giảm theo %)</label>
-                            <input id="max-discount-amount" name="maxDiscountAmount" type="number" step="0.01" class="form-control">
-                        </div>
+                         <div class="form-group">
+                             <label for="discount-amount">Giá trị giảm giá</label>
+                             <input id="discount-amount" name="discountAmount" type="number" step="0.01" class="form-control" required>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="description">Mô tả</label>
-                            <textarea id="description" name="description" class="form-control" required></textarea>
-                        </div>
+                         <div class="form-group">
+                             <label for="max-discount-amount">Số tiền giảm tối đa (nếu giảm theo %)</label>
+                             <input id="max-discount-amount" name="maxDiscountAmount" type="number" step="0.01" class="form-control">
+                         </div>
 
-                        <div class="form-group">
-                            <label for="start-date">Ngày bắt đầu</label>
-                            <input id="start-date" name="startDate" type="date" class="form-control" required>
-                        </div>
+                         <div class="form-group">
+                             <label for="description">Mô tả</label>
+                             <textarea id="description" name="description" class="form-control" required></textarea>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="end-date">Ngày hết hạn</label>
-                            <input id="end-date" name="endDate" type="date" class="form-control" required>
-                        </div>
+                         <div class="form-group">
+                             <label for="start-date">Ngày bắt đầu</label>
+                             <input id="start-date" name="startDate" type="date" class="form-control" required>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="min-order-amount">Số tiền đơn hàng tối thiểu</label>
-                            <input id="min-order-amount" name="minOrderAmount" type="number" step="0.01" class="form-control" required>
-                        </div>
+                         <div class="form-group">
+                             <label for="end-date">Ngày hết hạn</label>
+                             <input id="end-date" name="endDate" type="date" class="form-control" required>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="max-usage">Số lần sử dụng tối đa (tổng cộng)</label>
-                            <input id="max-usage" name="maxUsage" type="number" class="form-control">
-                        </div>
+                         <div class="form-group">
+                             <label for="min-order-amount">Số tiền đơn hàng tối thiểu</label>
+                             <input id="min-order-amount" name="minOrderAmount" type="number" step="0.01" class="form-control" required>
+                         </div>
 
-                        <div class="form-group">
-                            <label for="max-usage-per-user">Số lần sử dụng tối đa mỗi người</label>
-                            <input id="max-usage-per-user" name="maxUsagePerUser" type="number" class="form-control">
-                        </div>
+                         <div class="form-group">
+                             <label for="max-usage">Số lần sử dụng tối đa (tổng cộng)</label>
+                             <input id="max-usage" name="maxUsage" type="number" class="form-control">
+                         </div>
 
-                        <div class="form-group">
-                            <label for="status">Trạng thái</label>
-                            <select name="status" id="status" class="form-control" required>
-                                <option value="Active">Đang hoạt động</option>
-                                <option value="Inactive">Ngừng hoạt động</option>
-                            </select>
-                        </div>
+                         <div class="form-group">
+                             <label for="max-usage-per-user">Số lần sử dụng tối đa mỗi người</label>
+                             <input id="max-usage-per-user" name="maxUsagePerUser" type="number" class="form-control">
+                         </div>
 
-                        <button type="submit" class="form-submit btn-add-voucher-form add-voucher-e">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM VOUCHER</span>
-                        </button>
+                         <div class="form-group">
+                             <label for="status">Trạng thái</label>
+                             <select name="status" id="status" class="form-control" required>
+                                 <option value="Active">Đang hoạt động</option>
+                                 <option value="Inactive">Ngừng hoạt động</option>
+                             </select>
+                         </div>
 
-                        <button type="submit" class="form-submit btn-update-voucher-form edit-voucher-e">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                         <button type="submit" class="form-submit btn-add-voucher-form add-voucher-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM VOUCHER</span>
+                         </button>
 
-
-
-
-    <div class="modal add-brand">
-        <div class="modal-container4">
-            <h3 class="modal-container-title add-brand-e">THÊM MỚI BRANDS</h3>
-            <h3 class="modal-container-title edit-brand-e">CHỈNH SỬA BRANDS</h3>
-            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-                <form action="${pageContext.request.contextPath}/brandController" method="POST" id="brand-form">
-                    <input type="hidden" id="action1" name="action1" value="add">
-                    <input type="hidden" id="brand-id" name="brandId" value="">
-
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="brand-code">Tên brand</label>
-                            <input id="brand-code" name="brandName" type="text" class="form-control" required>
-                        </div>
-                        <button type="submit" class="form-submit btn-add-brand-form add-brand-e">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM BRAND</span>
-                        </button>
-                        <button type="submit" class="form-submit btn-update-brand-form edit-brand-e">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                         <button type="submit" class="form-submit btn-update-voucher-form edit-voucher-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
 
 
-    <div class="modal add-categories">
-        <div class="modal-container4">
-            <h3 class="modal-container-title add-categories-e">THÊM MỚI CATEGORIES</h3>
-            <h3 class="modal-container-title edit-categories-e">CHỈNH SỬA CATEGORIES</h3>
-            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-                <form action="${pageContext.request.contextPath}/categoriesController" method="POST" id="categories-form">
-                    <input type="hidden" id="action2" name="action2" value="add">
-                    <input type="hidden" id="categories-id" name="categoriesId" value="">
 
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="categories-code">Tên categories</label>
-                            <input id="categories-code" name="categoriesName" type="text" class="form-control" required>
-                        </div>
-                        <button type="submit" class="form-submit btn-add-categories-form add-categories-e">
-                            <i class="fa-regular fa-plus"></i>
-                            <span>THÊM CATEGORIES</span>
-                        </button>
-                        <button type="submit" class="form-submit btn-update-categories-form edit-categories-e">
-                            <i class="fa-light fa-pencil"></i>
-                            <span>LƯU THAY ĐỔI</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
-</div>
+     <div class="modal add-brand">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-brand-e">THÊM MỚI BRANDS</h3>
+             <h3 class="modal-container-title edit-brand-e">CHỈNH SỬA BRANDS</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/brandController" method="POST" id="brand-form">
+                     <input type="hidden" id="action1" name="action1" value="add">
+                     <input type="hidden" id="brand-id" name="brandId" value="">
+
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="brand-code">Tên brand</label>
+                             <input id="brand-code" name="brandName" type="text" class="form-control" required>
+                         </div>
+                         <button type="submit" class="form-submit btn-add-brand-form add-brand-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM BRAND</span>
+                         </button>
+                         <button type="submit" class="form-submit btn-update-brand-form edit-brand-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+
+     <div class="modal add-categories">
+         <div class="modal-container4">
+             <h3 class="modal-container-title add-categories-e">THÊM MỚI CATEGORIES</h3>
+             <h3 class="modal-container-title edit-categories-e">CHỈNH SỬA CATEGORIES</h3>
+             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+                 <form action="${pageContext.request.contextPath}/categoriesController" method="POST" id="categories-form">
+                     <input type="hidden" id="action2" name="action2" value="add">
+                     <input type="hidden" id="categories-id" name="categoriesId" value="">
+
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="categories-code">Tên categories</label>
+                             <input id="categories-code" name="categoriesName" type="text" class="form-control" required>
+                         </div>
+                         <button type="submit" class="form-submit btn-add-categories-form add-categories-e">
+                             <i class="fa-regular fa-plus"></i>
+                             <span>THÊM CATEGORIES</span>
+                         </button>
+                         <button type="submit" class="form-submit btn-update-categories-form edit-categories-e">
+                             <i class="fa-light fa-pencil"></i>
+                             <span>LƯU THAY ĐỔI</span>
+                         </button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+
+ </div>
+
 
 <script>
     $(".btn-detail").click(function () {

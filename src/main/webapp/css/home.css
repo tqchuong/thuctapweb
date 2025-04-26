@@ -421,3 +421,51 @@ ul li {
 .text {
     font-size: 12px; /* Giảm kích thước chữ */
 }
+.order-history-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.order-history-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.btn-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #f0ad4e;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-review:hover {
+    background-color: #ec971f;
+    color: white;
+}
+
+.order-history {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-history:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
