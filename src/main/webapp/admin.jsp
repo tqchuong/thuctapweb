@@ -39,7 +39,7 @@
         </div>
     </button>
 </header>
- <div class="container">
+<div class="container">
     <aside class="sidebar open">
         <div class="top-sidebar">
             <a href="#" class="channel-logo">
@@ -359,7 +359,7 @@
                 </table>
             </div>
         </div>
-            <!-- </div> -->
+        <!-- </div> -->
 
         <!-- Order  -->
         <div class="section">
@@ -704,7 +704,7 @@
                             for (Category cat : categories) {
                         %>
                         <tr data-id="<%= cat.getCategoryID() %>">
-                        <td><%= stt1++ %></td>
+                            <td><%= stt1++ %></td>
                             <td><%= cat.getCategoryName() %></td>
                             <td class="control control-table">
                                 <button class="btn-edit-categories" id="edit-categories">
@@ -822,40 +822,11 @@
 
         <!--Log-->
         <div class="section">
-            <!-- Bộ lọc và tìm kiếm nhật ký -->
-            <div class="admin-control">
-                <div class="admin-control-left">
-                    <select name="level-log-filter" id="level-log-filter">
-                        <option value="all">Tất cả</option>
-                        <option value="info">Thông tin</option>
-                        <option value="warning">Cảnh báo</option>
-                        <option value="error">Lỗi</option>
-                    </select>
-                </div>
-                <div class="admin-control-center">
-                    <form action="" class="form-search">
-                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-log" type="text" class="form-search-input" placeholder="Tìm kiếm người dùng...">
-                    </form>
-                </div>
-                <div class="admin-control-right">
-                    <form action="" class="fillter-date">
-                        <div>
-                            <label for="time-start-log">Từ</label>
-                            <input type="date" class="form-control-date" id="time-start-log">
-                        </div>
-                        <div>
-                            <label for="time-end-log">Đến</label>
-                            <input type="date" class="form-control-date" id="time-end-log">
-                        </div>
-                    </form>
-                    <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
-                </div>
-            </div>
 
+            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
             <!-- Bảng nhật ký hoạt động -->
             <div class="table" style="margin-top: 10px;">
-                <table width="100%">
+                <table id="logTable" class="log-table" width="100%">
                     <thead>
                     <tr>
                         <td>STT</td>
@@ -902,8 +873,8 @@
                 </table>
             </div>
         </div>
-
     </main>
+
 
      <div class="modal add-product">
          <div class="modal-container">
@@ -1006,6 +977,7 @@
      </div>
 
      <div class="modal detail-order">
+
         <div class="modal-container3">
             <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
             <button class="modal-close" onclick="closeModal()"><i class="fa-regular fa-xmark"></i></button>
@@ -1121,6 +1093,7 @@
             </form>
         </div>
     </div>
+
 
      <div class="modal add-voucher">
          <div class="modal-container4">
@@ -1273,6 +1246,7 @@
 
 
  </div>
+
 
 <script>
     $(".btn-detail").click(function () {
