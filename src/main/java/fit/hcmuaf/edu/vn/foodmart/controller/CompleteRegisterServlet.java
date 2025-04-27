@@ -2,6 +2,7 @@ package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.UserDAO;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
+import fit.hcmuaf.edu.vn.foodmart.utils.LoggerUtil;
 import fit.hcmuaf.edu.vn.foodmart.utils.PasswordUtils;
 import fit.hcmuaf.edu.vn.foodmart.utils.SessionManager;
 import jakarta.servlet.*;
@@ -23,6 +24,7 @@ public class CompleteRegisterServlet extends HttpServlet {
         String fullName = request.getParameter("fullName");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        String passwordConfirm = request.getParameter("passwordConfirm");
 
         UserDAO userDAO = new UserDAO();
 
@@ -30,6 +32,27 @@ public class CompleteRegisterServlet extends HttpServlet {
         if (userDAO.userExists(username)) {
             request.setAttribute("error", "Username đã tồn tại, hãy chọn username khác.");
             request.getRequestDispatcher("complete_register.jsp").forward(request, response);
+            LoggerUtil.log(request, "Registration Failed", "ERROR", "complete_register.jsp", "User Registration", "", "Username ton tai");
+            return;
+        }
+        // Kiểm tra mật khẩu tối thiểu 6 ký tự
+        if (password == null || password.length() < 6) {
+            request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự.");
+            request.getRequestDispatcher("complete_register.jsp").forward(request, response);
+
+            // Ghi log khi mật khẩu quá ngắn
+            LoggerUtil.log(request, "Registration Failed", "ERROR", "complete_register.jsp", "User Registration", "", "Password too short");
+
+            return;
+        }
+        // Kiểm tra mật khẩu mới khớp với xác nhận mật khẩu
+        if(passwordConfirm == null || !passwordConfirm.equals(password)) {
+            request.setAttribute("error", "Mật khẩu không giống nhau.");
+            request.getRequestDispatcher("complete_register.jsp").forward(request, response);
+
+            // Ghi log khi mật khẩu xác nhận không khớp
+            LoggerUtil.log(request, "Registration Failed", "ERROR", "complete_register.jsp", "User Registration", "", "Password mismatch");
+
             return;
         }
 
