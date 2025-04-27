@@ -2,6 +2,7 @@ package fit.hcmuaf.edu.vn.foodmart.controller.admin;
 
 import com.google.gson.Gson;
 import fit.hcmuaf.edu.vn.foodmart.dao.admin.ProductAdminDAO;
+import fit.hcmuaf.edu.vn.foodmart.model.Brands;
 import fit.hcmuaf.edu.vn.foodmart.model.Category;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -15,13 +16,14 @@ import java.util.List;
 @WebServlet("/categoriesController")
 public class CategoriesControllerServlet extends HttpServlet {
 
-    private ProductAdminDAO dao = new ProductAdminDAO();
+    private final ProductAdminDAO dao = new ProductAdminDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<Category> category = dao.getAllCategories();
-        req.setAttribute("categoryJSON", new Gson().toJson(category));
-        req.getRequestDispatcher("/admin.jsp").forward(req, resp);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(new Gson().toJson(category));
     }
 
     @Override

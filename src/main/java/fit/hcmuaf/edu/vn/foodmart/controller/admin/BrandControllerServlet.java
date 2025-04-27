@@ -17,13 +17,14 @@ import java.util.List;
 @WebServlet("/brandController")
 public class BrandControllerServlet extends HttpServlet {
 
-    private  BrandAdminDAO dao = new BrandAdminDAO();
+    private final  BrandAdminDAO dao = new BrandAdminDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<Brands> brands = dao.getAllBrands();
-        req.setAttribute("brandsJSON", new Gson().toJson(brands));
-        req.getRequestDispatcher("/admin.jsp").forward(req, resp);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(new Gson().toJson(brands));
     }
 
     @Override

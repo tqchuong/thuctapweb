@@ -556,9 +556,43 @@ function closeModal() {
 }
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const detailButtons = document.querySelectorAll(".btn-detail");
+
+    detailButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const orderId = this.getAttribute("data-order-id");
+            const orderStatus = this.getAttribute("data-order-status");
+            const shippingStatus = this.getAttribute("data-shipping-status");
+
+            const modal = document.querySelector(".modal.detail-order");
+            modal.setAttribute("data-order-id", orderId);
+
+            // Gán trạng thái đơn hàng
+            const orderStatusBtn = document.getElementById("order-status");
+            orderStatusBtn.textContent = orderStatus;
+            orderStatusBtn.setAttribute("data-order-id", orderId);
+            orderStatusBtn.style.backgroundColor = orderStatus === "Đã xử lý" ? "#2ecc71" : "#e74c3c";
+
+            // Gán trạng thái giao hàng
+            const shippingStatusBtn = document.getElementById("shipping-status");
+            shippingStatusBtn.textContent = shippingStatus;
+            shippingStatusBtn.setAttribute("data-order-id", orderId);
+            shippingStatusBtn.classList.toggle("shipped", shippingStatus === "Đã giao");
+            shippingStatusBtn.disabled = shippingStatus === "Đã giao";
+
+            // Hiển thị modal
+            modal.style.display = "flex";
+        });
+    });
+});
 
 
-function toggleOrderStatus(button, orderId) {
+// ✅ Không còn truyền orderId cứng nữa
+function toggleOrderStatus(button) {
+    const modal = button.closest(".modal.detail-order");
+    const orderId = modal.getAttribute("data-order-id");
+
     const currentStatus = button.innerText.trim();
     const newStatus = currentStatus === "Chưa xử lý" ? "Đã xử lý" : "Chưa xử lý";
 
@@ -581,6 +615,35 @@ function toggleOrderStatus(button, orderId) {
             alert("Đã xảy ra lỗi khi cập nhật trạng thái.");
         });
 }
+
+function updateShippingStatus(button) {
+    const modal = button.closest(".modal.detail-order");
+    const orderId = modal.getAttribute("data-order-id");
+
+    const currentStatus = button.innerText.trim();
+    const newStatus = currentStatus === "Chưa giao" ? "Đã giao" : "Chưa giao";
+
+    fetch('/project/updateShippingStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: orderId, newStatus: newStatus }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.innerText = newStatus;
+                button.classList.toggle("shipped", newStatus === "Đã giao");
+                button.disabled = newStatus === "Đã giao";
+            } else {
+                alert(data.message || "Không thể cập nhật trạng thái giao hàng.");
+            }
+        })
+        .catch(error => {
+            console.error("Lỗi:", error);
+            alert("Đã xảy ra lỗi khi cập nhật trạng thái giao hàng.");
+        });
+}
+
 
 
 
