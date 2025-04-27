@@ -34,20 +34,24 @@ public class LoginGoogleServlet extends HttpServlet {
             response.sendRedirect("home.jsp");
         } else {
             // Email chưa tồn tại -> tạo tài khoản mới
-            user = new Users();
-            user.setUsername(acc.getGiven_name());
-            user.setPassword("GOOGLE_OAUTH");
-            user.setEmail(acc.getEmail());
-            user.setFullName(acc.getName());
-            user.setIs_verified(true);
-            user.setLoginType("google");
-            userDAO.insert(user);
+//            user = new Users();
+//            user.setUsername(acc.getGiven_name());
+//            user.setPassword("GOOGLE_OAUTH");
+//            user.setEmail(acc.getEmail());
+//            user.setFullName(acc.getName());
+//            user.setIs_verified(true);
+//            user.setLoginType("google");
+//            userDAO.insert(user);
+//
+//            // Sau khi thêm thì gán session
+//            Users newUser = userDAO.getUserByUsername(acc.getGiven_name());
+//            request.getSession().setAttribute("auth", newUser);
+//            SessionManager.addSession(newUser.getUsername(), request.getSession());
+//            response.sendRedirect("home.jsp");
 
-            // Sau khi thêm thì gán session
-            Users newUser = userDAO.getUserByUsername(acc.getGiven_name());
-            request.getSession().setAttribute("auth", newUser);
-            SessionManager.addSession(newUser.getUsername(), request.getSession());
-            response.sendRedirect("home.jsp");
+            // Email chưa tồn tại -> lưu Google info vào session tạm và chuyển đến trang nhập username/password
+            request.getSession().setAttribute("google_acc", acc);
+            response.sendRedirect("complete_register.jsp"); // trang nhập thêm thông tin
         }
     }
 
