@@ -407,7 +407,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
         JOIN shipping s ON o.Id = s.OrderID
         WHERE o.UserID = :userId 
           AND od.ProductID = :productId 
-          AND s.ShippingStatus = 'Thành công'
+          AND s.ShippingStatus = 'Đã giao'
     """;
 
         try (Handle handle = jdbi.open()) {

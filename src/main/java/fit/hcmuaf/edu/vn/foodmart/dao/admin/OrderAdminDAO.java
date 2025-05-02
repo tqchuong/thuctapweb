@@ -163,10 +163,13 @@ public class OrderAdminDAO {
         }
     }
     public int getSoldQuantity() {
-        String sql = "SELECT SUM(od.Quantity) AS TotalQuantity " +
-                "FROM orderdetails od " +
-                "JOIN orders o ON od.OrderID = o.Id " +
-                "WHERE o.OrderStatus = 'Chưa xử lý'";
+        String sql = """
+        SELECT SUM(od.Quantity) AS TotalQuantity
+        FROM orderdetails od
+        JOIN orders o ON od.OrderID = o.Id
+        JOIN shipping s ON o.Id = s.OrderId
+        WHERE s.ShippingStatus = 'Đã giao'
+    """;
 
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
@@ -177,6 +180,70 @@ public class OrderAdminDAO {
             return 0; // Trả về 0 nếu xảy ra lỗi
         }
     }
+    public List<Products> getProductsNeedRestock() {
+        String sql = """
+        SELECT 
+            p.Id, p.ProductName, p.ImageURL, 
+            COALESCE(w.Quantity, 0) AS stock_quantity,
+            COALESCE(SUM(od.Quantity), 0) AS sold_last_week
+        FROM products p
+        LEFT JOIN warehouse w ON p.Id = w.product_id
+        LEFT JOIN orderdetails od ON p.Id = od.ProductID
+        LEFT JOIN orders o ON od.OrderID = o.Id 
+            AND o.OrderDate >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
+        GROUP BY p.Id, p.ProductName, p.ImageURL, w.Quantity
+        HAVING stock_quantity <= 300 AND sold_last_week >= 5
+        ORDER BY sold_last_week DESC
+    """;
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .map((rs, ctx) -> {
+                            Products product = new Products();
+                            product.setID(rs.getInt("Id"));
+                            product.setProductName(rs.getString("ProductName"));
+                            product.setImageURL(rs.getString("ImageURL"));
+
+                            Warehouse warehouse = new Warehouse();
+                            warehouse.setQuantity(rs.getInt("stock_quantity"));
+                            product.setWarehouse(warehouse);
+
+                            product.setSoldQuantity(rs.getInt("sold_last_week")); // bạn nên thêm field soldQuantity
+
+                            return product;
+                        }).list()
+        );
+    }
+
+
+    public List<Products> getSlowSellingProducts() {
+        String sql = """
+    
+                SELECT
+                       p.Id, p.ProductName, p.ImageURL,
+                       COALESCE(SUM(od.Quantity), 0) AS total_sold
+                   FROM products p
+                   LEFT JOIN orderdetails od ON p.Id = od.ProductID
+                   LEFT JOIN orders o ON od.OrderID = o.Id
+                       AND o.OrderDate >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+                   GROUP BY p.Id, p.ProductName, p.ImageURL
+                   HAVING total_sold < 10
+                   ORDER BY total_sold ASC
+    """;
+
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .map((rs, ctx) -> {
+                            Products p = new Products();
+                            p.setID(rs.getInt("Id"));
+                            p.setProductName(rs.getString("ProductName"));
+                            p.setImageURL(rs.getString("ImageURL"));
+                            p.setSoldQuantity(rs.getInt("total_sold"));
+                            return p;
+                        }).list()
+        );
+    }
+
     public boolean updateOrderStatus(int orderId, String newStatus) {
         String sql = "UPDATE orders SET OrderStatus = :newStatus WHERE Id = :orderId";
 
@@ -217,31 +284,37 @@ public class OrderAdminDAO {
 
     public List<OrderDetails> getProductReport() {
         String sql = """
-        SELECT 
+        SELECT
             p.Id AS product_id,
             p.ProductName AS product_name,
             p.ImageURL AS product_image,
-            od.Quantity AS total_quantity,
-            (od.Quantity * od.UnitPrice) AS total_revenue
-        FROM  products p
-        JOIN orderdetails od
-        ON p.Id = od.ProductID
-        ORDER BY total_revenue DESC;""";
+            SUM(od.Quantity) AS total_quantity,
+            SUM(od.Quantity * od.UnitPrice) AS total_revenue,
+            COALESCE(w.Quantity, 0) AS stock_quantity
+        FROM products p
+        JOIN orderdetails od ON p.Id = od.ProductID
+        LEFT JOIN warehouse w ON p.Id = w.product_id
+        GROUP BY p.Id, p.ProductName, p.ImageURL, w.Quantity
+        ORDER BY total_revenue DESC
+    """;
+
         return jdbi.withHandle(handle ->
                 handle.createQuery(sql)
                         .map((rs, ctx) -> {
-                            // Tạo đối tượng Products
                             Products product = new Products();
                             product.setID(rs.getInt("product_id"));
                             product.setProductName(rs.getString("product_name"));
                             product.setImageURL(rs.getString("product_image"));
 
-                            // Tạo đối tượng OrderDetails và gán sản phẩm
+                            // Gán tồn kho
+                            Warehouse w = new Warehouse();
+                            w.setQuantity(rs.getInt("stock_quantity"));
+                            product.setWarehouse(w); // Đảm bảo Product có setWarehouse
+
                             OrderDetails detail = new OrderDetails();
                             detail.setProduct(product);
                             detail.setQuantity(rs.getInt("total_quantity"));
                             detail.setUnitPrice(rs.getDouble("total_revenue"));
-
                             return detail;
                         }).list()
         );
@@ -268,6 +341,43 @@ public class OrderAdminDAO {
         }
     }
 
+    public int getTotalOrders() {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM orders")
+                        .mapTo(Integer.class)
+                        .findOnly()
+        );
+    }
+
+    public int getProcessedOrders() {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM orders WHERE OrderStatus = 'Đã xử lý'")
+                        .mapTo(Integer.class)
+                        .findOnly()
+        );
+    }
+
+    public int getShippedOrders() {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM shipping WHERE ShippingStatus = 'Đã giao'")
+                        .mapTo(Integer.class)
+                        .findOnly()
+        );
+    }
+
+    public double getRevenueToday() {
+        return jdbi.withHandle(handle ->
+                handle.createQuery("""
+            SELECT SUM(od.Quantity * od.UnitPrice)
+            FROM orderdetails od
+            JOIN orders o ON od.OrderID = o.Id
+            WHERE DATE(o.OrderDate) = CURRENT_DATE
+        """)
+                        .mapTo(Double.class)
+                        .findOne()
+                        .orElse(0.0)
+        );
+    }
 
 
     public static void main(String[] args) {
