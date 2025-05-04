@@ -192,7 +192,7 @@ public class OrderAdminDAO {
         LEFT JOIN orders o ON od.OrderID = o.Id 
             AND o.OrderDate >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)
         GROUP BY p.Id, p.ProductName, p.ImageURL, w.Quantity
-        HAVING stock_quantity <= 300 AND sold_last_week >= 5
+        HAVING stock_quantity <= 15 AND sold_last_week >= 5
         ORDER BY sold_last_week DESC
     """;
 
@@ -218,17 +218,18 @@ public class OrderAdminDAO {
 
     public List<Products> getSlowSellingProducts() {
         String sql = """
-    
-                SELECT
-                       p.Id, p.ProductName, p.ImageURL,
-                       COALESCE(SUM(od.Quantity), 0) AS total_sold
-                   FROM products p
-                   LEFT JOIN orderdetails od ON p.Id = od.ProductID
-                   LEFT JOIN orders o ON od.OrderID = o.Id
-                       AND o.OrderDate >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
-                   GROUP BY p.Id, p.ProductName, p.ImageURL
-                   HAVING total_sold < 10
-                   ORDER BY total_sold ASC
+        SELECT
+            p.Id,
+            p.ProductName,
+            p.ImageURL,
+            COALESCE(SUM(od.Quantity), 0) AS total_sold
+        FROM products p
+        LEFT JOIN orderdetails od ON p.Id = od.ProductID
+        LEFT JOIN orders o ON od.OrderID = o.Id
+            AND o.OrderDate >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)
+        GROUP BY p.Id, p.ProductName, p.ImageURL
+        HAVING total_sold < 10
+        ORDER BY total_sold DESC
     """;
 
         return jdbi.withHandle(handle ->

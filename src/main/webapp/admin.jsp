@@ -536,7 +536,7 @@
                     <div class="row">
                         <!-- Sản phẩm cần nhập -->
                         <div class="col-md-6">
-                            <h5 class="mb-3">🛒 Sản phẩm cần nhập (tồn kho thấp + bán nhanh)</h5>
+                            <h5 class="mb-3">🛒 Sản phẩm cần nhập </h5>
                             <% List<Products> needRestock = orderAdminDAO.getProductsNeedRestock(); %>
                             <% if (needRestock != null && !needRestock.isEmpty()) { %>
                             <ul class="list-group">
@@ -557,14 +557,14 @@
 
                         <!-- Sản phẩm bán chậm -->
                         <div class="col-md-6">
-                            <h5 class="mb-3">🐢 Sản phẩm bán chậm (dưới 10 trong 30 ngày)</h5>
+                            <h5 class="mb-3">🐢 Sản phẩm tồn kho</h5>
                             <% List<Products> slowSelling = orderAdminDAO.getSlowSellingProducts(); %>
                             <ul class="list-group">
                                 <% for (Products p : slowSelling) { %>
                                 <li class="list-group-item d-flex align-items-center">
                                     <img src="<%= p.getImageURL() %>" class="me-2" width="40">
                                     <span><%= p.getProductName() %></span>
-                                    <span class="ms-auto badge bg-secondary"><%= p.getWeight() %> đã bán</span>
+                                    <span class="ms-auto badge bg-secondary"><%= p.getSoldQuantity() %> đã bán</span>
                                 </li>
                                 <% } %>
                             </ul>

@@ -23,6 +23,24 @@ public class Products {
     private int IsSale;
     private int salePrice;
     private int soldQuantity;
+    private Brands brands;
+    private  int BrandID;
+
+    public Brands getBrands() {
+        return brands;
+    }
+
+    public void setBrands(Brands brands) {
+        this.brands = brands;
+    }
+
+    public int getBrandID() {
+        return BrandID;
+    }
+
+    public void setBrandID(int brandID) {
+        BrandID = brandID;
+    }
 
     public int getSoldQuantity() {
         return soldQuantity;
