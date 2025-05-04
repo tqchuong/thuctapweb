@@ -79,11 +79,13 @@ public class UserAdminDAO {
 
     // 4. Xóa người dùng
     public boolean deleteUserById(int userId) {
-        String sql = "DELETE FROM users WHERE Id = :userId";
+        String sql = "UPDATE users SET isDelete = TRUE, UserStatus = 'Bị khóa' WHERE Id = :userId AND isDelete = FALSE";
         return jdbi.withHandle(handle -> handle.createUpdate(sql)
                 .bind("userId", userId)
                 .execute() > 0);
     }
+
+
 
 
 
@@ -118,19 +120,16 @@ public class UserAdminDAO {
 
     // 7. Kiểm tra sự tồn tại của người dùng
     public boolean userExists(String username) {
-        String sql = "SELECT COUNT(*) FROM users WHERE username=?";
-        try (Handle handle = jdbi.open()) {
-            int count = handle.createQuery(sql)
-                    .bind(0, username)
-                    .mapTo(Integer.class)
-                    .findOne()
-                    .orElse(0);
-            return count > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        String sql = "SELECT COUNT(*) FROM users WHERE Username = :username AND isDelete = FALSE";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("username", username)
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElse(0) > 0
+        );
     }
+
 
     // 8. Tìm kiếm người dùng theo id
     public Users getUserById(int id) {
