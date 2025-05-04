@@ -1,6 +1,8 @@
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.ProductAdminDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.UserAdminDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.OrderAdminDAO" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.BrandAdminDAO" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.CouponDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.*" %>
@@ -19,6 +21,7 @@
     <link rel="stylesheet" href="css/admin.css">
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Quản lý cửa hàng</title>
 </head>
@@ -90,6 +93,13 @@
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
                         <div class="hidden-sidebar">Vận chuyển</div>
+                    </a>
+                </li>
+
+                <li class="sidebar-list-item tab-content">
+                    <a href="#" class="sidebar-link">
+                        <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
+                        <div class="hidden-sidebar">Nhật kí hoạt động</div>
                     </a>
                 </li>
 
@@ -258,6 +268,7 @@
         <%
             List<Users> users = userAdminDAO.getAllUsers();
         %>
+
         <!-- Account  -->
         <div class="section">
             <div class="admin-control">
@@ -492,9 +503,9 @@
             </div>
 
                 <%
-    List<OrderDetails> productStats = orderAdminDAO.getProductReport();
-    OrderDetails best = productStats.get(0);
-%>
+                List<OrderDetails> productStats = orderAdminDAO.getProductReport();
+                OrderDetails best = productStats.get(0);
+                %>
 
             <!-- Hàng 2: Bảng sản phẩm bán chạy và sản phẩm cần nhập -->
             <div class="row">
@@ -572,8 +583,10 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="section">
+        <!--Voucher-->
+        <div class="section">
             <!-- Bộ lọc và tìm kiếm -->
             <div class="admin-control">
                 <div class="admin-control-left">
@@ -673,7 +686,7 @@
 
 
 
-        <div class="section ncc-all">
+
 
         <!--categories-->
         <div class="section">
@@ -791,70 +804,7 @@
 
 
 
-        <!--Ship-->
-        <div class="section ship-all">
 
-            <div class="admin-control">
-                <div class="admin-control-left">
-                    <select name="the-loai" id="the-loai">
-                        <option>Tất cả</option>
-                        <option>Sản phẩm gần hết hàng</option>
-                    </select>
-                </div>
-                <div class="admin-control-center">
-                    <form action="" class="form-search">
-                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-product" type="text" class="form-search-input"
-                               placeholder="Tìm kiếm tên sản phẩm...">
-                    </form>
-                </div>
-                <div class="admin-control-right">
-                    <button class="btn-control-large" id="btn-cancel-product"><i
-                            class="fa-light fa-rotate-right"></i> Làm mới
-                    </button>
-                    <button class="btn-control-large" id="btn-add-product"><i class="fa-light fa-plus"></i> Thêm sản
-                        phẩm
-                    </button>
-                </div>
-            </div>
-            <div class="table">
-                <table width="100%">
-                    <thead>
-                    <tr>
-                        <td>STT</td>
-                        <td>Tên nhà cung cấp</td>
-                        <td>Ngày đặt</td>
-                        <td>Tổng tiền</td>
-
-                    </tr>
-                    </thead>
-<%--                    <%--%>
-<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
-<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
-<%--                    %>--%>
-<%--                    <tbody id="showOrder">--%>
-<%--                    <% for (Order order : orders) { %>--%>
-<%--                    <tr>--%>
-<%--                        <td>DH<%= order.getId() %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= order.getReceiverPhone() %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
-<%--                        <td>--%>
-<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
-<%--                          </span>--%>
-<%--                        </td>--%>
-<%--                        <td class="control">--%>
-<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
-<%--                        </td>--%>
-<%--                    </tr>--%>
-<%--                    <% } %>--%>
-<%--                    </tbody>--%>
-                </table>
-            </div>
-        </div>
 
 
         <!--Ship-->
@@ -884,15 +834,6 @@
             </div>
             <div class="table">
                 <table width="100%">
-
-        <!--Log-->
-        <div class="section">
-
-            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
-            <!-- Bảng nhật ký hoạt động -->
-            <div class="table" style="margin-top: 10px;">
-                <table id="logTable" class="log-table" width="100%">
-
                     <thead>
                     <tr>
                         <td>ID</td>
@@ -902,33 +843,94 @@
 
                     </tr>
                     </thead>
-<%--                    <%--%>
-<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
-<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
-<%--                    %>--%>
-<%--                    <tbody id="showOrder">--%>
-<%--                    <% for (Order order : orders) { %>--%>
-<%--                    <tr>--%>
-<%--                        <td>DH<%= order.getId() %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= order.getReceiverPhone() %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
-<%--                        </td>--%>
-<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
-<%--                        <td>--%>
-<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
-<%--                          </span>--%>
-<%--                        </td>--%>
-<%--                        <td class="control">--%>
-<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
-<%--                        </td>--%>
-<%--                    </tr>--%>
-<%--                    <% } %>--%>
-<%--                    </tbody>--%>
+
                 </table>
             </div>
         </div>
+
+        <!--Log-->
+        <div class="section">
+            <!-- Bộ lọc và tìm kiếm nhật ký -->
+            <div class="admin-control">
+                <div class="admin-control-left">
+                    <select name="level-log-filter" id="level-log-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="info">Thông tin</option>
+                        <option value="warning">Cảnh báo</option>
+                        <option value="error">Lỗi</option>
+                    </select>
+                </div>
+                <div class="admin-control-center">
+                    <form action="" class="form-search">
+                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
+                        <input id="form-search-log" type="text" class="form-search-input" placeholder="Tìm kiếm người dùng...">
+                    </form>
+                </div>
+                <div class="admin-control-right">
+                    <form action="" class="fillter-date">
+                        <div>
+                            <label for="time-start-log">Từ</label>
+                            <input type="date" class="form-control-date" id="time-start-log">
+                        </div>
+                        <div>
+                            <label for="time-end-log">Đến</label>
+                            <input type="date" class="form-control-date" id="time-end-log">
+                        </div>
+                    </form>
+                    <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Bảng nhật ký hoạt động -->
+            <div class="table" style="margin-top: 10px;">
+                <table width="100%">
+                    <thead>
+                    <tr>
+                        <td>STT</td>
+                        <td>Người dùng</td>
+                        <td>Hành động</td>
+                        <td>Mức độ</td>
+                        <td>IP</td>
+                        <td>Thời gian</td>
+                        <td>Trang</td>
+                        <td>Tài nguyên</td>
+                        <td>Dữ liệu cũ</td>
+                        <td>Dữ liệu mới</td>
+                    </tr>
+                    </thead>
+
+                    <tbody id="log-activity-body">
+                    <%
+                        List<Activity_log> logs = Activity_logDAO.getAllLogs();
+                        int stt9 = 1;
+                        if (logs != null && !logs.isEmpty()) {
+                            for (Activity_log log : logs) {
+                    %>
+                    <tr>
+                        <td><%= stt9++ %></td>
+                        <td><%= log.getUsername() %></td>
+                        <td><%= log.getAction() %></td>
+                        <td><%= log.getLevel_log() %></td>
+                        <td><%= log.getIp_address() %></td>
+                        <td><%= log.getTime_log() %></td>
+                        <td><%= log.getSource_page() %></td>
+                        <td><%= log.getResource() %></td>
+                        <td><%= log.getOld_data() %></td>
+                        <td><%= log.getNew_data() %></td>
+                    </tr>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <tr><td colspan="10">Không có dữ liệu nhật ký.</td></tr>
+                    <%
+                        }
+                    %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </main>
 
 
@@ -1072,8 +1074,8 @@
             </form>
         </div>
     </div>
-    <div class="modal detail-order">
 
+    <div class="modal detail-order">
         <div class="modal-container3">
             <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
             <button class="modal-close" onclick="closeModal()"><i class="fa-regular fa-xmark"></i></button>
@@ -1278,11 +1280,68 @@
          </div>
      </div>
 
+    <div class="modal add-brand">
+        <div class="modal-container4">
+            <h3 class="modal-container-title add-brand-e">THÊM MỚI BRANDS</h3>
+            <h3 class="modal-container-title edit-brand-e">CHỈNH SỬA BRANDS</h3>
+            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+            <div class="modal-content">
+                <form action="${pageContext.request.contextPath}/brandController" method="POST" id="brand-form">
+                    <input type="hidden" id="action1" name="action1" value="add">
+                    <input type="hidden" id="brand-id" name="brandId" value="">
 
+                    <div class="modal-content-right">
+                        <div class="form-group">
+                            <label for="brand-code">Tên brand</label>
+                            <input id="brand-code" name="brandName" type="text" class="form-control" required>
+                        </div>
+                        <button type="submit" class="form-submit btn-add-brand-form add-brand-e">
+                            <i class="fa-regular fa-plus"></i>
+                            <span>THÊM BRAND</span>
+                        </button>
+                        <button type="submit" class="form-submit btn-update-brand-form edit-brand-e">
+                            <i class="fa-light fa-pencil"></i>
+                            <span>LƯU THAY ĐỔI</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal add-categories">
+        <div class="modal-container4">
+            <h3 class="modal-container-title add-categories-e">THÊM MỚI CATEGORIES</h3>
+            <h3 class="modal-container-title edit-categories-e">CHỈNH SỬA CATEGORIES</h3>
+            <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
+            <div class="modal-content">
+                <form action="${pageContext.request.contextPath}/categoriesController" method="POST" id="categories-form">
+                    <input type="hidden" id="action2" name="action2" value="add">
+                    <input type="hidden" id="categories-id" name="categoriesId" value="">
+
+                    <div class="modal-content-right">
+                        <div class="form-group">
+                            <label for="categories-code">Tên categories</label>
+                            <input id="categories-code" name="categoriesName" type="text" class="form-control" required>
+                        </div>
+                        <button type="submit" class="form-submit btn-add-categories-form add-categories-e">
+                            <i class="fa-regular fa-plus"></i>
+                            <span>THÊM CATEGORIES</span>
+                        </button>
+                        <button type="submit" class="form-submit btn-update-categories-form edit-categories-e">
+                            <i class="fa-light fa-pencil"></i>
+                            <span>LƯU THAY ĐỔI</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
  </div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 
 
@@ -1314,12 +1373,7 @@
     $(".modal-close").click(function () {
         $(".modal.detail-order").hide();
     });
-
-
 </script>
-
-
-<script src="js/admin.js"></script>
 <script>
     setInterval(() => {
         fetch('<%=request.getContextPath()%>/checkSession')
@@ -1336,7 +1390,61 @@
             });
     }, 3000); // Kiểm tra mỗi 3 giây
 </script>
+<script>
+    fetch('<%=request.getContextPath()%>/brandController')
+        .then(response => response.json())
+        .then(brands => {
+            const select = document.getElementById('chon-brands');
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand.id;         // Sửa brandID -> id
+                option.textContent = brand.name; // Sửa brandName -> name
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading brands:', error));
+</script>
+<script>
+    fetch('<%=request.getContextPath()%>/categoriesController')
+        .then(response => response.json())
+        .then(categories => {
+            const select = document.getElementById('chon-mon');
+            select.innerHTML = '<option value="">Chọn danh mục</option>'; // Clear trước
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.categoryID; // đúng field
+                option.textContent = category.categoryName; // đúng field
+                select.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading categories:', error));
+</script>
 
+<%--table showlog--%>
+<script>
+    $(document).ready(function() {
+        $('#logTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "Tìm kiếm:",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Tiếp",
+                    previous: "Trước"
+                },
+                lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+                infoEmpty: "Không có bản ghi nào",
+                emptyTable: "Không có dữ liệu trong bảng"
+            }
+        });
+    });
+</script>
+<script src="js/admin.js"></script>
 </body>
-
 </html>
