@@ -99,33 +99,27 @@
                     </form>
                 </div>
 
-                <%
-                    Users user = (Users) session.getAttribute("auth");
-                    boolean isGoogleUser = user != null && "google".equals(user.getLoginType());
-                    boolean isFacebookUser = user != null && "facebook".equals(user.getLoginType());
-                %>
-
-                <div class="main-account-body-col" <% if (isGoogleUser || isFacebookUser) { %> style="display: none;" <% } %> >
+                <div class="main-account-body-col">
                     <form action="change?action=password" method="post" class="change-password">
 
                         <!-- Các trường mật khẩu -->
                         <div class="form-group">
-                            <label for="" class="form-label">Tên đăng nhập</label>
+                            <label for="username-info" class="form-label">Tên đăng nhập</label>
                             <input class="form-control" type="text" name="username" id="username-info"
                                    placeholder="Nhập tên đăng nhập">
                         </div>
                         <div class="form-group">
-                            <label for="" class="form-label">Mật khẩu hiện tại</label>
+                            <label for="password-cur-info" class="form-label">Mật khẩu hiện tại</label>
                             <input class="form-control" type="password" name="passwordCur" id="password-cur-info"
                                    placeholder="Nhập mật khẩu hiện tại">
                         </div>
                         <div class="form-group">
-                            <label for="" class="form-label">Mật khẩu mới</label>
+                            <label for="password-after-info" class="form-label">Mật khẩu mới</label>
                             <input class="form-control" type="password" name="passwordNew" id="password-after-info"
                                    placeholder="Nhập mật khẩu mới">
                         </div>
                         <div class="form-group">
-                            <label for="" class="form-label">Xác nhận mật khẩu mới</label>
+                            <label for="password-comfirm-info" class="form-label">Xác nhận mật khẩu mới</label>
                             <input class="form-control" type="password" name="passwordConfirm"
                                    id="password-comfirm-info"
                                    placeholder="Nhập lại mật khẩu mới">

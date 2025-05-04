@@ -34,20 +34,23 @@ public class LoginFacebookServlet extends HttpServlet {
             response.sendRedirect("home.jsp");
         } else {
             // username chưa tồn tại -> tạo tài khoản mới
-            user = new Users();
-            user.setUsername(acc.getName());
-            user.setPassword("FACEBOOK_OAUTH");
-            user.setEmail(acc.getEmail());
-            user.setFullName(acc.getName());
-            user.setIs_verified(true);
-            user.setLoginType("facebook");
-            userDAO.insert(user);
+//            user = new Users();
+//            user.setUsername(acc.getName());
+//            user.setPassword("FACEBOOK_OAUTH");
+//            user.setEmail(acc.getEmail());
+//            user.setFullName(acc.getName());
+//            user.setIs_verified(true);
+//            user.setLoginType("facebook");
+//            userDAO.insert(user);
+//
+//            // Sau khi thêm thì gán session
+//            Users newUser = userDAO.getUserByUsername(acc.getName());
+//            request.getSession().setAttribute("auth", newUser);
+//            SessionManager.addSession(newUser.getUsername(), request.getSession());
+//            response.sendRedirect("home.jsp");
 
-            // Sau khi thêm thì gán session
-            Users newUser = userDAO.getUserByUsername(acc.getName());
-            request.getSession().setAttribute("auth", newUser);
-            SessionManager.addSession(newUser.getUsername(), request.getSession());
-            response.sendRedirect("home.jsp");
+            request.getSession().setAttribute("account", acc);
+            response.sendRedirect("complete_register.jsp"); // trang nhập thêm thông tin
         }
     }
 
