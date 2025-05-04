@@ -41,7 +41,7 @@ public class DBConnect {
     // Lấy thông tin sản phẩm và hiển thị ra màn hình
     public static void displayProducts() {
         String sql = "SELECT * FROM products";  // Truy vấn toàn bộ bảng Products
-
+//
         try (Handle handle = jdbi.open()) {
             // Truy vấn dữ liệu và ánh xạ kết quả thành đối tượng Products
             List<Products> products = handle.select(sql)
