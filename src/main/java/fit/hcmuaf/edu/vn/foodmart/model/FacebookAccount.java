@@ -1,6 +1,6 @@
 package fit.hcmuaf.edu.vn.foodmart.model;
 
-public class FacebookAccount {
+public class FacebookAccount implements Account {
     private String id,email,name;
 
     public FacebookAccount(String id, String email, String name) {
