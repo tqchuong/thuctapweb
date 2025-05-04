@@ -31,7 +31,7 @@
         </div>
     </button>
 </header>
- <div class="container">
+<div class="container">
     <aside class="sidebar open">
         <div class="top-sidebar">
             <a href="#" class="channel-logo">
@@ -342,7 +342,7 @@
                 </table>
             </div>
         </div>
-            <!-- </div> -->
+        <!-- </div> -->
 
         <!-- Order  -->
         <div class="section">
@@ -672,8 +672,128 @@
         </div>
 
 
-        <!--ncc-->
+
         <div class="section ncc-all">
+
+        <!--categories-->
+        <div class="section">
+            <div class="table" style="display: flex; gap: 30px;">
+                <!-- Danh mục -->
+                <div style="flex: 1;">
+                    <div class="admin-control">
+                        <div class="admin-control-left">
+                            <select name="the-loai" id="the-loai">
+                                <option>Tất cả</option>
+                                <option>Sản phẩm gần hết hàng</option>
+                            </select>
+                        </div>
+                        <div class="admin-control-center">
+                            <form action="" class="form-search">
+                                <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
+                                <input id="form-search-categories" type="text" class="form-search-input"
+                                       placeholder="Tìm kiếm...">
+                            </form>
+                        </div>
+                        <div class="admin-control-right">
+                            <button class="btn-control-large" id="btn-add-categories">
+                                <i class="fa-light fa-plus"></i> Thêm danh mục
+                            </button>
+                        </div>
+
+                    </div>
+                    <h3>Danh mục sản phẩm</h3>
+                    <table width="100%">
+                        <thead>
+                        <tr>
+                            <td>STT</td>
+                            <td>Tên danh mục</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <%
+                            List<Category> categories = productAdminDAO.getAllCategories();
+                            int stt1 = 1;
+                            for (Category cat : categories) {
+                        %>
+                        <tr data-id="<%= cat.getCategoryID() %>">
+                            <td><%= stt1++ %></td>
+                            <td><%= cat.getCategoryName() %></td>
+                            <td class="control control-table">
+                                <button class="btn-edit-categories" id="edit-categories">
+                                    <i class="fa-light fa-pen-to-square"></i>
+                                </button>
+                                <button class="btn-delete" data-type="categories" data-id="<%= cat.getCategoryID() %>">
+                                    <i class="fa-regular fa-trash"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="flex: 1;">
+                    <div class="admin-control">
+                        <div class="admin-control-left">
+                            <select name="the-loai" id="the-loai">
+                                <option>Tất cả</option>
+                                <option>Sản phẩm gần hết hàng</option>
+                            </select>
+                        </div>
+                        <div class="admin-control-center">
+                            <form action="" class="form-search">
+                                <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
+                                <input id="form-search-brand" type="text" class="form-search-input"
+                                       placeholder="Tìm kiếm...">
+                            </form>
+                        </div>
+                        <div class="admin-control-right">
+                            <button class="btn-control-large" id="btn-add-brand"><i class="fa-light fa-plus"></i> Thêm thương hiệu</button>
+
+                        </div>
+                    </div>
+                    <h3>Thương hiệu (Brands)</h3>
+                    <table width="100%">
+                        <thead>
+                        <tr>
+                            <td>STT</td>
+                            <td>Tên thương hiệu</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <%
+                            BrandAdminDAO brandAdminDAO = new BrandAdminDAO();
+                            List<Brands> brands = brandAdminDAO.getAllBrands();
+                            int stt2 = 1;
+                            for (Brands brand : brands) {
+                        %>
+                        <tr data-id="<%= brand.getId() %>">
+                            <td><%= stt2++ %></td>
+                            <td><%= brand.getName() %></td>
+                            <td class="control control-table">
+                                <button class="btn-edit-brand" id="edit-brand">
+                                    <i class="fa-light fa-pen-to-square"></i>
+                                </button>
+                                <button class="btn-delete" data-type="brand" data-id="<%= brand.getId() %>">
+                                    <i class="fa-regular fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </tbody>
+                    </table>   <!-- Thương hiệu -->
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--Ship-->
+        <div class="section ship-all">
+
             <div class="admin-control">
                 <div class="admin-control-left">
                     <select name="the-loai" id="the-loai">
@@ -764,6 +884,15 @@
             </div>
             <div class="table">
                 <table width="100%">
+
+        <!--Log-->
+        <div class="section">
+
+            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
+            <!-- Bảng nhật ký hoạt động -->
+            <div class="table" style="margin-top: 10px;">
+                <table id="logTable" class="log-table" width="100%">
+
                     <thead>
                     <tr>
                         <td>ID</td>
@@ -800,52 +929,84 @@
                 </table>
             </div>
         </div>
-
     </main>
 
-    <div class="modal add-product">
-        <div class="modal-container">
-            <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
-            <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
-            <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
-            <div class="modal-content">
-
-                <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct"
-                      enctype="multipart/form-data">
-                    <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
-                    <input type="hidden" name="action" id="action" value="add">
-                    <input type="hidden" id="product-id" name="id" value="">
 
 
-                    <div class="modal-content-left" style="margin: 0 auto;">
-                        <img src="image/admin/blank-image.png" alt="" class="upload-image-preview"
-                             id="preview-image">
-                        <div class="form-group file">
-                            <label for="up-hinh-anh" class="form-label-file"><i
-                                    class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
-                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh"
-                                   type="file" class="form-control" style="display: none !important;">
-                        </div>
-                    </div>
-                    <div class="modal-content-right">
-                        <div class="form-group">
-                            <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-                            <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm"
-                                   class="form-control" required>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="category" class="form-label">Danh mục</label>
-                            <select name="categoryID" id="chon-mon">
-                                <option value="1"> Gạo</option>
-                                <option value="2">Lương khô</option>
-                                <option value="3"> text3</option>
-                                <option value="4">text4</option>
-                                <option value="5">text5</option>
-                                <option value="6">text6</option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
+
+     <div class="modal add-product">
+         <div class="modal-container">
+             <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
+             <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
+             <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
+             <div class="modal-content">
+
+                 <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct" enctype="multipart/form-data">
+                     <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
+                     <input type="hidden" name="action" id="action" value="add">
+                     <input type="hidden" id="product-id" name="id" value="">
+
+                     <div class="modal-content-left" style="margin: 0 auto;">
+                         <img src="image/admin/blank-image.png" alt="" class="upload-image-preview" id="preview-image">
+                         <div class="form-group file">
+                             <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
+                             <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" style="display: none;">
+                         </div>
+                     </div>
+
+                     <div class="modal-content-right">
+                         <div class="form-group">
+                             <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+                             <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <!-- Danh mục -->
+                         <div class="form-group">
+                             <label for="category" class="form-label">Danh mục</label>
+                             <select name="categoryID" id="chon-mon">
+                                 < value=""></>
+                             </select>
+                             <span class="form-message"></span>
+                         </div>
+
+
+
+                         <div class="form-group">
+                             <label for="brands" class="form-label">Thương hiệu</label>
+                             <select name="brandsID" id="chon-brands">
+                                 <option value=""></option>
+                             </select>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <!-- Các trường khác -->
+                         <div class="form-group">
+                             <label for="IsSale" class="form-label">Chọn sale</label>
+                             <select name="IsSale" id="chon-sale">
+                                 <option value="1">Có</option>
+                                 <option value="0">Không</option>
+                             </select>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="phan-tram-giam" class="form-label">% giảm giá</label>
+                             <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01" placeholder="Nhập %" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="gia-moi" class="form-label">Giá bán</label>
+                             <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
+                         <div class="form-group">
+                             <label for="khoi-luong" class="form-label">Khối lượng</label>
+                             <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng" class="form-control" required>
+                             <span class="form-message"></span>
+                         </div>
+
 
                         <div class="form-group">
                             <label for="NCC" class="form-label">Nhà cung cấp</label>
@@ -904,6 +1065,7 @@
                             <span>LƯU THAY ĐỔI</span>
                         </button>
 
+
                     </div>
                 </form>
             </div>
@@ -911,6 +1073,7 @@
         </div>
     </div>
     <div class="modal detail-order">
+
         <div class="modal-container3">
             <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
             <button class="modal-close" onclick="closeModal()"><i class="fa-regular fa-xmark"></i></button>
@@ -1027,6 +1190,7 @@
         </div>
     </div>
 
+
      <div class="modal add-voucher">
          <div class="modal-container4">
              <h3 class="modal-container-title add-voucher-e">THÊM MỚI VOUCHER</h3>
@@ -1117,7 +1281,11 @@
 
  </div>
 
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
 <script>
     $(".btn-detail").click(function () {
         const orderId = $(this).closest("tr").find("td:first").text().replace("DH", "").trim();
