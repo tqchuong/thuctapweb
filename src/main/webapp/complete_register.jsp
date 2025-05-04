@@ -1,8 +1,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-  fit.hcmuaf.edu.vn.foodmart.model.GoogleAccount googleAcc = (fit.hcmuaf.edu.vn.foodmart.model.GoogleAccount) session.getAttribute("google_acc");
-  if (googleAcc == null) {
+  fit.hcmuaf.edu.vn.foodmart.model.Account acc = (fit.hcmuaf.edu.vn.foodmart.model.Account) session.getAttribute("account");
+  if (acc == null) {
     response.sendRedirect("login.jsp"); // Không có dữ liệu -> quay lại login
     return;
   }
@@ -19,9 +19,23 @@
   <br>
 </c:if>
 <form action="completeRegister" method="post">
-  <p>Email: <%= googleAcc.getEmail() %></p>
-  <input type="hidden" name="email" value="<%= googleAcc.getEmail() %>">
-  <input type="hidden" name="fullName" value="<%= googleAcc.getName() %>">
+
+  <%
+    String email = acc.getEmail();
+    if (email != null && !email.isEmpty()) {
+  %>
+  <p>Email: <%= email %></p>
+  <input type="hidden" name="email" value="<%= email %>">
+  <%
+  } else {
+  %>
+  <label>Email:</label><br>
+  <input type="email" name="email" required><br><br>
+  <%
+    }
+  %>
+
+  <input type="hidden" name="fullName" value="<%= acc.getName() %>">
 
   <label>Username:</label><br>
   <input type="text" name="username" required><br><br>

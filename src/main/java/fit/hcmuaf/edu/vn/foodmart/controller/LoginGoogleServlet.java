@@ -34,7 +34,7 @@ public class LoginGoogleServlet extends HttpServlet {
             response.sendRedirect("home.jsp");
         } else {
             // Email chưa tồn tại -> lưu Google info vào session tạm và chuyển đến trang nhập username/password
-            request.getSession().setAttribute("google_acc", acc);
+            request.getSession().setAttribute("account", acc);
             response.sendRedirect("complete_register.jsp"); // trang nhập thêm thông tin
         }
     }
