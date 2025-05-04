@@ -62,7 +62,7 @@ public class LoggerUtil {
                         .append("Tài nguyên: ").append(resource).append("\n")
                         .append("Thông tin mới: ").append(newData).append("\n");
 
-                UserDAO.sendMail("gatrong015@gmail.com", subject, body.toString());
+                UserDAO.sendMail("22130029@st.hcmuaf.edu.vn", subject, body.toString());
             }
 
 
