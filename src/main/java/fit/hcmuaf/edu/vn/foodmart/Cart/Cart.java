@@ -76,6 +76,8 @@
         private CartProduct convert(Products p) {
             CartProduct re = new CartProduct();
             re.setId(p.getID());
+            re.setProductId(p.getID());
+
             re.setProductName(p.getProductName());
             re.setPrice(p.getPrice());
             re.setImageURL(p.getImageURL());

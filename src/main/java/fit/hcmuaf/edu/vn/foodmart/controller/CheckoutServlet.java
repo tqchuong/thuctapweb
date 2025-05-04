@@ -2,10 +2,7 @@ package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import fit.hcmuaf.edu.vn.foodmart.Cart.Cart;
 import fit.hcmuaf.edu.vn.foodmart.Cart.CartProduct;
-import fit.hcmuaf.edu.vn.foodmart.dao.OrderDao;
-import fit.hcmuaf.edu.vn.foodmart.dao.OrderDetailDAO;
-import fit.hcmuaf.edu.vn.foodmart.dao.PaymentDAO;
-import fit.hcmuaf.edu.vn.foodmart.dao.ShippingDAO;
+import fit.hcmuaf.edu.vn.foodmart.dao.*;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
 import jakarta.servlet.RequestDispatcher;
@@ -48,13 +45,20 @@ public class CheckoutServlet extends HttpServlet {
             Jdbi jdbi = DBConnect.getJdbi();
             int orderId = jdbi.withHandle(handle -> {
                 OrderDao orderDAO = new OrderDao(handle);
-                // Tạo đơn hàng và trả về orderId
                 int newOrderId = orderDAO.createOrder(user, totalAmount, shippingMethod, deliveryDate,
                         deliveryTime, paymentMethod, orderNote, receiverName, receiverPhone, shippingAddress);
 
                 OrderDetailDAO orderDetailDAO = new OrderDetailDAO(handle.getJdbi());
                 for (CartProduct item : cart.getlist()) {
                     orderDetailDAO.addOrderDetail(newOrderId, item);
+                }
+
+                // Cập nhật tồn kho sản phẩm
+                ProductDAO productDAO = new ProductDAO( );
+                for (CartProduct item : cart.getlist()) {
+                    int productId = item.getProductId();
+                    int quantity = item.getQuantity();
+                    productDAO.updateProductQuantity(productId, quantity);
                 }
 
                 ShippingDAO shippingDAO = new ShippingDAO(handle.getJdbi());
@@ -65,6 +69,7 @@ public class CheckoutServlet extends HttpServlet {
 
                 return newOrderId;
             });
+
 
             /// Lưu thông tin đơn hàng vào session
             session.setAttribute("currentOrderId", orderId);

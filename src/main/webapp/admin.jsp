@@ -4,15 +4,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.CouponDAO" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.*" %>
-<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.admin.BrandAdminDAO" %>
-<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Activity_log" %>
-<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
 
 
 <!DOCTYPE html>
@@ -25,9 +19,7 @@
     <link rel="stylesheet" href="css/admin.css">
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Quản lý cửa hàng</title>
 </head>
 
@@ -100,15 +92,6 @@
                         <div class="hidden-sidebar">Vận chuyển</div>
                     </a>
                 </li>
-
-
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
-                        <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
-                        <div class="hidden-sidebar">Nhật kí hoạt động</div>
-                    </a>
-                </li>
-
 
 
             </ul>
@@ -472,98 +455,125 @@
                     <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
                 </div>
             </div>
-            <div class="order-statistical" id="order-statistical">
-                <div class="order-statistical-item">
-                    <%
-
-                        int orderCount1 = orderAdminDAO.getSoldProducts();
-                    %>
-                    <div class="order-statistical-item-content">
-                        <p class="order-statistical-item-content-desc">Sản phẩm được bán ra</p>
-                        <h4 class="order-statistical-item-content-h" id="quantity-product"><%= orderCount1 %>
-                        </h4>
-                    </div>
-                    <div class="order-statistical-item-icon">
-                        <i class="fa-light fa-wheat-awn"></i>
+            <div class="row text-center mb-4">
+                <!-- Hàng 1: Tổng doanh thu, Đơn đã xử lý, Đơn đã giao, Doanh thu hôm nay -->
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted">Tổng doanh thu</p>
+                            <h5><%= orderAdminDAO.getSoldQuantity() * 10000 %> VNĐ</h5>
+                        </div>
                     </div>
                 </div>
-                <div class="order-statistical-item">
-                    <%
-
-                        int orderCount2 = orderAdminDAO.getSoldQuantity();
-                    %>
-                    <div class="order-statistical-item-content">
-                        <p class="order-statistical-item-content-desc">Số lượng bán ra</p>
-                        <h4 class="order-statistical-item-content-h" id="quantity-order"><%= orderCount2 %>
-                        </h4>
-                    </div>
-                    <div class="order-statistical-item-icon">
-                        <i class="fa-light fa-file-lines"></i>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted">Đơn đã xử lý</p>
+                            <h5><%= orderAdminDAO.getProcessedOrders() %></h5>
+                        </div>
                     </div>
                 </div>
-                <div class="order-statistical-item">
-                    <div class="order-statistical-item-content">
-                        <p class="order-statistical-item-content-desc">Doanh thu</p>
-                        <h4 class="order-statistical-item-content-h" id="quantity-sale"><fmt:formatNumber
-                                value="<%= sumRevenue %>" type="number" pattern="#,###"/>&nbsp;₫</h4>
-
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted">Đơn đã giao</p>
+                            <h5><%= orderAdminDAO.getShippedOrders() %></h5>
+                        </div>
                     </div>
-                    <div class="order-statistical-item-icon">
-                        <i class="fa-light fa-dollar-sign"></i>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <p class="text-muted">Doanh thu hôm nay</p>
+                            <h5><fmt:formatNumber value="<%= orderAdminDAO.getRevenueToday() %>" type="number" pattern="#,###"/> VNĐ</h5>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="table">
-                <table width="100%">
-                    <thead>
-                    <tr>
-                        <td>STT</td>
-                        <td>Tên món</td>
-                        <td>Số lượng bán</td>
-                        <td>Doanh thu</td>
-                        <td></td>
-                    </tr>
-                    </thead>
 
-                    <%
-                        OrderAdminDAO orderAdminDAO2 = new OrderAdminDAO();
-                        List<Products> productsList = orderAdminDAO2.getSoldListProducts();
-                    %>
+                <%
+    List<OrderDetails> productStats = orderAdminDAO.getProductReport();
+    OrderDetails best = productStats.get(0);
+%>
 
-                    <tbody id="showTk">
-                    <% for (Products product : productsList) { %>
-                    <tr>
-                        <td><%= product.getID() %>
-                        </td>
-                        <td>
-                            <div class="prod-img-title">
-                                <img class="prd-img-tbl" src="<%= product.getImageURL() %>"
-                                     alt="<%= product.getProductName() %>">
-                                <p><%= product.getProductName() %>
-                                </p>
-                            </div>
-                        </td>
-                        <td><%= product.getWeight() %>
-                        </td>
+            <!-- Hàng 2: Bảng sản phẩm bán chạy và sản phẩm cần nhập -->
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Bảng bán chạy -->
+                    <div class="mb-4">
+                        <h4>Sản phẩm bán chạy nhất: <strong><%= productStats.get(0).getProduct().getProductName() %></strong></h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th>STT</th>
+                                <th>Sản phẩm</th>
+                                <th>Đã bán</th>
+                                <th>Doanh thu</th>
+                                <th>Số lượng kho</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% int stt = 1;
+                                for (OrderDetails item : productStats) {
+                                    Products p = item.getProduct(); %>
+                            <tr>
+                                <td><%= stt++ %></td>
+                                <td><%= p.getProductName() %></td>
+                                <td><%= item.getQuantity() %></td>
+                                <td><fmt:formatNumber value="<%= item.getUnitPrice() %>" pattern="#,###"/> VNĐ</td>
+                                <td><%= p.getWarehouse().getQuantity() %></td>
+                            </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                        <td><%= product.getPrice() %>
-                        </td>
-                        <td>
-                            <button class="btn-detail product-order-detail" data-id="<%= product.getID() %>">
-                                <i class="fa-regular fa-eye"></i> Chi tiết
-                            </button>
-                        </td>
-                    </tr>
-                    <% } %>
-                    </tbody>
-                </table>
+                <div class="col-md-6">
+                    <!-- Sản phẩm cần nhập & Sản phẩm bán chậm -->
+                    <div class="row">
+                        <!-- Sản phẩm cần nhập -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3">🛒 Sản phẩm cần nhập </h5>
+                            <% List<Products> needRestock = orderAdminDAO.getProductsNeedRestock(); %>
+                            <% if (needRestock != null && !needRestock.isEmpty()) { %>
+                            <ul class="list-group">
+                                <% for (Products p : needRestock) { %>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <img src="<%= p.getImageURL() %>" class="me-2" width="40">
+                                    <span><%= p.getProductName() %></span>
+                                    <span class="ms-auto badge bg-warning text-dark">
+                            <%= p.getWarehouse().getQuantity() %> còn | <%= p.getSoldQuantity() %> bán/7 ngày
+                        </span>
+                                </li>
+                                <% } %>
+                            </ul>
+                            <% } else { %>
+                            <p class="text-muted"><i>Không có sản phẩm cần nhập</i></p>
+                            <% } %>
+                        </div>
+
+                        <!-- Sản phẩm bán chậm -->
+                        <div class="col-md-6">
+                            <h5 class="mb-3">🐢 Sản phẩm tồn kho</h5>
+                            <% List<Products> slowSelling = orderAdminDAO.getSlowSellingProducts(); %>
+                            <ul class="list-group">
+                                <% for (Products p : slowSelling) { %>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <img src="<%= p.getImageURL() %>" class="me-2" width="40">
+                                    <span><%= p.getProductName() %></span>
+                                    <span class="ms-auto badge bg-secondary"><%= p.getSoldQuantity() %> đã bán</span>
+                                </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-
-        <!--Voucher-->
-
-        <div class="section">
+            <div class="section">
             <!-- Bộ lọc và tìm kiếm -->
             <div class="admin-control">
                 <div class="admin-control-left">
@@ -661,6 +671,9 @@
             </div>
         </div>
 
+
+
+        <div class="section ncc-all">
 
         <!--categories-->
         <div class="section">
@@ -780,6 +793,7 @@
 
         <!--Ship-->
         <div class="section ship-all">
+
             <div class="admin-control">
                 <div class="admin-control-left">
                     <select name="the-loai" id="the-loai">
@@ -807,18 +821,69 @@
                 <table width="100%">
                     <thead>
                     <tr>
-                        <td>ID</td>
-                        <td>Phương thức giao hàng</td>
-                        <td>Gía tiền</td>
-                        <td>Trạng thái</td>
+                        <td>STT</td>
+                        <td>Tên nhà cung cấp</td>
+                        <td>Ngày đặt</td>
+                        <td>Tổng tiền</td>
 
                     </tr>
                     </thead>
-
+<%--                    <%--%>
+<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
+<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
+<%--                    %>--%>
+<%--                    <tbody id="showOrder">--%>
+<%--                    <% for (Order order : orders) { %>--%>
+<%--                    <tr>--%>
+<%--                        <td>DH<%= order.getId() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= order.getReceiverPhone() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
+<%--                        <td>--%>
+<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
+<%--                          </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control">--%>
+<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <% } %>--%>
+<%--                    </tbody>--%>
                 </table>
             </div>
         </div>
 
+
+        <!--Ship-->
+        <div class="section ship-all">
+            <div class="admin-control">
+                <div class="admin-control-left">
+                    <select name="the-loai" id="the-loai">
+                        <option>Tất cả</option>
+                        <option>Sản phẩm gần hết hàng</option>
+                    </select>
+                </div>
+                <div class="admin-control-center">
+                    <form action="" class="form-search">
+                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
+                        <input id="form-search-product" type="text" class="form-search-input"
+                               placeholder="Tìm kiếm tên sản phẩm...">
+                    </form>
+                </div>
+                <div class="admin-control-right">
+                    <button class="btn-control-large" id="btn-cancel-product"><i
+                            class="fa-light fa-rotate-right"></i> Làm mới
+                    </button>
+                    <button class="btn-control-large" id="btn-add-product"><i class="fa-light fa-plus"></i> Thêm sản
+                        phẩm
+                    </button>
+                </div>
+            </div>
+            <div class="table">
+                <table width="100%">
 
         <!--Log-->
         <div class="section">
@@ -827,53 +892,46 @@
             <!-- Bảng nhật ký hoạt động -->
             <div class="table" style="margin-top: 10px;">
                 <table id="logTable" class="log-table" width="100%">
+
                     <thead>
                     <tr>
-                        <td>STT</td>
-                        <td>Người dùng</td>
-                        <td>Hành động</td>
-                        <td>Mức độ</td>
-                        <td>IP</td>
-                        <td>Thời gian</td>
-                        <td>Trang</td>
-                        <td>Tài nguyên</td>
-                        <td>Dữ liệu cũ</td>
-                        <td>Dữ liệu mới</td>
+                        <td>ID</td>
+                        <td>Phương thức giao hàng</td>
+                        <td>Gía tiền</td>
+                        <td>Trạng thái</td>
+
                     </tr>
                     </thead>
-
-                    <tbody id="log-activity-body">
-                    <%
-                        List<Activity_log> logs = Activity_logDAO.getAllLogs();
-                        int stt = 1;
-                        if (logs != null && !logs.isEmpty()) {
-                            for (Activity_log log : logs) {
-                    %>
-                    <tr>
-                        <td><%= stt++ %></td>
-                        <td><%= log.getUsername() %></td>
-                        <td><%= log.getAction() %></td>
-                        <td><%= log.getLevel_log() %></td>
-                        <td><%= log.getIp_address() %></td>
-                        <td><%= log.getTime_log() %></td>
-                        <td><%= log.getSource_page() %></td>
-                        <td><%= log.getResource() %></td>
-                        <td><%= log.getOld_data() %></td>
-                        <td><%= log.getNew_data() %></td>
-                    </tr>
-                    <%
-                        }
-                    } else {
-                    %>
-                    <tr><td colspan="10">Không có dữ liệu nhật ký.</td></tr>
-                    <%
-                        }
-                    %>
-                    </tbody>
+<%--                    <%--%>
+<%--                        OrderAdminDAO orderAdminDAO = new OrderAdminDAO();--%>
+<%--                        List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database--%>
+<%--                    %>--%>
+<%--                    <tbody id="showOrder">--%>
+<%--                    <% for (Order order : orders) { %>--%>
+<%--                    <tr>--%>
+<%--                        <td>DH<%= order.getId() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= order.getReceiverPhone() %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= new java.text.SimpleDateFormat("dd/MM/yyyy").format(order.getOrderDate()) %>--%>
+<%--                        </td>--%>
+<%--                        <td><%= String.format("%,.0f", order.getTotalAmount()) %>&nbsp;₫</td> <!-- Tổng tiền -->--%>
+<%--                        <td>--%>
+<%--                          <span class="<%= order.getOrderStatus().equals("Đã xử lý") ? "status-complete" : "status-no-complete" %>"><%= order.getOrderStatus() %>--%>
+<%--                          </span>--%>
+<%--                        </td>--%>
+<%--                        <td class="control">--%>
+<%--                            <button class="btn-detail" id=""><i class="fa-regular fa-eye"></i> Chi tiết</button>--%>
+<%--                        </td>--%>
+<%--                    </tr>--%>
+<%--                    <% } %>--%>
+<%--                    </tbody>--%>
                 </table>
             </div>
         </div>
     </main>
+
+
 
 
      <div class="modal add-product">
@@ -949,34 +1007,72 @@
                              <span class="form-message"></span>
                          </div>
 
-                         <div class="form-group">
-                             <label for="so-luong" class="form-label">Số lượng</label>
-                             <input id="so-luong" name="quantity" type="number" placeholder="Nhập số lượng" class="form-control" required>
-                             <span class="form-message"></span>
-                         </div>
 
-                         <div class="form-group">
-                             <label for="mo-ta" class="form-label">Mô tả</label>
-                             <textarea class="product-desc" name="shortDescription" id="mo-ta" placeholder="Nhập mô tả sản phẩm..." required></textarea>
-                             <span class="form-message"></span>
-                         </div>
+                        <div class="form-group">
+                            <label for="NCC" class="form-label">Nhà cung cấp</label>
+                            <select name="NCCID" id="chon-ncc">
+                                <option value="1"> HoaBanFood</option>
+                                <option value="2">ABC</option>
+                                <option value="3"> text3</option>
+                                <option value="4">text4</option>
+                                <option value="5">text5</option>
+                                <option value="6">text6</option>
+                            </select>
+                            <span class="form-message"></span>
+                        </div>
 
-                         <!-- Nút Submit -->
-                         <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button">
-                             <i class="fa-regular fa-plus"></i>
-                             <span>THÊM SẢN PHẨM</span>
-                         </button>
-                         <button type="submit" class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
-                             <i class="fa-light fa-pencil"></i>
-                             <span>LƯU THAY ĐỔI</span>
-                         </button>
-                     </div>
-                 </form>
-             </div>
-         </div>
-     </div>
 
-     <div class="modal detail-order">
+                        <div class="form-group">
+                            <label for="IsSale" class="form-label">Chọn sale</label>
+                            <select name="IsSale" id="chon-sale">
+                                <option value="1">Có</option>
+                                <option value="0">Không</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phan-tram-giam" class="form-label">% giảm giá</label>
+                            <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01"
+                                   placeholder="Nhập %"
+                                   class="form-control" required>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="gia-moi" class="form-label">Giá bán</label>
+                            <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán"
+                                   class="form-control" required>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="so-luong" class="form-label">Số lượng</label>
+                            <input id="so-luong" name="stockQuantity" type="number" placeholder="Nhập số lượng"
+                                   class="form-control" required>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="mo-ta" class="form-label">Mô tả</label>
+                            <textarea class="product-desc" name="shortDescription" id="mo-ta"
+                                      placeholder="Nhập mô tả sản phẩm..." required></textarea>
+                            <span class="form-message"></span>
+                        </div>
+                        <button type="submit" class="form-submit btn-add-product-form add-product-e"
+                                id="add-product-button">
+                            <i class="fa-regular fa-plus"></i>
+                            <span>THÊM SẢN PHẨM</span>
+                        </button>
+                        <button type="submit" class="form-submit btn-update-product-form edit-product-e"
+                                id="update-product-button">
+                            <i class="fa-light fa-pencil"></i>
+                            <span>LƯU THAY ĐỔI</span>
+                        </button>
+
+
+                    </div>
+                </form>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal detail-order">
 
         <div class="modal-container3">
             <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
@@ -1183,69 +1279,11 @@
      </div>
 
 
-
-
-     <div class="modal add-brand">
-         <div class="modal-container4">
-             <h3 class="modal-container-title add-brand-e">THÊM MỚI BRANDS</h3>
-             <h3 class="modal-container-title edit-brand-e">CHỈNH SỬA BRANDS</h3>
-             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-             <div class="modal-content">
-                 <form action="${pageContext.request.contextPath}/brandController" method="POST" id="brand-form">
-                     <input type="hidden" id="action1" name="action1" value="add">
-                     <input type="hidden" id="brand-id" name="brandId" value="">
-
-                     <div class="modal-content-right">
-                         <div class="form-group">
-                             <label for="brand-code">Tên brand</label>
-                             <input id="brand-code" name="brandName" type="text" class="form-control" required>
-                         </div>
-                         <button type="submit" class="form-submit btn-add-brand-form add-brand-e">
-                             <i class="fa-regular fa-plus"></i>
-                             <span>THÊM BRAND</span>
-                         </button>
-                         <button type="submit" class="form-submit btn-update-brand-form edit-brand-e">
-                             <i class="fa-light fa-pencil"></i>
-                             <span>LƯU THAY ĐỔI</span>
-                         </button>
-                     </div>
-                 </form>
-             </div>
-         </div>
-     </div>
-
-
-     <div class="modal add-categories">
-         <div class="modal-container4">
-             <h3 class="modal-container-title add-categories-e">THÊM MỚI CATEGORIES</h3>
-             <h3 class="modal-container-title edit-categories-e">CHỈNH SỬA CATEGORIES</h3>
-             <button class="modal-close"><i class="fa-regular fa-xmark"></i></button>
-             <div class="modal-content">
-                 <form action="${pageContext.request.contextPath}/categoriesController" method="POST" id="categories-form">
-                     <input type="hidden" id="action2" name="action2" value="add">
-                     <input type="hidden" id="categories-id" name="categoriesId" value="">
-
-                     <div class="modal-content-right">
-                         <div class="form-group">
-                             <label for="categories-code">Tên categories</label>
-                             <input id="categories-code" name="categoriesName" type="text" class="form-control" required>
-                         </div>
-                         <button type="submit" class="form-submit btn-add-categories-form add-categories-e">
-                             <i class="fa-regular fa-plus"></i>
-                             <span>THÊM CATEGORIES</span>
-                         </button>
-                         <button type="submit" class="form-submit btn-update-categories-form edit-categories-e">
-                             <i class="fa-light fa-pencil"></i>
-                             <span>LƯU THAY ĐỔI</span>
-                         </button>
-                     </div>
-                 </form>
-             </div>
-         </div>
-     </div>
-
-
  </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 
 <script>
@@ -1276,7 +1314,12 @@
     $(".modal-close").click(function () {
         $(".modal.detail-order").hide();
     });
+
+
 </script>
+
+
+<script src="js/admin.js"></script>
 <script>
     setInterval(() => {
         fetch('<%=request.getContextPath()%>/checkSession')
@@ -1293,61 +1336,7 @@
             });
     }, 3000); // Kiểm tra mỗi 3 giây
 </script>
-<script>
-    fetch('<%=request.getContextPath()%>/brandController')
-        .then(response => response.json())
-        .then(brands => {
-            const select = document.getElementById('chon-brands');
-            brands.forEach(brand => {
-                const option = document.createElement('option');
-                option.value = brand.id;         // Sửa brandID -> id
-                option.textContent = brand.name; // Sửa brandName -> name
-                select.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error loading brands:', error));
-</script>
-<script>
-    fetch('<%=request.getContextPath()%>/categoriesController')
-        .then(response => response.json())
-        .then(categories => {
-            const select = document.getElementById('chon-mon');
-            select.innerHTML = '<option value="">Chọn danh mục</option>'; // Clear trước
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category.categoryID; // đúng field
-                option.textContent = category.categoryName; // đúng field
-                select.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error loading categories:', error));
-</script>
 
-<%--table showlog--%>
-<script>
-    $(document).ready(function() {
-        $('#logTable').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            pageLength: 10,
-            lengthMenu: [5, 10, 25, 50],
-            language: {
-                search: "Tìm kiếm:",
-                paginate: {
-                    first: "Đầu",
-                    last: "Cuối",
-                    next: "Tiếp",
-                    previous: "Trước"
-                },
-                lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang",
-                info: "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                infoEmpty: "Không có bản ghi nào",
-                emptyTable: "Không có dữ liệu trong bảng"
-            }
-        });
-    });
-</script>
-<script src="js/admin.js"></script>
 </body>
+
 </html>

@@ -407,7 +407,7 @@ LEFT JOIN sales s ON p.ID = s.ProductID
         JOIN shipping s ON o.Id = s.OrderID
         WHERE o.UserID = :userId 
           AND od.ProductID = :productId 
-          AND s.ShippingStatus = 'Thành công'
+          AND s.ShippingStatus = 'Đã giao'
     """;
 
         try (Handle handle = jdbi.open()) {
@@ -424,6 +424,16 @@ LEFT JOIN sales s ON p.ID = s.ProductID
             return false;
         }
     }
+    // Cập nhật số lượng sản phẩm trong kho
+    public void updateProductQuantity(int productId, int quantityPurchased) {
+        jdbi.useHandle(handle -> {
+            handle.createUpdate("UPDATE warehouse SET quantity = quantity - :qty WHERE product_id = :product_id;")
+                    .bind("qty", quantityPurchased)
+                    .bind("product_id", productId)
+                    .execute();
+        });
+    }
+
 
     // Test phương thức getAllProducts() và getProductDetailsById()
     public static void main(String[] args) {
