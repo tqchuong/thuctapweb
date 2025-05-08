@@ -3,7 +3,7 @@ package fit.hcmuaf.edu.vn.foodmart.model;
 import java.io.Serializable;
 
 public class GoogleAccount implements Account {
-    private String  id, email, name, first_name, given_name, family_name, picture;
+    private String  id, email, name, first_name, given_name, family_name, picture,loginType;
 
     private boolean verified_email;
 
@@ -82,6 +82,14 @@ public class GoogleAccount implements Account {
         this.verified_email = verified_email;
     }
 
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
+    }
+
     @Override
     public String toString() {
         return "GoogleAccount{" +
@@ -92,6 +100,7 @@ public class GoogleAccount implements Account {
                 ", given_name='" + given_name + '\'' +
                 ", family_name='" + family_name + '\'' +
                 ", picture='" + picture + '\'' +
+                ", loginType='" + loginType + '\'' +
                 ", verified_email=" + verified_email +
                 '}';
     }
