@@ -21,6 +21,7 @@ public class LoginGoogleServlet extends HttpServlet {
         GoogleLogin gg = new GoogleLogin();
         String accessToken = gg.getToken(code);
         GoogleAccount acc = gg.getUserInfo(accessToken);
+        acc.setLoginType("Google");
         System.out.println("Acc: " + acc);
 
         UserDAO userDAO = new UserDAO();
