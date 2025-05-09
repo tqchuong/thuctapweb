@@ -26,6 +26,9 @@ public class CompleteRegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String passwordConfirm = request.getParameter("passwordConfirm");
         String loginType = request.getParameter("loginType");
+        String id = request.getParameter("id");
+        int shortId = Integer.parseInt(id.substring(0,8));
+
 
         UserDAO userDAO = new UserDAO();
 
@@ -60,6 +63,7 @@ public class CompleteRegisterServlet extends HttpServlet {
         String hashedPassword = PasswordUtils.hashPassword(password);
 
         Users user = new Users();
+        user.setId(shortId);
         user.setUsername(username);
         user.setPassword(hashedPassword);
         user.setEmail(email);

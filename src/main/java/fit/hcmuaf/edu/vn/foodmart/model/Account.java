@@ -4,4 +4,5 @@ public interface Account {
     String getEmail();
     String getName();
     String getLoginType();
+    String getId();
 }

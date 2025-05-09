@@ -69,6 +69,10 @@ public class UserDAO implements ObjectDAO {
                 System.out.println("Tài khoản bị khóa tạm thời: " + username);
                 return "ACCOUNT_TEMP_LOCKED";
             }
+            if (user.getIsDelete()){
+                System.out.println("Tài khoản không thể đăng nhập do đã bị xóa ");
+                return "ACCOUNT_DELETED";
+            }
 
             // Kiểm tra trạng thái người dùng
             if (!user.getUserStatus().equals("Đang hoạt động")) {
@@ -143,6 +147,21 @@ public class UserDAO implements ObjectDAO {
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .bind(0, username)
+                    .mapToBean(Users.class)
+                    .findOne().orElse(null);  // Trả về đối tượng người dùng nếu tìm thấy
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy thông tin người dùng: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    // Lấy thông tin người dùng theo id
+    public Users getUserById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind(0, id)
                     .mapToBean(Users.class)
                     .findOne().orElse(null);  // Trả về đối tượng người dùng nếu tìm thấy
         } catch (Exception e) {
@@ -315,6 +334,22 @@ public class UserDAO implements ObjectDAO {
             return false; // Nếu không có dòng dữ liệu, trả về false
         }
     }
+
+    // Kiểm tra xem ID có tồn tại trong bảng users không
+    public boolean idExists(int id) {
+        String sql = "SELECT COUNT(*) FROM users WHERE id = :id";
+        try (Handle handle = jdbi.open()) {
+            int count = handle.createQuery(sql)
+                    .bind("id", id)
+                    .mapTo(int.class)
+                    .one();
+            return count > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     //kiểm tra username, email có tồn tại không
     public boolean isUserExist(String username, String email) {
@@ -519,11 +554,12 @@ public class UserDAO implements ObjectDAO {
     }
     //khi dang nhap gg insert user
     public void insert(Users user) {
-        String sql = "INSERT INTO users ( Username, Password, Email, FullName, is_verified, login_type) " +
-                "VALUES ( :username, :password, :email, :fullName, :isVerified, :loginType)";
+        String sql = "INSERT INTO users ( Id ,Username, Password, Email, FullName, is_verified, login_type) " +
+                "VALUES (:id, :username, :password, :email, :fullName, :isVerified, :loginType)";
 
         try (Handle handle = jdbi.open()) {
                 handle.createUpdate(sql)
+                        .bind("id",user.getId())
                         .bind("username", user.getUsername())
                         .bind("password", user.getPassword())
                         .bind("email", user.getEmail())

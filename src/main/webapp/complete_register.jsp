@@ -81,6 +81,7 @@
                     </div>
 
                     <input type="hidden" name="loginType" value="<%= acc.getLoginType() %>">
+                    <input type="hidden" name="id" value="<%= acc.getId() %>">
 
                 </div>
 

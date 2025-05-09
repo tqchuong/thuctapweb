@@ -22,6 +22,7 @@ public class Users implements Serializable {
     private int loginAttempts; // Số lần đăng nhập sai
     private Timestamp lockTime; // Thời gian bị khóa
     private String loginType;
+    private boolean isDelete;
 
     public Users() {
     }
@@ -192,6 +193,14 @@ public class Users implements Serializable {
 
     public void setLoginType(String loginType) {
         this.loginType = loginType;
+    }
+
+    public boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(boolean delete) {
+        isDelete = delete;
     }
 
     @Override
