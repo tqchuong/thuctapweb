@@ -16,9 +16,9 @@ public class DBConnect {
             // Cấu hình thông tin kết nối MySQL trực tiếp trong lớp DBConnect
             String host = "localhost";  // Địa chỉ host MySQL
             int port = 3306;  // Cổng kết nối MySQL
-            String dbname = "test1";  // Tên cơ sở dữ liệu
+            String dbname = "luongthuc4";  // Tên cơ sở dữ liệu
             String username = "root";  // Tên đăng nhập MySQL
-            String password = "";
+            String password = "123456";
             String options = "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";  // Các tùy chọn kết nối
 
             // Tạo URL kết nối
@@ -41,7 +41,7 @@ public class DBConnect {
     // Lấy thông tin sản phẩm và hiển thị ra màn hình
     public static void displayProducts() {
         String sql = "SELECT * FROM products";  // Truy vấn toàn bộ bảng Products
-
+//
         try (Handle handle = jdbi.open()) {
             // Truy vấn dữ liệu và ánh xạ kết quả thành đối tượng Products
             List<Products> products = handle.select(sql)

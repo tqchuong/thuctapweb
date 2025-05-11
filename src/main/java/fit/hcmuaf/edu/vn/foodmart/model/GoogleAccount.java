@@ -1,6 +1,8 @@
 package fit.hcmuaf.edu.vn.foodmart.model;
 
-public class GoogleAccount {
+import java.io.Serializable;
+
+public class GoogleAccount implements Account {
     private String  id, email, name, first_name, given_name, family_name, picture;
 
     private boolean verified_email;
