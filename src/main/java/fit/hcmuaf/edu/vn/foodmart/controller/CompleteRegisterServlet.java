@@ -25,6 +25,10 @@ public class CompleteRegisterServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String passwordConfirm = request.getParameter("passwordConfirm");
+        String loginType = request.getParameter("loginType");
+        String id = request.getParameter("id");
+        int shortId = Integer.parseInt(id.substring(0,8));
+
 
         UserDAO userDAO = new UserDAO();
 
@@ -59,17 +63,18 @@ public class CompleteRegisterServlet extends HttpServlet {
         String hashedPassword = PasswordUtils.hashPassword(password);
 
         Users user = new Users();
+        user.setId(shortId);
         user.setUsername(username);
         user.setPassword(hashedPassword);
         user.setEmail(email);
         user.setFullName(fullName);
         user.setIs_verified(true);
-        user.setLoginType("google");
+        user.setLoginType(loginType != null && loginType.equals("Facebook") ? "facebook" : "google");
 
         userDAO.insert(user);
 
         // Đăng nhập tự động
-        request.getSession().removeAttribute("google_acc");
+        request.getSession().removeAttribute("account");
         request.getSession().setAttribute("auth", user);
         SessionManager.addSession(user.getUsername(), request.getSession());
 

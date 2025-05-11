@@ -21,17 +21,27 @@ public class LoginGoogleServlet extends HttpServlet {
         GoogleLogin gg = new GoogleLogin();
         String accessToken = gg.getToken(code);
         GoogleAccount acc = gg.getUserInfo(accessToken);
+        acc.setLoginType("Google");
         System.out.println("Acc: " + acc);
 
         UserDAO userDAO = new UserDAO();
         Users user = new Users();
         if (userDAO.emailExists(acc.getEmail())) {
-            // Email đã tồn tại -> đăng nhập
+            // Email đã tồn tại -> kiểm tra isDelete
             user = userDAO.getUserByEmail(acc.getEmail());
-            // Lưu thông tin đăng nhập vào session
-            request.getSession().setAttribute("auth", user);
-            SessionManager.addSession(user.getUsername(), request.getSession());
-            response.sendRedirect("home.jsp");
+
+            // Kiểm tra xem tài khoản có bị xóa không
+            if (user.getIsDelete()) {
+                // Nếu tài khoản bị xóa, thông báo và không cho phép đăng nhập
+                System.out.println("Tài khoản đã bị xóa.");
+                request.setAttribute("loginError", "Tài khoản của bạn đã bị xóa!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else {
+                // Lưu thông tin đăng nhập vào session
+                request.getSession().setAttribute("auth", user);
+                SessionManager.addSession(user.getUsername(), request.getSession());
+                response.sendRedirect("home.jsp");
+            }
         } else {
             // Email chưa tồn tại -> lưu Google info vào session tạm và chuyển đến trang nhập username/password
             request.getSession().setAttribute("account", acc);
