@@ -164,9 +164,8 @@ public class OrderAdminDAO {
     }
     public int getSoldQuantity() {
         String sql = """
-        SELECT SUM(od.Quantity) AS TotalQuantity
-        FROM orderdetails od
-        JOIN orders o ON od.OrderID = o.Id
+        SELECT SUM(o.TotalAmount)
+        FROM orders o
         JOIN shipping s ON o.Id = s.OrderId
         WHERE s.ShippingStatus = 'Đã giao'
     """;
@@ -373,12 +372,14 @@ public class OrderAdminDAO {
             FROM orderdetails od
             JOIN orders o ON od.OrderID = o.Id
             WHERE DATE(o.OrderDate) = CURRENT_DATE
+              AND o.OrderStatus != 'Đã hủy đơn hàng'
         """)
                         .mapTo(Double.class)
                         .findOne()
                         .orElse(0.0)
         );
     }
+
 
 
     public static void main(String[] args) {

@@ -461,7 +461,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p class="text-muted">Tổng doanh thu</p>
-                            <h5><%= orderAdminDAO.getSoldQuantity() * 10000 %> VNĐ</h5>
+                            <h5><%= orderAdminDAO.getSoldQuantity()  %> VNĐ</h5>
                         </div>
                     </div>
                 </div>
