@@ -1,4 +1,4 @@
-package fit.hcmuaf.edu.vn.foodmart.controller;
+package fit.hcmuaf.edu.vn.foodmart.controller.admin;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

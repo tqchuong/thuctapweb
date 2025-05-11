@@ -1157,6 +1157,13 @@
                            class="form-control" required
                            readonly>
                 </div>
+
+                <div class="form-group">
+                    <label for="customer-mail" class="form-label">Email</label>
+                    <input id="customer-mail" name="mail" type="text" placeholder="VD: tqc@gmail.com"
+                           class="form-control" required>
+                </div>
+
                 <div class="form-group">
                     <label for="customer-phone" class="form-label">Số điện thoại</label>
                     <input id="customer-phone" name="phone" type="text" placeholder="Nhập số điện thoại"

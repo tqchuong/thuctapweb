@@ -23,6 +23,7 @@ public class AddCustomerServlet extends HttpServlet {
 
         String action = request.getParameter("action"); // "add" hoặc "edit"
         String fullname = request.getParameter("fullname");
+        String mail = request.getParameter("mail");
         String phone = request.getParameter("phone");
         String password = request.getParameter("password");
 
@@ -46,6 +47,7 @@ public class AddCustomerServlet extends HttpServlet {
             // Thêm khách hàng mới
             Users newUser = new Users();
             newUser.setUsername(fullname);
+            newUser.setEmail(mail);
             newUser.setPhone(phone);
             newUser.setPassword(PasswordUtils.hashPassword(password)); // Hash password
             newUser.setUserStatus("Đang hoạt động"); // Mặc định trạng thái
