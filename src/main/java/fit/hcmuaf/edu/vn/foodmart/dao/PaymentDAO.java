@@ -28,6 +28,20 @@ public class PaymentDAO {
                         .execute() > 0
         );
     }
+    public boolean updatePaymentStatus1(int orderId, String status) {
+        String sql = "UPDATE payments SET PaymentStatus = :status WHERE OrderID = :orderId";
+
+        try (Handle handle = jdbi.open()) {
+            int rows = handle.createUpdate(sql)
+                    .bind("status", status)
+                    .bind("orderId", orderId)
+                    .execute();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     // Hàm truy vấn thông tin thanh toán theo OrderID
     public Payments getPaymentByOrderId(int orderId) {
