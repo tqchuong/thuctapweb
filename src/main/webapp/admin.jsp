@@ -472,7 +472,8 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p class="text-muted">Tổng doanh thu</p>
-                            <h5><%= orderAdminDAO.getSoldQuantity()  %> VNĐ</h5>
+                            <h5><fmt:formatNumber value="<%= orderAdminDAO.getSoldQuantity()  %>" pattern="#,###"/> VNĐ</h5>
+
                         </div>
                     </div>
                 </div>
