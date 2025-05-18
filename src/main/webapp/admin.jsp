@@ -1161,7 +1161,7 @@
                 <div class="form-group">
                     <label for="customer-mail" class="form-label">Email</label>
                     <input id="customer-mail" name="mail" type="text" placeholder="VD: tqc@gmail.com"
-                           class="form-control" required>
+                           class="form-control">
                 </div>
 
                 <div class="form-group">

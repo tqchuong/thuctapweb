@@ -35,6 +35,8 @@ public class AddCustomerServlet extends HttpServlet {
         String idParam = request.getParameter("id");
         int id = (idParam != null && !idParam.isEmpty()) ? Integer.parseInt(idParam) : 0;
 
+        String currentUsername = (String) request.getSession().getAttribute("username");
+
         UserAdminDAO userDao = new UserAdminDAO();
 
         if ("add".equals(action)) {
@@ -82,7 +84,7 @@ public class AddCustomerServlet extends HttpServlet {
                     existingUser.setRole(newRole); // Cập nhật vai trò mới cho đối tượng existingUser
                     System.out.println("Vai trò cập nhật thành: " + newRole);
 
-                    // **Nếu vai trò chuyển từ Admin -> User**, yêu cầu đăng xuất ngay lập tức
+                    // Kiểm tra nếu là admin bị hạ quyền hoặc admin tự hạ quyền chính mình
                     if (oldRole.equals("Admin") && newRole.equals("User")) {
                         // Cập nhật vai trò vào cơ sở dữ liệu trước khi đăng xuất
                         boolean isUpdated = userDao.updateUser(existingUser);
@@ -94,24 +96,29 @@ public class AddCustomerServlet extends HttpServlet {
                         logoutCookie.setPath("/");  // Đảm bảo cookie có thể truy cập từ tất cả các đường dẫn
                         response.addCookie(logoutCookie);
 
-                        // Xóa tất cả session của người dùng
+                        // Xóa tất cả session của người dùng bị hạ quyền
                         SessionManager.invalidateAllSessions(existingUser.getUsername());
 
-                        // Đăng xuất người dùng hiện tại và xóa session, cookies
-                        request.getSession().invalidate();  // Xóa session để đăng xuất người dùng
+                        // Kiểm tra nếu admin đang hạ quyền chính mình
+                        if (currentUsername != null && currentUsername.equals(existingUser.getUsername())) {
+                            // Đăng xuất người dùng hiện tại và xóa session, cookies
+                            request.getSession().invalidate();  // Xóa session để đăng xuất người dùng
 
-                        // Xóa tất cả cookies
-                        Cookie[] cookies = request.getCookies();
-                        if (cookies != null) {
-                            for (Cookie cookie : cookies) {
-                                cookie.setMaxAge(0);  // Set cookie age to 0 to delete it
-                                cookie.setPath("/");   // Ensure the cookie is deleted for all paths
-                                response.addCookie(cookie);  // Add the cookie to the response to delete it
+                            // Xóa tất cả cookies
+                            Cookie[] cookies = request.getCookies();
+                            if (cookies != null) {
+                                for (Cookie cookie : cookies) {
+                                    cookie.setMaxAge(0);  // Set cookie age to 0 to delete it
+                                    cookie.setPath("/");   // Ensure the cookie is deleted for all paths
+                                    response.addCookie(cookie);  // Add the cookie to the response to delete it
+                                }
                             }
+                            // Chuyển hướng đến trang login với thông báo
+                            response.sendRedirect("login.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
+                        } else {
+                            // Nếu là admin hạ quyền admin khác, chỉ chuyển hướng về trang admin
+                            response.sendRedirect("admin.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
                         }
-
-                        // Chuyển hướng đến trang login với thông báo
-                        response.sendRedirect("login.jsp?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString()));
                         return; // Dừng lại, không tiếp tục xử lý
                     }
 
@@ -131,6 +138,3 @@ public class AddCustomerServlet extends HttpServlet {
         }
     }
 }
-
-
-

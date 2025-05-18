@@ -240,9 +240,11 @@ function closeAllModals() {
 // Reset các giá trị mặc định cho modal thêm/chỉnh sửa khách hàng
 function resetCustomerForm() {
     document.getElementById("customer-fullname").value = "";
+    document.getElementById("customer-mail").value = "";
     document.getElementById("customer-phone").value = "";
     document.getElementById("customer-password").value = "";
     document.getElementById("customer-status").checked = false;
+    document.getElementById("customer-role").checked = false;
 }
 
 // Mở modal thêm mới khách hàng
@@ -287,12 +289,14 @@ document.querySelectorAll(".btn-edit-customer").forEach(button => {
         const customerRow = button.closest("tr");
         const id = customerRow.dataset.id; // Lấy ID khách hàng từ thuộc tính data-id
         const fullname = customerRow.cells[1].textContent.trim(); // Lấy tên đầy đủ
+        // const mail = customerRow.cells[2].textContent.trim(); // Lấy tên đầy đủ
         const phone = customerRow.cells[2].textContent.trim(); // Lấy số điện thoại
         const status = customerRow.querySelector(".status-complete, .status-no-complete").textContent.trim(); // Lấy trạng thái
 
         // Điền dữ liệu vào form
         document.getElementById("customer-id").value = id; // Gán ID vào input ẩn
         document.getElementById("customer-fullname").value = fullname; // Điền tên
+        // document.getElementById("customer-mail").value = mail; // Điền tên
         document.getElementById("customer-phone").value = phone; // Điền số điện thoại
         document.getElementById("customer-password").value = ""; // Để trống mật khẩu
         document.getElementById("customer-status").checked = (status === "Hoạt động"); // Đánh dấu trạng thái
@@ -315,6 +319,7 @@ function openEditCustomerModal(customer) {
     document.getElementById("form-action").value = "edit";
     document.getElementById("customer-id").value = customerRow.dataset.id; // Gán id vào input ẩn
     document.getElementById("customer-fullname").value = customer.fullname;
+    document.getElementById("customer-mail").value = customer.mail; // Điền tên
     document.getElementById("customer-phone").value = customer.phone;
     document.getElementById("customer-password").value = ""; // Để trống mật khẩu
     document.getElementById("customer-status").checked ? "1" : "0";
