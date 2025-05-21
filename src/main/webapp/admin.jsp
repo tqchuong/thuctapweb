@@ -9,6 +9,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Activity_log" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="fit.hcmuaf.edu.vn.foodmart.utils.AuthorizationUtil" %>
+
 
 
 <!DOCTYPE html>
@@ -24,6 +32,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Quản lý cửa hàng</title>
+    <style>
+        /* Vô hiệu hóa click và đổi con trỏ */
+        .sidebar-list-item.disabled-tab {
+            pointer-events: none;       /* Không cho click */
+            opacity: 0.5;               /* Làm mờ tab */
+            cursor: not-allowed;        /* Con trỏ cấm */
+        }
+
+    </style>
 </head>
 
 <body>
@@ -35,6 +52,8 @@
     </button>
 </header>
 <div class="container">
+
+
     <aside class="sidebar open">
         <div class="top-sidebar">
             <a href="#" class="channel-logo">
@@ -44,7 +63,10 @@
                 <img src="image/shoppingcart/8.png" alt="Your Channel">
             </div>
         </div>
-
+        <%
+            Users userRole  = (Users) session.getAttribute("auth");
+            System.out.println(userRole.getRole());
+        %>
         <div class="middle-sidebar">
             <ul class="sidebar-list">
                 <li class="sidebar-list-item tab-content active">
@@ -53,51 +75,61 @@
                         <div class="hidden-sidebar">Trang tổng quan</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewProducts(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link"
+                            <%= !AuthorizationUtil.canViewProducts(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-light fa-pot-food"></i></div>
                         <div class="hidden-sidebar">Sản phẩm</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewCustomers(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewCustomers(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-light fa-users"></i></div>
                         <div class="hidden-sidebar">Khách hàng</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewOrders(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link"<%= !AuthorizationUtil.canViewOrders(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-light fa-basket-shopping"></i></div>
                         <div class="hidden-sidebar">Đơn hàng</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewStatistics(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewStatistics(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-light fa-chart-simple"></i></div>
                         <div class="hidden-sidebar">Thống kê</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewVouchers(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewVouchers(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-light fa-ticket"></i></div>
                         <div class="hidden-sidebar">Voucher</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewSuppliers(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewSuppliers(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-solid fa-building"></i></div>
                         <div class="hidden-sidebar">Nhà cung cấp</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewShipping(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewShipping(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
                         <div class="hidden-sidebar">Vận chuyển</div>
                     </a>
                 </li>
 
-                <li class="sidebar-list-item tab-content">
-                    <a href="#" class="sidebar-link">
+                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewActivityLogs(userRole) ? "disabled-tab" : "" %>">
+                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewActivityLogs(userRole) ? "tabindex='-1'" : "" %>>
                         <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
                         <div class="hidden-sidebar">Nhật kí hoạt động</div>
                     </a>
@@ -1387,7 +1419,8 @@
         fetch('<%=request.getContextPath()%>/checkSession')
             .then(response => response.text())
             .then(result => {
-                if(result.trim() !== 'Admin'){
+                const allowedRoles = ['Admin', 'WarehouseManager', 'OrderConfirmator'];
+                if(!allowedRoles.includes(result.trim())){
                     alert('Vai trò của bạn đã thay đổi hoặc phiên đã hết hạn. Bạn sẽ bị logout ngay!');
                     window.location.href = '<%=request.getContextPath()%>/login.jsp?message=' + encodeURIComponent('Vai trò thay đổi hoặc phiên hết hạn.');
                 }
