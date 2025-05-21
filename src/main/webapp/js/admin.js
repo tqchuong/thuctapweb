@@ -3,6 +3,7 @@ const sidebars = document.querySelectorAll(".sidebar-list-item.tab-content");
 const sections = document.querySelectorAll(".section");
 
 for (let i = 0; i < sidebars.length; i++) {
+
     sidebars[i].onclick = function () {
         document.querySelector(".sidebar-list-item.active").classList.remove("active");
         document.querySelector(".section.active").classList.remove("active");
@@ -240,9 +241,14 @@ function closeAllModals() {
 // Reset các giá trị mặc định cho modal thêm/chỉnh sửa khách hàng
 function resetCustomerForm() {
     document.getElementById("customer-fullname").value = "";
+    document.getElementById("customer-mail").value = "";
     document.getElementById("customer-phone").value = "";
     document.getElementById("customer-password").value = "";
     document.getElementById("customer-status").checked = false;
+    document.getElementById("customer-role-admin").checked = false;
+    document.getElementById("customer-role-user").checked = true; // Mặc định là User
+    document.getElementById("customer-role-warehouse").checked = false;
+    document.getElementById("customer-role-order").checked = false;
 }
 
 // Mở modal thêm mới khách hàng
@@ -287,12 +293,14 @@ document.querySelectorAll(".btn-edit-customer").forEach(button => {
         const customerRow = button.closest("tr");
         const id = customerRow.dataset.id; // Lấy ID khách hàng từ thuộc tính data-id
         const fullname = customerRow.cells[1].textContent.trim(); // Lấy tên đầy đủ
+        // const mail = customerRow.cells[2].textContent.trim(); // Lấy tên đầy đủ
         const phone = customerRow.cells[2].textContent.trim(); // Lấy số điện thoại
         const status = customerRow.querySelector(".status-complete, .status-no-complete").textContent.trim(); // Lấy trạng thái
 
         // Điền dữ liệu vào form
         document.getElementById("customer-id").value = id; // Gán ID vào input ẩn
         document.getElementById("customer-fullname").value = fullname; // Điền tên
+        // document.getElementById("customer-mail").value = mail; // Điền tên
         document.getElementById("customer-phone").value = phone; // Điền số điện thoại
         document.getElementById("customer-password").value = ""; // Để trống mật khẩu
         document.getElementById("customer-status").checked = (status === "Hoạt động"); // Đánh dấu trạng thái
@@ -315,6 +323,7 @@ function openEditCustomerModal(customer) {
     document.getElementById("form-action").value = "edit";
     document.getElementById("customer-id").value = customerRow.dataset.id; // Gán id vào input ẩn
     document.getElementById("customer-fullname").value = customer.fullname;
+    document.getElementById("customer-mail").value = customer.mail; // Điền tên
     document.getElementById("customer-phone").value = customer.phone;
     document.getElementById("customer-password").value = ""; // Để trống mật khẩu
     document.getElementById("customer-status").checked ? "1" : "0";
@@ -331,6 +340,74 @@ document.addEventListener("DOMContentLoaded", function () {
         fullnameInput.removeAttribute("readonly"); // Cho phép chỉnh sửa khi thêm mới
     } else if (action === "edit") {
         fullnameInput.setAttribute("readonly", true); // Khóa trường khi chỉnh sửa
+    }
+    
+    // Xử lý tương tác checkbox role - đảm bảo chỉ chọn một role
+    const adminRoleCheckbox = document.getElementById("customer-role-admin");
+    const userRoleCheckbox = document.getElementById("customer-role-user");
+    const warehouseRoleCheckbox = document.getElementById("customer-role-warehouse");
+    const orderRoleCheckbox = document.getElementById("customer-role-order");
+    
+    if (adminRoleCheckbox && userRoleCheckbox && warehouseRoleCheckbox && orderRoleCheckbox) {
+        // Lưu trạng thái mặc định
+        let lastChecked = null;
+        if (adminRoleCheckbox.checked) lastChecked = adminRoleCheckbox;
+        else if (userRoleCheckbox.checked) lastChecked = userRoleCheckbox;
+        else if (warehouseRoleCheckbox.checked) lastChecked = warehouseRoleCheckbox;
+        else if (orderRoleCheckbox.checked) lastChecked = orderRoleCheckbox;
+        else {
+            // Mặc định là User nếu không có gì được chọn
+            userRoleCheckbox.checked = true;
+            lastChecked = userRoleCheckbox;
+        }
+        
+        // Hàm xử lý khi checkbox được click
+        function handleRoleCheckboxClick(clickedCheckbox, otherCheckboxes) {
+            // Nếu checkbox được click đang ở trạng thái checked
+            if (clickedCheckbox.checked) {
+                // Bỏ chọn tất cả các checkbox khác
+                otherCheckboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                // Lưu checkbox hiện tại là cái được chọn cuối cùng
+                lastChecked = clickedCheckbox;
+            } else {
+                // Nếu người dùng bỏ chọn checkbox, đặt lại trạng thái checkbox User
+                userRoleCheckbox.checked = true;
+                lastChecked = userRoleCheckbox;
+            }
+        }
+        
+        // Gắn sự kiện cho từng checkbox
+        adminRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [userRoleCheckbox, warehouseRoleCheckbox, orderRoleCheckbox]);
+        });
+        
+        userRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [adminRoleCheckbox, warehouseRoleCheckbox, orderRoleCheckbox]);
+        });
+        
+        warehouseRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [adminRoleCheckbox, userRoleCheckbox, orderRoleCheckbox]);
+        });
+        
+        orderRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [adminRoleCheckbox, userRoleCheckbox, warehouseRoleCheckbox]);
+        });
+        
+        // Thêm sự kiện click cho các phần tử .role-option để cải thiện UX
+        document.querySelectorAll('.role-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                // Chỉ xử lý khi click vào label, không phải checkbox
+                if (e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    // Kích hoạt sự kiện change thủ công
+                    const event = new Event('change');
+                    checkbox.dispatchEvent(event);
+                }
+            });
+        });
     }
 });
 

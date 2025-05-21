@@ -469,3 +469,110 @@ ul li {
     padding-bottom: 0;
 }
 
+
+
+.brand-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff0eb;
+    border-radius: 10px;
+}
+
+.brand-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.brand-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #fff;
+}
+
+.brand-header h3 {
+    margin: 0;
+    color: #B5292F;
+    font-size: 1.4em;
+}
+
+.brand-products h4 {
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+.product-list {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.product-card {
+    width: 150px;
+    text-align: center;
+    background: #fefefe;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+
+
+
+
+
+/* brand*/
+.brand-highlight-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 30px 15px;
+    margin-top: 0;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button {
+    background-color: #B5292F;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #a11d25;
+}
+
+.brand-logos {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand-logo-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.brand-logo-item img:hover {
+    transform: scale(1.1);
+}
+
