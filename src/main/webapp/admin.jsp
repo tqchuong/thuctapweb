@@ -28,7 +28,10 @@
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<%--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">--%>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <title>Quản lý cửa hàng</title>
 
 </head>
@@ -110,12 +113,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewShipping(userRole) ? "disabled-tab" : "" %>">
-                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewShipping(userRole) ? "tabindex='-1'" : "" %>>
-                        <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                        <div class="hidden-sidebar">Vận chuyển</div>
-                    </a>
-                </li>
+
 
                 <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewActivityLogs(userRole) ? "disabled-tab" : "" %>">
                     <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewActivityLogs(userRole) ? "tabindex='-1'" : "" %>>
@@ -829,83 +827,14 @@
 
 
 
-        <!--Ship-->
-        <div class="section ship-all">
-            <div class="admin-control">
-                <div class="admin-control-left">
-                    <select name="the-loai" id="the-loai">
-                        <option>Tất cả</option>
-                        <option>Sản phẩm gần hết hàng</option>
-                    </select>
-                </div>
-                <div class="admin-control-center">
-                    <form action="" class="form-search">
-                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-product" type="text" class="form-search-input"
-                               placeholder="Tìm kiếm tên sản phẩm...">
-                    </form>
-                </div>
-                <div class="admin-control-right">
-                    <button class="btn-control-large" id="btn-cancel-product"><i
-                            class="fa-light fa-rotate-right"></i> Làm mới
-                    </button>
-                    <button class="btn-control-large" id="btn-add-product"><i class="fa-light fa-plus"></i> Thêm sản
-                        phẩm
-                    </button>
-                </div>
-            </div>
-            <div class="table">
-                <table width="100%">
-                    <thead>
-                    <tr>
-                        <td>ID</td>
-                        <td>Phương thức giao hàng</td>
-                        <td>Gía tiền</td>
-                        <td>Trạng thái</td>
-
-                    </tr>
-                    </thead>
-
-                </table>
-            </div>
-        </div>
 
         <!--Log-->
         <div class="section">
-            <!-- Bộ lọc và tìm kiếm nhật ký -->
-            <div class="admin-control">
-                <div class="admin-control-left">
-                    <select name="level-log-filter" id="level-log-filter">
-                        <option value="all">Tất cả</option>
-                        <option value="info">Thông tin</option>
-                        <option value="warning">Cảnh báo</option>
-                        <option value="error">Lỗi</option>
-                    </select>
-                </div>
-                <div class="admin-control-center">
-                    <form action="" class="form-search">
-                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-log" type="text" class="form-search-input" placeholder="Tìm kiếm người dùng...">
-                    </form>
-                </div>
-                <div class="admin-control-right">
-                    <form action="" class="fillter-date">
-                        <div>
-                            <label for="time-start-log">Từ</label>
-                            <input type="date" class="form-control-date" id="time-start-log">
-                        </div>
-                        <div>
-                            <label for="time-end-log">Đến</label>
-                            <input type="date" class="form-control-date" id="time-end-log">
-                        </div>
-                    </form>
-                    <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
-                </div>
-            </div>
 
+            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
             <!-- Bảng nhật ký hoạt động -->
             <div class="table" style="margin-top: 10px;">
-                <table width="100%">
+                <table id="logTable" class="log-table" width="100%">
                     <thead>
                     <tr>
                         <td>STT</td>
@@ -924,12 +853,12 @@
                     <tbody id="log-activity-body">
                     <%
                         List<Activity_log> logs = Activity_logDAO.getAllLogs();
-                        int stt9 = 1;
+                        int logStt = 1;
                         if (logs != null && !logs.isEmpty()) {
                             for (Activity_log log : logs) {
                     %>
                     <tr>
-                        <td><%= stt9++ %></td>
+                        <td><%= logStt++ %></td>
                         <td><%= log.getUsername() %></td>
                         <td><%= log.getAction() %></td>
                         <td><%= log.getLevel_log() %></td>
@@ -954,6 +883,8 @@
         </div>
 
     </main>
+
+
 
 
 
@@ -1003,19 +934,6 @@
                             <span class="form-message"></span>
                         </div>
 
-                        <!-- Nhà cung cấp -->
-                        <div class="form-group">
-                            <label for="chon-ncc" class="form-label">Nhà cung cấp</label>
-                            <select name="NCCID" id="chon-ncc">
-                                <option value="1">HoaBanFood</option>
-                                <option value="2">ABC</option>
-                                <option value="3">text3</option>
-                                <option value="4">text4</option>
-                                <option value="5">text5</option>
-                                <option value="6">text6</option>
-                            </select>
-                            <span class="form-message"></span>
-                        </div>
                         
                         <!-- Chọn Sale -->
                         <div class="form-group">
