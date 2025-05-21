@@ -16,6 +16,21 @@
 </head>
 
 <body>
+<style>
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+<img class="card-image"
+src="${product.imageURL}"
+alt="${product.productName}"
+loading="lazy"
+width="300"
+height="200">
+}</style>
 <jsp:include page="header.jsp"/>
 <nav class="header-bottom">
     <div class="container">
@@ -92,8 +107,8 @@
     <div class="container" id="trangchu">
         <div class="home-slider">
             <div class="slides">
-                <img alt="" src="image/banner/Banner.png">
-                <img alt="" src="image/banner/baner2.png">
+                <img alt="" src="image/banner/Banner.png" loading="lazy">
+                <img alt="" src="image/banner/baner2.png" loading="lazy">
             </div>
             <div class="controls">
                 <button class="prev">❮</button>
@@ -149,7 +164,7 @@
                         <article class="card-product">
                             <div class="card-header">
                                 <a href="productDetails?id=${product.ID}" class="card-image-link">
-                                    <img class="card-image" src="${product.imageURL}" alt="${product.productName}">
+                                    <img class="card-image" src="${product.imageURL}" alt="${product.productName}" loading="lazy">
                                 </a>
                             </div>
                             <div class="food-info">
@@ -191,7 +206,39 @@
 
 <script src="js/home.js"></script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const lazyImages = [].slice.call(document.querySelectorAll("img[loading='lazy']"));
 
+        if ("IntersectionObserver" in window) {
+            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src || lazyImage.src;
+                        lazyImage.classList.add("loaded");
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            lazyImages.forEach(function(lazyImage) {
+                // Lưu src hiện tại vào data-src và xóa src
+                if (!lazyImage.dataset.src) {
+                    lazyImage.dataset.src = lazyImage.src;
+                    lazyImage.removeAttribute("src");
+                }
+                lazyImageObserver.observe(lazyImage);
+            });
+        } else {
+            // Fallback cho trình duyệt không hỗ trợ IntersectionObserver
+            lazyImages.forEach(function(lazyImage) {
+                lazyImage.src = lazyImage.dataset.src || lazyImage.src;
+                lazyImage.classList.add("loaded");
+            });
+        }
+    });
+</script>
 </body>
 
 </html>

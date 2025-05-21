@@ -3,6 +3,7 @@ package fit.hcmuaf.edu.vn.foodmart.dao.admin;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Brands;
 
+import fit.hcmuaf.edu.vn.foodmart.model.Products;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
@@ -57,6 +58,37 @@ import java.util.List;
          }
      }
 
+     public List<Products> getProductsByBrand(String brandName) {
+         String sql = """
+        SELECT p.*, b.id AS brand_id, b.name AS brand_name
+        FROM brands b
+        JOIN products p ON b.id = p.BrandID
+        WHERE b.name = :brandName
+    """;
+
+         return jdbi.withHandle(handle ->
+                 handle.createQuery(sql)
+                         .bind("brandName", brandName)
+                         .map((rs, ctx) -> {
+                             Products product = new Products();
+                             product.setID(rs.getInt("Id"));
+                             product.setProductName(rs.getString("ProductName"));
+                             product.setCategoryID(rs.getInt("CategoryID"));
+                             product.setPrice(rs.getDouble("Price"));
+                             product.setImageURL(rs.getString("ImageURL"));
+                             product.setShortDescription(rs.getString("ShortDescription"));
+                             product.setDiscountPercentage(rs.getDouble("DiscountPercentage"));
+                             // Gán đối tượng Brands
+                             Brands brand = new Brands();
+                             brand.setId(rs.getInt("brand_id"));
+                             brand.setName(rs.getString("brand_name"));
+                             product.setBrands(brand);
+
+                             return product;
+                         })
+                         .list()
+         );
+     }
 
 
 
