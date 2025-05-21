@@ -13,6 +13,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Activity_log" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Arrays" %>
 
 
 <!DOCTYPE html>
@@ -29,6 +31,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <title>Quản lý cửa hàng</title>
+
 </head>
 
 <body>
@@ -40,6 +43,8 @@
     </button>
 </header>
 <div class="container">
+
+
     <aside class="sidebar open">
         <div class="top-sidebar">
             <a href="#" class="channel-logo">
@@ -58,43 +63,49 @@
                         <div class="hidden-sidebar">Trang tổng quan</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-light fa-pot-food"></i></div>
                         <div class="hidden-sidebar">Sản phẩm</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-light fa-users"></i></div>
                         <div class="hidden-sidebar">Khách hàng</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-light fa-basket-shopping"></i></div>
                         <div class="hidden-sidebar">Đơn hàng</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-light fa-chart-simple"></i></div>
                         <div class="hidden-sidebar">Thống kê</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-light fa-ticket"></i></div>
                         <div class="hidden-sidebar">Voucher</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fa-building"></i></div>
                         <div class="hidden-sidebar">Nhà cung cấp</div>
                     </a>
                 </li>
-                <li class="sidebar-list-item tab-content">
+
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
                         <div class="hidden-sidebar">Vận chuyển</div>
@@ -102,7 +113,7 @@
                 </li>
 
 
-                <li class="sidebar-list-item tab-content">
+                <li class="sidebar-list-item tab-content ">
                     <a href="#" class="sidebar-link">
                         <div class="sidebar-icon"><i class="fa-solid fas fa-list"></i></div>
                         <div class="hidden-sidebar">Nhật kí hoạt động</div>
