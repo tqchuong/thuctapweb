@@ -46,7 +46,9 @@
               <c:if test="${sessionScope.auth != null }">
                 <h4 ><c:out value="${sessionScope.auth.username}"/> </h4>
                 <ul class="header-middle-right-menu" id="auth-options">
-                  <c:if test="${sessionScope.auth.role == 'Admin'}">
+                  <c:if test="${sessionScope.auth.role == 'Admin'
+                              || sessionScope.auth.role == 'WarehouseManager'
+                              || sessionScope.auth.role == 'OrderConfirmator'}">
                     <li><a href="admin.jsp"><i class="fa-solid fa-gear"></i> Quản lý cửa hàng</a></li>
                   </c:if>
                   <li><a href="changeInfor.jsp"  ><i class="fa-solid fa-user"></i> Tài khoản của tôi</a></li>
