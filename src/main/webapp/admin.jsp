@@ -1179,16 +1179,27 @@
                     <label for="customer-status" class="form-label">Trạng thái</label>
                     <input type="checkbox" id="customer-status" name="status" value="1" class="switch-input"
                         <%= (customer != null && "Đang hoạt động".equals(customer.getUserStatus())) ? "checked" : "" %> >
-                    <label for="customer-status" class="switch"></label>
+<%--                    <label for="customer-status" class="switch"></label>--%>
                 </div>
 
                 <div class="form-group edit-customer-e">
                     <label for="customer-role" class="form-label">Vai trò</label>
                     <input type="checkbox" id="customer-role" name="role" value="1" class="switch-input"
                         <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
-                    <label for="customer-role" class="switch"></label>
-                </div>
+<%--                    <label for="customer-role" class="switch"></label>--%>
 
+
+
+                    <label for="customer-role-warehouse" class="form-label">Quản lý kho</label>
+                    <input type="checkbox" id="customer-role-warehouse" name="role-warehouse" value="1" class="switch-input"
+                        <%= (customer != null && "WarehouseManager".equals(customer.getRole())) ? "checked" : "" %> >
+
+
+
+                    <label for="customer-role-order" class="form-label">Xác nhận đơn hàng</label>
+                    <input type="checkbox" id="customer-role-order" name="role-order" value="1" class="switch-input"
+                        <%= (customer != null && "OrderConfirmator".equals(customer.getRole())) ? "checked" : "" %> >
+                </div>
 
                 <!-- Nút Hành Động -->
                 <button type="submit" class="form-submit add-account-e" id="signup-button">Đăng ký</button>

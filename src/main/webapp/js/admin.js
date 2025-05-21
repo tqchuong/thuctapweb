@@ -337,6 +337,37 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (action === "edit") {
         fullnameInput.setAttribute("readonly", true); // Khóa trường khi chỉnh sửa
     }
+    
+    // Xử lý tương tác checkbox role - đảm bảo chỉ chọn một role
+    const adminRoleCheckbox = document.getElementById("customer-role");
+    const warehouseRoleCheckbox = document.getElementById("customer-role-warehouse");
+    const orderRoleCheckbox = document.getElementById("customer-role-order");
+    
+    if (adminRoleCheckbox && warehouseRoleCheckbox && orderRoleCheckbox) {
+        // Khi chọn Admin role, bỏ chọn các role khác
+        adminRoleCheckbox.addEventListener("change", function() {
+            if (this.checked) {
+                warehouseRoleCheckbox.checked = false;
+                orderRoleCheckbox.checked = false;
+            }
+        });
+        
+        // Khi chọn Warehouse Manager role, bỏ chọn các role khác
+        warehouseRoleCheckbox.addEventListener("change", function() {
+            if (this.checked) {
+                adminRoleCheckbox.checked = false;
+                orderRoleCheckbox.checked = false;
+            }
+        });
+        
+        // Khi chọn Order Confirmator role, bỏ chọn các role khác
+        orderRoleCheckbox.addEventListener("change", function() {
+            if (this.checked) {
+                adminRoleCheckbox.checked = false;
+                warehouseRoleCheckbox.checked = false;
+            }
+        });
+    }
 });
 
 
