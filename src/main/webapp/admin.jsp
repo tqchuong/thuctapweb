@@ -13,8 +13,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.model.Activity_log" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.dao.Activity_logDAO" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.Arrays" %>
 <%@ page import="fit.hcmuaf.edu.vn.foodmart.utils.AuthorizationUtil" %>
 
 
@@ -30,20 +28,14 @@
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<%--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">--%>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <title>Quản lý cửa hàng</title>
-    <style>
-        /* Vô hiệu hóa click và đổi con trỏ */
-        .sidebar-list-item.disabled-tab {
-            pointer-events: none;       /* Không cho click */
-            opacity: 0.5;               /* Làm mờ tab */
-            cursor: not-allowed;        /* Con trỏ cấm */
-        }
 
-    </style>
 </head>
 
-<body>
 <header class="header">
     <button class="menu-icon-btn">
         <div class="menu-icon">
@@ -121,12 +113,7 @@
                     </a>
                 </li>
 
-                <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewShipping(userRole) ? "disabled-tab" : "" %>">
-                    <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewShipping(userRole) ? "tabindex='-1'" : "" %>>
-                        <div class="sidebar-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                        <div class="hidden-sidebar">Vận chuyển</div>
-                    </a>
-                </li>
+
 
                 <li class="sidebar-list-item tab-content <%= !AuthorizationUtil.canViewActivityLogs(userRole) ? "disabled-tab" : "" %>">
                     <a href="#" class="sidebar-link" <%= !AuthorizationUtil.canViewActivityLogs(userRole) ? "tabindex='-1'" : "" %>>
@@ -498,14 +485,14 @@
                     <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
                 </div>
             </div>
+
             <div class="row text-center mb-4">
                 <!-- Hàng 1: Tổng doanh thu, Đơn đã xử lý, Đơn đã giao, Doanh thu hôm nay -->
                 <div class="col-md-3">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p class="text-muted">Tổng doanh thu</p>
-                            <h5><fmt:formatNumber value="<%= orderAdminDAO.getSoldQuantity()  %>" pattern="#,###"/> VNĐ</h5>
-
+                            <h5><%= orderAdminDAO.getSoldQuantity() * 10000 %> VNĐ</h5>
                         </div>
                     </div>
                 </div>
@@ -535,10 +522,10 @@
                 </div>
             </div>
 
-                <%
+            <%
                 List<OrderDetails> productStats = orderAdminDAO.getProductReport();
                 OrderDetails best = productStats.get(0);
-                %>
+            %>
 
             <!-- Hàng 2: Bảng sản phẩm bán chạy và sản phẩm cần nhập -->
             <div class="row">
@@ -840,83 +827,14 @@
 
 
 
-        <!--Ship-->
-        <div class="section ship-all">
-            <div class="admin-control">
-                <div class="admin-control-left">
-                    <select name="the-loai" id="the-loai">
-                        <option>Tất cả</option>
-                        <option>Sản phẩm gần hết hàng</option>
-                    </select>
-                </div>
-                <div class="admin-control-center">
-                    <form action="" class="form-search">
-                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-product" type="text" class="form-search-input"
-                               placeholder="Tìm kiếm tên sản phẩm...">
-                    </form>
-                </div>
-                <div class="admin-control-right">
-                    <button class="btn-control-large" id="btn-cancel-product"><i
-                            class="fa-light fa-rotate-right"></i> Làm mới
-                    </button>
-                    <button class="btn-control-large" id="btn-add-product"><i class="fa-light fa-plus"></i> Thêm sản
-                        phẩm
-                    </button>
-                </div>
-            </div>
-            <div class="table">
-                <table width="100%">
-                    <thead>
-                    <tr>
-                        <td>ID</td>
-                        <td>Phương thức giao hàng</td>
-                        <td>Gía tiền</td>
-                        <td>Trạng thái</td>
-
-                    </tr>
-                    </thead>
-
-                </table>
-            </div>
-        </div>
 
         <!--Log-->
         <div class="section">
-            <!-- Bộ lọc và tìm kiếm nhật ký -->
-            <div class="admin-control">
-                <div class="admin-control-left">
-                    <select name="level-log-filter" id="level-log-filter">
-                        <option value="all">Tất cả</option>
-                        <option value="info">Thông tin</option>
-                        <option value="warning">Cảnh báo</option>
-                        <option value="error">Lỗi</option>
-                    </select>
-                </div>
-                <div class="admin-control-center">
-                    <form action="" class="form-search">
-                        <span class="search-btn"><i class="fa-light fa-magnifying-glass"></i></span>
-                        <input id="form-search-log" type="text" class="form-search-input" placeholder="Tìm kiếm người dùng...">
-                    </form>
-                </div>
-                <div class="admin-control-right">
-                    <form action="" class="fillter-date">
-                        <div>
-                            <label for="time-start-log">Từ</label>
-                            <input type="date" class="form-control-date" id="time-start-log">
-                        </div>
-                        <div>
-                            <label for="time-end-log">Đến</label>
-                            <input type="date" class="form-control-date" id="time-end-log">
-                        </div>
-                    </form>
-                    <button class="btn-reset-order"><i class="fa-light fa-arrow-rotate-right"></i></button>
-                </div>
-            </div>
 
+            <h2><i class="fas fa-list"></i> Nhật ký hoạt động</h2>
             <!-- Bảng nhật ký hoạt động -->
             <div class="table" style="margin-top: 10px;">
-                <table width="100%">
+                <table id="logTable" class="log-table" width="100%">
                     <thead>
                     <tr>
                         <td>STT</td>
@@ -935,12 +853,12 @@
                     <tbody id="log-activity-body">
                     <%
                         List<Activity_log> logs = Activity_logDAO.getAllLogs();
-                        int stt9 = 1;
+                        int logStt = 1;
                         if (logs != null && !logs.isEmpty()) {
                             for (Activity_log log : logs) {
                     %>
                     <tr>
-                        <td><%= stt9++ %></td>
+                        <td><%= logStt++ %></td>
                         <td><%= log.getUsername() %></td>
                         <td><%= log.getAction() %></td>
                         <td><%= log.getLevel_log() %></td>
@@ -969,101 +887,64 @@
 
 
 
-     <div class="modal add-product">
-         <div class="modal-container">
-             <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
-             <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
-             <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
-             <div class="modal-content">
-
-                 <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct" enctype="multipart/form-data">
-                     <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
-                     <input type="hidden" name="action" id="action" value="add">
-                     <input type="hidden" id="product-id" name="id" value="">
-
-                     <div class="modal-content-left" style="margin: 0 auto;">
-                         <img src="image/admin/blank-image.png" alt="" class="upload-image-preview" id="preview-image">
-                         <div class="form-group file">
-                             <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
-                             <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" style="display: none;">
-                         </div>
-                     </div>
-
-                     <div class="modal-content-right">
-                         <div class="form-group">
-                             <label for="ten-mon" class="form-label">Tên sản phẩm</label>
-                             <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm" class="form-control" required>
-                             <span class="form-message"></span>
-                         </div>
-
-                         <!-- Danh mục -->
-                         <div class="form-group">
-                             <label for="category" class="form-label">Danh mục</label>
-                             <select name="categoryID" id="chon-mon">
-                                 < value=""></>
-                             </select>
-                             <span class="form-message"></span>
-                         </div>
 
 
+    <div class="modal add-product">
+        <div class="modal-container">
+            <h3 class="modal-container-title add-product-e" style="margin: 0 auto;">THÊM MỚI SẢN PHẨM</h3>
+            <h3 class="modal-container-title edit-product-e" style="margin: 0 auto;">CHỈNH SỬA SẢN PHẨM</h3>
+            <button class="modal-close product-form"><i class="fa-regular fa-xmark"></i></button>
+            <div class="modal-content">
 
-                         <div class="form-group">
-                             <label for="brands" class="form-label">Thương hiệu</label>
-                             <select name="brandsID" id="chon-brands">
-                                 <option value=""></option>
-                             </select>
-                             <span class="form-message"></span>
-                         </div>
+                <form id="product-form" method="post" action="${pageContext.request.contextPath}/addProduct" enctype="multipart/form-data">
+                    <!-- Input ẩn chứa ID sản phẩm (dùng cho chỉnh sửa) -->
+                    <input type="hidden" name="action" id="action" value="add">
+                    <input type="hidden" id="product-id" name="id" value="">
 
-                         <!-- Các trường khác -->
-                         <div class="form-group">
-                             <label for="IsSale" class="form-label">Chọn sale</label>
-                             <select name="IsSale" id="chon-sale">
-                                 <option value="1">Có</option>
-                                 <option value="0">Không</option>
-                             </select>
-                         </div>
+                    <div class="modal-content-left" style="margin: 0 auto;">
+                        <img src="image/admin/blank-image.png" alt="" class="upload-image-preview" id="preview-image">
+                        <div class="form-group file">
+                            <label for="up-hinh-anh" class="form-label-file"><i class="fa-regular fa-cloud-arrow-up"></i>Chọn hình ảnh</label>
+                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="up-hinh-anh" type="file" class="form-control" style="display: none;">
+                        </div>
+                    </div>
 
-                         <div class="form-group">
-                             <label for="phan-tram-giam" class="form-label">% giảm giá</label>
-                             <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01" placeholder="Nhập %" class="form-control" required>
-                             <span class="form-message"></span>
-                         </div>
-
-                         <div class="form-group">
-                             <label for="gia-moi" class="form-label">Giá bán</label>
-                             <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán" class="form-control" required>
-                             <span class="form-message"></span>
-                         </div>
-
-                         <div class="form-group">
-                             <label for="khoi-luong" class="form-label">Khối lượng</label>
-                             <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng lượng" class="form-control" required>
-                             <span class="form-message"></span>
-                         </div>
-
-
+                    <div class="modal-content-right">
                         <div class="form-group">
-                            <label for="NCC" class="form-label">Nhà cung cấp</label>
-                            <select name="NCCID" id="chon-ncc">
-                                <option value="1"> HoaBanFood</option>
-                                <option value="2">ABC</option>
-                                <option value="3"> text3</option>
-                                <option value="4">text4</option>
-                                <option value="5">text5</option>
-                                <option value="6">text6</option>
+                            <label for="ten-mon" class="form-label">Tên sản phẩm</label>
+                            <input id="ten-mon" name="productName" type="text" placeholder="Nhập tên sản phẩm" class="form-control" required>
+                            <span class="form-message"></span>
+                        </div>
+
+                        <!-- Danh mục -->
+                        <div class="form-group">
+                            <label for="chon-mon" class="form-label">Danh mục</label>
+                            <select name="categoryID" id="chon-mon">
+                                <option value="">Chọn danh mục</option>
                             </select>
                             <span class="form-message"></span>
                         </div>
 
-
+                        <!-- Thương hiệu -->
                         <div class="form-group">
-                            <label for="IsSale" class="form-label">Chọn sale</label>
+                            <label for="chon-brands" class="form-label">Thương hiệu</label>
+                            <select name="brandsID" id="chon-brands">
+                                <option value="">Chọn thương hiệu</option>
+                            </select>
+                            <span class="form-message"></span>
+                        </div>
+
+                        
+                        <!-- Chọn Sale -->
+                        <div class="form-group">
+                            <label for="chon-sale" class="form-label">Chọn sale</label>
                             <select name="IsSale" id="chon-sale">
                                 <option value="1">Có</option>
                                 <option value="0">Không</option>
                             </select>
                         </div>
+                        
+                        <!-- % Giảm giá -->
                         <div class="form-group">
                             <label for="phan-tram-giam" class="form-label">% giảm giá</label>
                             <input id="phan-tram-giam" name="DiscountPercentage" type="number" step="0.01"
@@ -1071,24 +952,40 @@
                                    class="form-control" required>
                             <span class="form-message"></span>
                         </div>
+                        
+                        <!-- Giá bán -->
                         <div class="form-group">
                             <label for="gia-moi" class="form-label">Giá bán</label>
                             <input id="gia-moi" name="price" type="number" step="0.01" placeholder="Nhập giá bán"
                                    class="form-control" required>
                             <span class="form-message"></span>
                         </div>
+                        
+                        <!-- Khối lượng -->
+                        <div class="form-group">
+                            <label for="khoi-luong" class="form-label">Khối lượng</label>
+                            <input id="khoi-luong" name="weight" type="number" placeholder="Nhập khối lượng"
+                                   class="form-control" required>
+                            <span class="form-message"></span>
+                        </div>
+                        
+                        <!-- Số lượng -->
                         <div class="form-group">
                             <label for="so-luong" class="form-label">Số lượng</label>
                             <input id="so-luong" name="stockQuantity" type="number" placeholder="Nhập số lượng"
                                    class="form-control" required>
                             <span class="form-message"></span>
                         </div>
+                        
+                        <!-- Mô tả -->
                         <div class="form-group">
                             <label for="mo-ta" class="form-label">Mô tả</label>
                             <textarea class="product-desc" name="shortDescription" id="mo-ta"
                                       placeholder="Nhập mô tả sản phẩm..." required></textarea>
                             <span class="form-message"></span>
                         </div>
+                        
+                        <!-- Nút thêm/cập nhật -->
                         <button type="submit" class="form-submit btn-add-product-form add-product-e"
                                 id="add-product-button">
                             <i class="fa-regular fa-plus"></i>
@@ -1099,12 +996,9 @@
                             <i class="fa-light fa-pencil"></i>
                             <span>LƯU THAY ĐỔI</span>
                         </button>
-
-
                     </div>
                 </form>
             </div>
-            </form>
         </div>
     </div>
 
@@ -1212,16 +1106,36 @@
                     <label for="customer-status" class="form-label">Trạng thái</label>
                     <input type="checkbox" id="customer-status" name="status" value="1" class="switch-input"
                         <%= (customer != null && "Đang hoạt động".equals(customer.getUserStatus())) ? "checked" : "" %> >
-                    <label for="customer-status" class="switch"></label>
+<%--                    <label for="customer-status" class="switch"></label>--%>
                 </div>
 
                 <div class="form-group edit-customer-e">
-                    <label for="customer-role" class="form-label">Vai trò</label>
-                    <input type="checkbox" id="customer-role" name="role" value="1" class="switch-input"
-                        <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
-                    <label for="customer-role" class="switch"></label>
-                </div>
+                    <div class="role-options">
+                        <div class="role-option">
+                            <label for="customer-role-admin" class="form-label">Admin</label>
+                            <input type="checkbox" id="customer-role-admin" name="role" value="1" class="switch-input"
+                                <%= (customer != null && "Admin".equals(customer.getRole())) ? "checked" : "" %> >
+                        </div>
 
+                        <div class="role-option">
+                            <label for="customer-role-user" class="form-label">User</label>
+                            <input type="checkbox" id="customer-role-user" name="role-user" value="1" class="switch-input"
+                                <%= (customer != null && "User".equals(customer.getRole())) ? "checked" : "" %> >
+                        </div>
+
+                        <div class="role-option">
+                            <label for="customer-role-warehouse" class="form-label">Quản lý kho</label>
+                            <input type="checkbox" id="customer-role-warehouse" name="role-warehouse" value="1" class="switch-input"
+                                <%= (customer != null && "WarehouseManager".equals(customer.getRole())) ? "checked" : "" %> >
+                        </div>
+
+                        <div class="role-option">
+                            <label for="customer-role-order" class="form-label">Xác nhận đơn hàng</label>
+                            <input type="checkbox" id="customer-role-order" name="role-order" value="1" class="switch-input"
+                                <%= (customer != null && "OrderConfirmator".equals(customer.getRole())) ? "checked" : "" %> >
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Nút Hành Động -->
                 <button type="submit" class="form-submit add-account-e" id="signup-button">Đăng ký</button>

@@ -245,7 +245,10 @@ function resetCustomerForm() {
     document.getElementById("customer-phone").value = "";
     document.getElementById("customer-password").value = "";
     document.getElementById("customer-status").checked = false;
-    document.getElementById("customer-role").checked = false;
+    document.getElementById("customer-role-admin").checked = false;
+    document.getElementById("customer-role-user").checked = true; // Mặc định là User
+    document.getElementById("customer-role-warehouse").checked = false;
+    document.getElementById("customer-role-order").checked = false;
 }
 
 // Mở modal thêm mới khách hàng
@@ -337,6 +340,74 @@ document.addEventListener("DOMContentLoaded", function () {
         fullnameInput.removeAttribute("readonly"); // Cho phép chỉnh sửa khi thêm mới
     } else if (action === "edit") {
         fullnameInput.setAttribute("readonly", true); // Khóa trường khi chỉnh sửa
+    }
+    
+    // Xử lý tương tác checkbox role - đảm bảo chỉ chọn một role
+    const adminRoleCheckbox = document.getElementById("customer-role-admin");
+    const userRoleCheckbox = document.getElementById("customer-role-user");
+    const warehouseRoleCheckbox = document.getElementById("customer-role-warehouse");
+    const orderRoleCheckbox = document.getElementById("customer-role-order");
+    
+    if (adminRoleCheckbox && userRoleCheckbox && warehouseRoleCheckbox && orderRoleCheckbox) {
+        // Lưu trạng thái mặc định
+        let lastChecked = null;
+        if (adminRoleCheckbox.checked) lastChecked = adminRoleCheckbox;
+        else if (userRoleCheckbox.checked) lastChecked = userRoleCheckbox;
+        else if (warehouseRoleCheckbox.checked) lastChecked = warehouseRoleCheckbox;
+        else if (orderRoleCheckbox.checked) lastChecked = orderRoleCheckbox;
+        else {
+            // Mặc định là User nếu không có gì được chọn
+            userRoleCheckbox.checked = true;
+            lastChecked = userRoleCheckbox;
+        }
+        
+        // Hàm xử lý khi checkbox được click
+        function handleRoleCheckboxClick(clickedCheckbox, otherCheckboxes) {
+            // Nếu checkbox được click đang ở trạng thái checked
+            if (clickedCheckbox.checked) {
+                // Bỏ chọn tất cả các checkbox khác
+                otherCheckboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                // Lưu checkbox hiện tại là cái được chọn cuối cùng
+                lastChecked = clickedCheckbox;
+            } else {
+                // Nếu người dùng bỏ chọn checkbox, đặt lại trạng thái checkbox User
+                userRoleCheckbox.checked = true;
+                lastChecked = userRoleCheckbox;
+            }
+        }
+        
+        // Gắn sự kiện cho từng checkbox
+        adminRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [userRoleCheckbox, warehouseRoleCheckbox, orderRoleCheckbox]);
+        });
+        
+        userRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [adminRoleCheckbox, warehouseRoleCheckbox, orderRoleCheckbox]);
+        });
+        
+        warehouseRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [adminRoleCheckbox, userRoleCheckbox, orderRoleCheckbox]);
+        });
+        
+        orderRoleCheckbox.addEventListener("change", function() {
+            handleRoleCheckboxClick(this, [adminRoleCheckbox, userRoleCheckbox, warehouseRoleCheckbox]);
+        });
+        
+        // Thêm sự kiện click cho các phần tử .role-option để cải thiện UX
+        document.querySelectorAll('.role-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                // Chỉ xử lý khi click vào label, không phải checkbox
+                if (e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    // Kích hoạt sự kiện change thủ công
+                    const event = new Event('change');
+                    checkbox.dispatchEvent(event);
+                }
+            });
+        });
     }
 });
 

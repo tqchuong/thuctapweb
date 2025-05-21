@@ -17,7 +17,8 @@ public class UserAdminDAO {
 
     // 1. Lấy tất cả người dùng
     public List<Users> getAllUsers() {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users" +
+                " WHERE isDelete = FALSE";
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .mapToBean(Users.class)
@@ -81,13 +82,11 @@ public class UserAdminDAO {
 
     // 4. Xóa người dùng
     public boolean deleteUserById(int userId) {
-        String sql = "UPDATE users SET isDelete = TRUE, UserStatus = 'Bị khóa' WHERE Id = :userId AND isDelete = FALSE";
+        String sql = "UPDATE users SET isDelete = TRUE WHERE Id = :userId AND isDelete = FALSE";
         return jdbi.withHandle(handle -> handle.createUpdate(sql)
                 .bind("userId", userId)
                 .execute() > 0);
     }
-
-
 
 
 
