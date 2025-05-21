@@ -5,8 +5,6 @@ import fit.hcmuaf.edu.vn.foodmart.Cart.CartProduct;
 import fit.hcmuaf.edu.vn.foodmart.dao.*;
 import fit.hcmuaf.edu.vn.foodmart.dao.db.DBConnect;
 import fit.hcmuaf.edu.vn.foodmart.model.Users;
-import fit.hcmuaf.edu.vn.foodmart.model.Coupon;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,8 +21,8 @@ import java.sql.Date;
 public class CheckoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        final Users user = (Users) session.getAttribute("auth");
-        final Cart cart = (Cart) session.getAttribute("cart");
+        Users user = (Users) session.getAttribute("auth");
+        Cart cart = (Cart) session.getAttribute("cart");
 
         if (user == null || cart == null || cart.getlist().isEmpty()) {
             response.sendRedirect("cart.jsp?error=empty_cart_or_user");
@@ -32,45 +30,22 @@ public class CheckoutServlet extends HttpServlet {
         }
 
         try {
-            final String shippingMethod = request.getParameter("shippingMethod");
-            final String shippingAddress = request.getParameter("recipientAddress");
-            final String orderNote = request.getParameter("orderNote");
-            final String paymentMethod = request.getParameter("paymentType");
-            final Date deliveryDate = Date.valueOf(request.getParameter("deliveryDate"));
-            final String deliveryTime = request.getParameter("specificDeliveryTime");
-            final String receiverName = request.getParameter("recipientName");
-            final String receiverPhone = request.getParameter("recipientPhone");
-            final String paymentStatus = request.getParameter("paymentStatus");
-
-            // Lấy coupon từ session nếu có
-            Coupon appliedCoupon = (Coupon) session.getAttribute("appliedCoupon");
-
-            double originalShippingFee = Double.parseDouble(request.getParameter("shippingFee"));
-            double originalTotalAmount = Double.parseDouble(request.getParameter("totalAmount"));
-
-            double discount = 0;
-            double finalShippingFee = originalShippingFee;
-            double finalTotalAmount = originalTotalAmount;
-
-            if (appliedCoupon != null) {
-                discount = appliedCoupon.getDiscountAmount();
-                if ("TotalOrder".equals(appliedCoupon.getApplyTo())) {
-                    finalTotalAmount = Math.max(0, originalTotalAmount - discount);
-                } else if ("ShippingFee".equals(appliedCoupon.getApplyTo())) {
-                    finalShippingFee = Math.max(0, originalShippingFee - discount);
-                }
-            }
-
-            final double shippingFeeFinal = finalShippingFee;
-            final double totalAmountFinal = finalTotalAmount;
-            System.out.println(">>> Coupon applied: -" + discount + " VND, ApplyTo: " + (appliedCoupon != null ? appliedCoupon.getApplyTo() : "None"));
-            System.out.println(">>> Final total: " + finalTotalAmount);
-            System.out.println(">>> Final shipping fee: " + finalShippingFee);
+            double shippingFee = Double.parseDouble(request.getParameter("shippingFee"));
+            String shippingMethod = request.getParameter("shippingMethod");
+            String shippingAddress = request.getParameter("recipientAddress");
+            String orderNote = request.getParameter("orderNote");
+            String paymentMethod = request.getParameter("paymentType");
+            Date deliveryDate = Date.valueOf(request.getParameter("deliveryDate"));
+            String deliveryTime = request.getParameter("specificDeliveryTime");
+            String receiverName = request.getParameter("recipientName");
+            String receiverPhone = request.getParameter("recipientPhone");
+            String paymentStatus = request.getParameter("paymentStatus");
+            double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
 
             Jdbi jdbi = DBConnect.getJdbi();
             int orderId = jdbi.withHandle(handle -> {
                 OrderDao orderDAO = new OrderDao(handle);
-                int newOrderId = orderDAO.createOrder(user, totalAmountFinal, shippingMethod, deliveryDate,
+                int newOrderId = orderDAO.createOrder(user, totalAmount, shippingMethod, deliveryDate,
                         deliveryTime, paymentMethod, orderNote, receiverName, receiverPhone, shippingAddress);
 
                 OrderDetailDAO orderDetailDAO = new OrderDetailDAO(handle.getJdbi());
@@ -78,13 +53,16 @@ public class CheckoutServlet extends HttpServlet {
                     orderDetailDAO.addOrderDetail(newOrderId, item);
                 }
 
-                ProductDAO productDAO = new ProductDAO();
+                // Cập nhật tồn kho sản phẩm
+                ProductDAO productDAO = new ProductDAO( );
                 for (CartProduct item : cart.getlist()) {
-                    productDAO.updateProductQuantity(item.getProductId(), item.getQuantity());
+                    int productId = item.getProductId();
+                    int quantity = item.getQuantity();
+                    productDAO.updateProductQuantity(productId, quantity);
                 }
 
                 ShippingDAO shippingDAO = new ShippingDAO(handle.getJdbi());
-                shippingDAO.addShipping(newOrderId, shippingFeeFinal);
+                shippingDAO.addShipping(newOrderId, shippingFee);
 
                 PaymentDAO paymentDAO = new PaymentDAO();
                 paymentDAO.addPayment(newOrderId, paymentStatus);
@@ -92,18 +70,20 @@ public class CheckoutServlet extends HttpServlet {
                 return newOrderId;
             });
 
-            // Lưu thông tin đơn hàng vào session
+
+            /// Lưu thông tin đơn hàng vào session
             session.setAttribute("currentOrderId", orderId);
-            session.setAttribute("orderTotalAmount", finalTotalAmount);
+            session.setAttribute("orderTotalAmount", totalAmount);
 
             if ("VNPAY".equals(paymentMethod)) {
+                // Thay vì redirect, forward request đến ajaxServlet
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/vnpay-payment");
                 dispatcher.forward(request, response);
                 return;
             }
 
+            // Nếu là COD thì xóa giỏ hàng và chuyển hướng
             session.removeAttribute("cart");
-            session.removeAttribute("appliedCoupon"); // Xóa coupon sau khi dùng
             response.sendRedirect("home.jsp");
 
         } catch (Exception e) {
