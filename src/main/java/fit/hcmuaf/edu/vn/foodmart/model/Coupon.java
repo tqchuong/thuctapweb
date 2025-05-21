@@ -1,8 +1,9 @@
 package fit.hcmuaf.edu.vn.foodmart.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Coupon {
+public class Coupon implements Serializable {
     private int id;
     private String couponCode;
     private double discountAmount;
@@ -11,7 +12,7 @@ public class Coupon {
     private Timestamp endDate;
     private double minOrderAmount;
     private int orderId;
-
+    private String applyTo;
     // Các thuộc tính mới
     private String discountType; // "Percentage" hoặc "FixedAmount"
     private Integer maxUsage;        // Tổng số lần tối đa sử dụng mã (null nếu không giới hạn)
@@ -38,6 +39,14 @@ public class Coupon {
         this.maxUsagePerUser = maxUsagePerUser;
         this.maxDiscountAmount = maxDiscountAmount;
         this.status = status;
+    }
+
+    public String getApplyTo() {
+        return applyTo;
+    }
+
+    public void setApplyTo(String applyTo) {
+        this.applyTo = applyTo;
     }
 
     public void setMaxUsage(Integer maxUsage) {

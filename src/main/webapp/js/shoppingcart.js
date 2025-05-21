@@ -49,12 +49,20 @@ $(document).ready(function () {
             })
             .then((data) => {
                 if (data.success) {
-                    alert(`Áp dụng thành công! Bạn được giảm ${data.discountAmount.toLocaleString('vi-VN')} ₫.`);
-                    document.querySelector(".summary .amount").innerText = `${data.newTotal.toLocaleString('vi-VN')} ₫.`;
+                    let message = `Áp dụng thành công mã ${data.couponCode}! `;
+                    if (data.applyTo === "ShippingFee") {
+
+                        message += `Bạn được giảm ${data.discountAmount.toLocaleString('vi-VN')} ₫ phí vận chuyển.`;
+                    } else {
+                        message += `Bạn được giảm ${data.discountAmount.toLocaleString('vi-VN')} ₫ trên tổng đơn.`;
+                        document.querySelector(".summary .amount").innerText = `${data.newTotal.toLocaleString('vi-VN')} ₫.`;
+                    }
+                    alert(message);
                 } else {
                     alert(data.message);
                 }
             })
+
             .catch((error) => {
                 console.error("Lỗi khi áp dụng mã giảm giá:", error);
                 alert("Có lỗi xảy ra. Vui lòng thử lại!");

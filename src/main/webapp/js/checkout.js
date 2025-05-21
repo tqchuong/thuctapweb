@@ -54,8 +54,19 @@ async function calculateShippingFee() {
         console.log("Phản hồi từ GHN:", data); // Xem API trả về gì
         if (data.code === 200) {
             let shippingFee = data.data.total || 0;
+
+            // Gọi API để kiểm tra coupon từ session backend
+            const couponResponse = await fetch('/project/check-coupon');
+            const couponData = await couponResponse.json();
+
+            if (couponData.success && couponData.applyTo === "ShippingFee") {
+                shippingFee = Math.max(shippingFee - couponData.discountAmount, 0);
+            }
+
             updateTotal(shippingFee);
-        } else {
+        }
+
+         else {
             console.error("GHN trả về lỗi:", data);
             updateTotal(0);
         }
@@ -220,3 +231,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetchProvinces();
 });
+document.addEventListener("DOMContentLoaded", function() {
+    // Kiểm tra coupon từ backend khi trang tải
+    fetch('/project/check-coupon')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.applyTo === "ShippingFee") {
+                // Nếu có coupon giảm phí ship, tính toán lại
+                calculateShippingFee();
+            }
+        });
+});
+
+function applyShippingCoupon(discountAmount) {
+    let shippingFee = parseInt(document.getElementById("shippingFeeInput").value) || 0;
+    let newShippingFee = Math.max(shippingFee - discountAmount, 0);
+
+    // Cập nhật ngay giá trị phí vận chuyển
+    document.getElementById("shippingFeeInput").value = newShippingFee;
+    phiVanChuyenElement.textContent = `${newShippingFee.toLocaleString()} ₫`;
+
+    // Tính toán lại tổng tiền
+    let cartTotal = parseInt(document.getElementById("checkout-cart-total").textContent.replace(/\D/g, "")) || 0;
+    let finalTotal = cartTotal + newShippingFee;
+
+    document.getElementById("checkout-cart-price-final").textContent = `${finalTotal.toLocaleString()} ₫`;
+    document.getElementById("totalAmountInput").value = finalTotal;
+}

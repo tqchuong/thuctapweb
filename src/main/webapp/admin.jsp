@@ -28,10 +28,12 @@
     <link href="font/font-awesome-pro-v6-6.2.0/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="css/admin-responsive.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <%--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">--%>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
     <title>Quản lý cửa hàng</title>
 
 </head>
@@ -448,6 +450,8 @@
                 </table>
             </div>
         </div>
+
+        <%-- //thongke--%>
         <div class="section">
             <div class="admin-control">
                 <div class="admin-control-left">
@@ -472,11 +476,11 @@
                 <div class="admin-control-right">
                     <form action="" class="fillter-date">
                         <div>
-                            <label for="time-start">Từ</label>
+                            <label for="time-start-tk">Từ</label>
                             <input type="date" class="form-control-date" id="time-start-tk">
                         </div>
                         <div>
-                            <label for="time-end">Đến</label>
+                            <label for="time-end-tk">Đến</label>
                             <input type="date" class="form-control-date" id="time-end-tk">
                         </div>
                     </form>
@@ -486,39 +490,24 @@
                 </div>
             </div>
 
-            <div class="row text-center mb-4">
-                <!-- Hàng 1: Tổng doanh thu, Đơn đã xử lý, Đơn đã giao, Doanh thu hôm nay -->
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p class="text-muted">Tổng doanh thu</p>
-                            <h5><%= orderAdminDAO.getSoldQuantity() * 10000 %> VNĐ</h5>
-                        </div>
-                    </div>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <p class="text-muted">Tổng doanh thu</p>
+                    <h5><fmt:formatNumber value="<%= orderAdminDAO.getSoldQuantity() %>" pattern="#,###"/> VNĐ</h5>
+
                 </div>
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p class="text-muted">Đơn đã xử lý</p>
-                            <h5><%= orderAdminDAO.getProcessedOrders() %></h5>
-                        </div>
-                    </div>
+                <div class="stat-box">
+                    <p class="text-muted">Đơn đã xử lý</p>
+                    <h5><%= orderAdminDAO.getProcessedOrders() %></h5>
                 </div>
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p class="text-muted">Đơn đã giao</p>
-                            <h5><%= orderAdminDAO.getShippedOrders() %></h5>
-                        </div>
-                    </div>
+                <div class="stat-box">
+                    <p class="text-muted">Đơn đã giao</p>
+                    <h5><%= orderAdminDAO.getShippedOrders() %></h5>
                 </div>
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p class="text-muted">Doanh thu hôm nay</p>
-                            <h5><fmt:formatNumber value="<%= orderAdminDAO.getRevenueToday() %>" type="number" pattern="#,###"/> VNĐ</h5>
-                        </div>
-                    </div>
+                <div class="stat-box">
+                    <p class="text-muted">Doanh thu hôm nay</p>
+                    <h5><fmt:formatNumber value="<%= orderAdminDAO.getRevenueToday() %>" type="number" pattern="#,###"/> VNĐ</h5>
                 </div>
             </div>
 
@@ -527,16 +516,12 @@
                 OrderDetails best = productStats.get(0);
             %>
 
-            <!-- Hàng 2: Bảng sản phẩm bán chạy và sản phẩm cần nhập -->
-            <div class="row">
-                <div class="col-md-6">
-                    <!-- Bảng bán chạy -->
-                    <div class="mb-4">
-                        <h4>Sản phẩm bán chạy nhất: <strong><%= productStats.get(0).getProduct().getProductName() %></strong></h4>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle">
-                            <thead class="table-light">
+            <div class="content-container">
+                <div class="best-seller">
+                    <h4>Sản phẩm bán chạy nhất: <strong><%= productStats.get(0).getProduct().getProductName() %></strong></h4>
+                    <div class="table-container">
+                        <table class="custom-table">
+                            <thead>
                             <tr>
                                 <th>STT</th>
                                 <th>Sản phẩm</th>
@@ -562,44 +547,39 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <!-- Sản phẩm cần nhập & Sản phẩm bán chậm -->
-                    <div class="row">
-                        <!-- Sản phẩm cần nhập -->
-                        <div class="col-md-6">
-                            <h5 class="mb-3">🛒 Sản phẩm cần nhập </h5>
-                            <% List<Products> needRestock = orderAdminDAO.getProductsNeedRestock(); %>
-                            <% if (needRestock != null && !needRestock.isEmpty()) { %>
-                            <ul class="list-group">
-                                <% for (Products p : needRestock) { %>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <img src="<%= p.getImageURL() %>" class="me-2" width="40">
-                                    <span><%= p.getProductName() %></span>
-                                    <span class="ms-auto badge bg-warning text-dark">
+                <div class="stock-info">
+                    <div class="restock">
+                        <h5 class="section-title">🛒 Sản phẩm cần nhập</h5>
+                        <% List<Products> needRestock = orderAdminDAO.getProductsNeedRestock(); %>
+                        <% if (needRestock != null && !needRestock.isEmpty()) { %>
+                        <ul class="custom-list">
+                            <% for (Products p : needRestock) { %>
+                            <li class="list-item">
+                                <img src="<%= p.getImageURL() %>" class="item-image">
+                                <span><%= p.getProductName() %></span>
+                                <span class="badge warning">
                             <%= p.getWarehouse().getQuantity() %> còn | <%= p.getSoldQuantity() %> bán/7 ngày
                         </span>
-                                </li>
-                                <% } %>
-                            </ul>
-                            <% } else { %>
-                            <p class="text-muted"><i>Không có sản phẩm cần nhập</i></p>
+                            </li>
                             <% } %>
-                        </div>
+                        </ul>
+                        <% } else { %>
+                        <p class="text-muted"><i>Không có sản phẩm cần nhập</i></p>
+                        <% } %>
+                    </div>
 
-                        <!-- Sản phẩm bán chậm -->
-                        <div class="col-md-6">
-                            <h5 class="mb-3">🐢 Sản phẩm tồn kho</h5>
-                            <% List<Products> slowSelling = orderAdminDAO.getSlowSellingProducts(); %>
-                            <ul class="list-group">
-                                <% for (Products p : slowSelling) { %>
-                                <li class="list-group-item d-flex align-items-center">
-                                    <img src="<%= p.getImageURL() %>" class="me-2" width="40">
-                                    <span><%= p.getProductName() %></span>
-                                    <span class="ms-auto badge bg-secondary"><%= p.getSoldQuantity() %> đã bán</span>
-                                </li>
-                                <% } %>
-                            </ul>
-                        </div>
+                    <div class="slow-selling">
+                        <h5 class="section-title">🐢 Sản phẩm tồn kho</h5>
+                        <% List<Products> slowSelling = orderAdminDAO.getSlowSellingProducts(); %>
+                        <ul class="custom-list">
+                            <% for (Products p : slowSelling) { %>
+                            <li class="list-item">
+                                <img src="<%= p.getImageURL() %>" class="item-image">
+                                <span><%= p.getProductName() %></span>
+                                <span class="badge secondary"><%= p.getSoldQuantity() %> đã bán</span>
+                            </li>
+                            <% } %>
+                        </ul>
                     </div>
                 </div>
             </div>
