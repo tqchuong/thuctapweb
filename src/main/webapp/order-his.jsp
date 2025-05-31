@@ -155,7 +155,7 @@
                                             ${order.payments.paymentStatus}
                                     </span>
 
-                                    <c:if test="${order.payments.paymentStatus eq 'Chưa thanh toán'}">
+                                    <c:if test="${order.payments.paymentStatus eq 'Chưa thanh toán' and order.orderStatus ne 'Đã hủy đơn hàng'}">
                                         <form action="confirm-payment" method="POST" onsubmit="return confirmPayment(event, this)" style="display:inline;">
                                             <input type="hidden" name="orderId" value="${order.id}" />
                                             <button type="submit" class="order-history-status-sp no-complete">
