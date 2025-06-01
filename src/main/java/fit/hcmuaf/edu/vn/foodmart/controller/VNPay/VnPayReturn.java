@@ -33,9 +33,9 @@ public class VnPayReturn extends HttpServlet {
             } else {
                 updated = paymentDAO.updatePaymentStatus(Integer.parseInt(vnp_TxnRef), "Thanh toán thất bại");
             }
-            // 2. Chuyển hướng về trang home.jsp
+            // 2. Chuyển hướng về trang
 
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect("bill?orderId=" + vnp_TxnRef);
 
         } catch (Exception e) {
             // Nếu có lỗi vẫn chuyển hướng về home nhưng có thể thêm thông báo lỗi

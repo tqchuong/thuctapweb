@@ -14,7 +14,28 @@
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="font/font-awesome-pro-v6-6.2.0/css/all.min.css"/>
 </head>
+<style>
+    .canceled-order {
+        filter: grayscale(1);
+        opacity: 0.6;
+        position: relative;
+        pointer-events: none;
+    }
+    .canceled-order::after {
+        content: "ĐÃ HỦY";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: red;
+        font-size: 28px;
+        font-weight: bold;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px 20px;
+        border-radius: 8px;
+    }
 
+</style>
 <body>
 <jsp:include page="header.jsp"/>
 <nav class="header-bottom">
@@ -67,8 +88,9 @@
                     </c:if>
 
                     <c:forEach var="order" items="${orders}">
-                        <div class="order-history-group">
-                            <div class="modal detail-order open" id="modal-${order.id}" style="display: none;">
+                       <div class="order-history-group ${order.orderStatus eq 'Đã hủy đơn hàng' ? 'canceled-order' : ''}">
+
+                        <div class="modal detail-order open" id="modal-${order.id}" style="display: none;">
 
                             <div class="modal-container mdl-cnt" style="width: 550px;">
                                     <h3 class="modal-container-title" style="display: inline-block;margin-top: 16px;margin-left: 20px;text-transform: uppercase;">
@@ -156,10 +178,11 @@
                                     </span>
 
                                     <c:if test="${order.payments.paymentStatus eq 'Chưa thanh toán'}">
-                                        <form action="confirm-payment" method="POST" onsubmit="return confirmPayment(event, this)" style="display:inline;">
+                                        <form action="confirm-payment" method="POST" onsubmit="return confirmPayment(event)" style="display:inline;">
                                             <input type="hidden" name="orderId" value="${order.id}" />
+                                            <input type="hidden" name="totalAmount" value="${order.totalAmount}" />
                                             <button type="submit" class="order-history-status-sp no-complete">
-                                                <i class="fa-solid fa-money-bill-wave"></i> Thanh toán
+                                                <i class="fa-solid fa-money-bill-wave"></i> Thanh toán bằng VNPay
                                             </button>
                                         </form>
                                     </c:if>
@@ -203,32 +226,17 @@
             modal.style.display = "none";
         });
     }
-    function confirmPayment(event, form) {
+    function confirmPayment(event) {
         event.preventDefault();
 
-        if (confirm("Xác nhận bạn đã thanh toán đơn hàng này?")) {
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                method: form.method,
-                body: new URLSearchParams(formData),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert("Thanh toán thành công!");
-                        window.location.reload();
-                    } else {
-                        alert("Thanh toán thất bại.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Lỗi khi thanh toán:", error);
-                    alert("Đã xảy ra lỗi.");
-                });
+        if (confirm("Bạn có chắc muốn thanh toán đơn hàng này qua VNPay không?")) {
+            event.target.submit();
         }
 
         return false;
     }
+
+
     function confirmCancelOrder(event, form) {
         // Ngăn chặn hành động mặc định của form
         event.preventDefault();
