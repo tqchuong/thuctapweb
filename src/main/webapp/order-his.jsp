@@ -177,8 +177,10 @@
                                             ${order.payments.paymentStatus}
                                     </span>
 
+
                                     <c:if test="${order.payments.paymentStatus eq 'Chưa thanh toán'}">
                                         <form action="confirm-payment" method="POST" onsubmit="return confirmPayment(event)" style="display:inline;">
+
                                             <input type="hidden" name="orderId" value="${order.id}" />
                                             <input type="hidden" name="totalAmount" value="${order.totalAmount}" />
                                             <button type="submit" class="order-history-status-sp no-complete">
