@@ -1,6 +1,8 @@
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
 FROM tomcat:10.1-jdk17
-
-# Copy file .war vừa build vào thư mục deploy của Tomcat
-COPY target/FoodMart-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/foodmart.war
-
+COPY --from=build /app/target/FoodMart-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/foodmart.war
 EXPOSE 8080
