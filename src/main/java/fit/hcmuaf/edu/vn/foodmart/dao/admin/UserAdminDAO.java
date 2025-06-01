@@ -148,7 +148,8 @@ public class UserAdminDAO {
     }
     // 9. Đếm số lượng user
     public int getUserCount() {
-        String sql = "SELECT COUNT(*) FROM users";
+        String sql = "SELECT COUNT(*) FROM users" +
+                " Where isDelete = 0";
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .mapTo(Integer.class)
