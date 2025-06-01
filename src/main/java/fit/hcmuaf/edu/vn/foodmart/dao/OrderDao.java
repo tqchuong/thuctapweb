@@ -138,10 +138,33 @@ public class OrderDao {
         String sql = "UPDATE Orders SET OrderStatus = 'Đã hủy đơn hàng' WHERE Id = :orderId";
 
         try (Handle handle = jdbi.open()) {
+            handle.begin();
             int rowsAffected = handle.createUpdate(sql)
                     .bind("orderId", orderId)
                     .execute();
-            return rowsAffected > 0; // Trả về true nếu có ít nhất một hàng được cập nhật
+            if (rowsAffected > 0) {
+                // Lấy danh sách sản phẩm trong đơn hàng
+                String detailSql = "SELECT ProductID, Quantity FROM OrderDetails WHERE OrderID = :orderId";
+                List<Map<String, Object>> details = handle.createQuery(detailSql)
+                        .bind("orderId", orderId)
+                        .mapToMap()
+                        .list();
+                // Cộng lại số lượng vào kho
+                for (Map<String, Object> detail : details) {
+                    int productId = (int) detail.get("ProductID");
+                    int quantity = (int) detail.get("Quantity");
+                    String updateWarehouse = "UPDATE warehouse SET quantity = quantity + :quantity WHERE product_id = :productId";
+                    handle.createUpdate(updateWarehouse)
+                            .bind("quantity", quantity)
+                            .bind("productId", productId)
+                            .execute();
+                }
+                handle.commit();
+                return true;
+            } else {
+                handle.rollback();
+                return false;
+            }
         } catch (Exception e) {
             System.out.println("Lỗi khi hủy đơn hàng: " + e.getMessage());
             e.printStackTrace();
