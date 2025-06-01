@@ -1,4 +1,6 @@
 # Ignore sensitive configuration files
+.env
+src/main/java/fit/hcmuaf/edu/vn/foodmart/Constant/Iconstant.java
 src/main/java/fit/hcmuaf/edu/vn/foodmart/Constant/IconstantLocal.java
 
 # Maven
@@ -63,5 +65,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-.env
 config.json

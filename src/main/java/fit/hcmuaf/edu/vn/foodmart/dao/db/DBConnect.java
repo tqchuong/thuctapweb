@@ -11,6 +11,7 @@ public class DBConnect {
 
     private static Jdbi jdbi;
 
+
     static {
         try {
             // Cấu hình thông tin kết nối MySQL trực tiếp trong lớp DBConnect

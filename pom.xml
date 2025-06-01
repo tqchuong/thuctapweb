@@ -156,6 +156,12 @@
             <version>4.5.14</version>
         </dependency>
 
+        <!-- Add dotenv-java -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>2.3.2</version>
+        </dependency>
 
     </dependencies>
 
