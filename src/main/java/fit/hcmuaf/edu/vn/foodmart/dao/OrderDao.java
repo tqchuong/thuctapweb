@@ -133,44 +133,63 @@ public class OrderDao {
     }
 
 
-    // Hàm hủy đơn hàng theo ID
     public boolean cancelOrder(int orderId) {
-        String sql = "UPDATE Orders SET OrderStatus = 'Đã hủy đơn hàng' WHERE Id = :orderId";
-
         try (Handle handle = jdbi.open()) {
-            handle.begin();
-            int rowsAffected = handle.createUpdate(sql)
-                    .bind("orderId", orderId)
-                    .execute();
-            if (rowsAffected > 0) {
-                // Lấy danh sách sản phẩm trong đơn hàng
-                String detailSql = "SELECT ProductID, Quantity FROM OrderDetails WHERE OrderID = :orderId";
-                List<Map<String, Object>> details = handle.createQuery(detailSql)
+            handle.useTransaction(transactionHandle -> {
+                // 1. Lấy danh sách sản phẩm từ OrderDetails
+                String selectDetails = "SELECT ProductID, Quantity FROM OrderDetails WHERE OrderID = :orderId";
+                List<Map<String, Object>> items = transactionHandle
+                        .createQuery(selectDetails)
                         .bind("orderId", orderId)
                         .mapToMap()
                         .list();
-                // Cộng lại số lượng vào kho
-                for (Map<String, Object> detail : details) {
-                    int productId = (int) detail.get("ProductID");
-                    int quantity = (int) detail.get("Quantity");
-                    String updateWarehouse = "UPDATE warehouse SET quantity = quantity + :quantity WHERE product_id = :productId";
-                    handle.createUpdate(updateWarehouse)
-                            .bind("quantity", quantity)
+
+                for (Map<String, Object> item : items) {
+                    Number productIdNumber = (Number) item.get("productid");
+                    Number quantityNumber = (Number) item.get("quantity");
+
+                    if (productIdNumber == null || quantityNumber == null) {
+                        throw new RuntimeException("Thiếu ProductID hoặc Quantity trong OrderDetails của OrderID = " + orderId);
+                    }
+
+                    int productId = productIdNumber.intValue();
+                    int quantity = quantityNumber.intValue();
+
+                    String updateWarehouse = "UPDATE Warehouse SET quantity = Quantity + :qty WHERE product_id = :productId";
+                    int affected = transactionHandle.createUpdate(updateWarehouse)
+                            .bind("qty", quantity)
                             .bind("productId", productId)
                             .execute();
+
+                    if (affected == 0) {
+                        // Tùy vào logic hệ thống, thêm vào warehouse nếu chưa có
+                        String insertWarehouse = "INSERT INTO Warehouse (product_id, quantity) VALUES (:productId, :qty)";
+                        transactionHandle.createUpdate(insertWarehouse)
+                                .bind("productId", productId)
+                                .bind("qty", quantity)
+                                .execute();
+                    }
                 }
-                handle.commit();
-                return true;
-            } else {
-                handle.rollback();
-                return false;
-            }
+
+                // 3. Cập nhật trạng thái đơn hàng
+                String updateOrder = "UPDATE Orders SET OrderStatus = 'Đã hủy đơn hàng' WHERE Id = :orderId";
+                int rows = transactionHandle.createUpdate(updateOrder)
+                        .bind("orderId", orderId)
+                        .execute();
+
+                if (rows == 0) {
+                    throw new RuntimeException("Không tìm thấy đơn hàng để hủy.");
+                }
+            });
+
+            return true;
         } catch (Exception e) {
-            System.out.println("Lỗi khi hủy đơn hàng: " + e.getMessage());
+            System.out.println("Lỗi khi hủy đơn hàng và hoàn kho: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
+
     public boolean updateOrderStatus(int orderId, String newStatus) {
         String sql = "UPDATE Orders SET OrderStatus = :newStatus, updated_at = NOW() WHERE Id = :orderId";
 
@@ -234,4 +253,44 @@ public class OrderDao {
             System.out.println("Không thể hủy đơn hàng với ID " + orderId + " hoặc đơn hàng không tồn tại.");
         }
     }
+
+    public Order getOrderById(int orderId) {
+        String sql = """
+        SELECT * FROM Orders o join payments p on o.Id=p.OrderID WHERE o.Id=:orderId
+    """;
+
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery(sql)
+                    .bind("orderId", orderId)
+                    .map((rs, ctx) -> {
+                        Order order = new Order();
+                        order.setId(rs.getInt("Id"));
+                        order.setUserId(rs.getInt("UserId"));
+                        order.setOrderDate(rs.getTimestamp("OrderDate"));
+                        order.setTotalAmount(rs.getDouble("TotalAmount"));
+                        order.setShippingMethod(rs.getString("ShippingMethod"));
+                        order.setDeliveryDate(rs.getDate("DeliveryDate").toString());
+                        order.setDeliveryTime(rs.getString("DeliveryTime"));
+                        order.setPaymentMethod(rs.getString("PaymentMethod"));
+                        order.setOrderNote(rs.getString("OrderNote"));
+                        order.setReceiverName(rs.getString("ReceiverName"));
+                        order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                        order.setShippingAddress(rs.getString("ShippingAddress"));
+                        order.setOrderStatus(rs.getString("OrderStatus"));
+
+
+                        Payments payments = new Payments();
+                        payments.setPaymentStatus(rs.getString("PaymentStatus"));
+                        order.setPayments(payments);
+
+                        return order;
+                    })
+                    .findOne()
+                    .orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -36,12 +36,7 @@ public class UserDAO implements ObjectDAO {
             // Sử dụng JDBI để thực hiện truy vấn và ánh xạ kết quả vào danh sách người dùng
             handle.select(sql)
                     .mapToBean(Users.class)  // Ánh xạ kết quả vào đối tượng Users
-                    .forEach(user -> {
-                        // Đảm bảo rằng tất cả các người dùng được thêm vào Map, kể cả những người đã bị đánh dấu xóa
-                        userListTemp.put(user.getUsername(), user);
-                    });  // Thêm vào Map với key là username
-            
-            System.out.println("Đã nạp " + userListTemp.size() + " người dùng vào bộ nhớ");
+                    .forEach(user -> userListTemp.put(user.getUsername(), user));  // Thêm vào Map với key là username
         } catch (Exception e) {
             System.out.println("Lỗi khi truy vấn dữ liệu: " + e.getMessage());
             e.printStackTrace();
@@ -150,16 +145,10 @@ public class UserDAO implements ObjectDAO {
         String sql = "SELECT * FROM users WHERE username = ?";
 
         try (Handle handle = jdbi.open()) {
-            Users user = handle.createQuery(sql)
+            return handle.createQuery(sql)
                     .bind(0, username)
                     .mapToBean(Users.class)
                     .findOne().orElse(null);  // Trả về đối tượng người dùng nếu tìm thấy
-            
-            if (user == null) {
-                System.out.println("Không tìm thấy user với username: " + username);
-            }
-            
-            return user;
         } catch (Exception e) {
             System.out.println("Lỗi khi lấy thông tin người dùng: " + e.getMessage());
             e.printStackTrace();
@@ -181,9 +170,6 @@ public class UserDAO implements ObjectDAO {
             return null;
         }
     }
-
-
-
     public boolean emailExists(String email) {
         String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
         try (Handle handle = jdbi.open()) {
@@ -229,24 +215,18 @@ public class UserDAO implements ObjectDAO {
             System.out.println("Không tìm thấy user với id: " + id);
             return false;
         }
-        
-        // Thay vì xóa hoàn toàn, cập nhật trạng thái isDelete = TRUE
-        String sql = "UPDATE users SET isDelete = TRUE WHERE username = ?";
+        userList.remove(id);
+        String sql ="DELETE FROM users WHERE username = ?";
         try (Handle handle = jdbi.open()) {
             int rowsAffected = handle.createUpdate(sql)
                     .bind(0, id)
                     .execute();
-                    
+            // Kiểm tra số hàng bị ảnh hưởng
             if (rowsAffected > 0) {
-                // Cập nhật trạng thái trong bộ nhớ
-                Users user = userList.get(id);
-                user.setIsDelete(true);
-                userList.put(id, user);
-                
-                System.out.println("Đánh dấu xóa thành công user với id: " + id);
+                System.out.println("Xóa thành công user với id: " + id);
                 return true;
             } else {
-                System.out.println("Không đánh dấu xóa được user với id: " + id);
+                System.out.println("Không xóa được user với id: " + id);
                 return false;
             }
         } catch (Exception e) {
@@ -302,30 +282,9 @@ public class UserDAO implements ObjectDAO {
         }
     }
 
-    // Phương thức để làm mới danh sách người dùng từ cơ sở dữ liệu
-    public static void refreshUserList() {
-        userList = loadData();
-    }
-
     //thay đổi thông tin người dùng
     public boolean changeInfor(String username, String fullName, String phone, String email, String address) {
-        // Làm mới danh sách người dùng trước khi thực hiện thao tác
-        refreshUserList();
-        
         Users user = userList.get(username);
-
-        // Kiểm tra nếu user là null trong userList, thử lấy từ database trực tiếp
-        if (user == null) {
-            System.out.println("Không tìm thấy user trong userList, thử lấy từ database: " + username);
-            user = getUserByUsername(username);
-            // Nếu vẫn không tìm thấy user sau khi truy vấn database
-            if (user == null) {
-                System.out.println("Không tìm thấy user trong database: " + username);
-                return false;
-            }
-            // Nếu tìm thấy, cập nhật lại userList
-            userList.put(username, user);
-        }
 
         user.setFullName(fullName);
         user.setPhone(phone);
@@ -363,7 +322,7 @@ public class UserDAO implements ObjectDAO {
 
     //kiểm tra username có tồn tại không
     public boolean userExists(String username) {
-        String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND isDelete = FALSE";
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
         try (Handle handle = jdbi.open()) {
             int count = handle.createQuery(sql)
                     .bind(0, username)
@@ -395,7 +354,7 @@ public class UserDAO implements ObjectDAO {
     //kiểm tra username, email có tồn tại không
     public boolean isUserExist(String username, String email) {
         // Câu lệnh SQL kiểm tra sự tồn tại của người dùng
-        String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND email = ? AND isDelete = FALSE";
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND email = ?";
         try (Handle handle = jdbi.open()) {
             int count = handle.createQuery(sql)
                     .bind(0, username)
@@ -532,7 +491,7 @@ public class UserDAO implements ObjectDAO {
 
 
     public Users getUserByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email = :email ";
+        String sql = "SELECT * FROM users WHERE email = :email";
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .bind("email", email)
@@ -599,15 +558,15 @@ public class UserDAO implements ObjectDAO {
                 "VALUES (:id, :username, :password, :email, :fullName, :isVerified, :loginType)";
 
         try (Handle handle = jdbi.open()) {
-                handle.createUpdate(sql)
-                        .bind("id",user.getId())
-                        .bind("username", user.getUsername())
-                        .bind("password", user.getPassword())
-                        .bind("email", user.getEmail())
-                        .bind("fullName", user.getFullName())
-                        .bind("isVerified", user.getIs_verified())
-                        .bind("loginType", user.getLoginType())
-                        .execute();
+            handle.createUpdate(sql)
+                    .bind("id",user.getId())
+                    .bind("username", user.getUsername())
+                    .bind("password", user.getPassword())
+                    .bind("email", user.getEmail())
+                    .bind("fullName", user.getFullName())
+                    .bind("isVerified", user.getIs_verified())
+                    .bind("loginType", user.getLoginType())
+                    .execute();
 
         } catch (Exception e) {
             e.printStackTrace();
