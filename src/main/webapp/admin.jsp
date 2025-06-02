@@ -189,9 +189,13 @@
                         </div>
                     </div>
                 </div>
+                <%
+                    OrderAdminDAO orderAdminDAO = new OrderAdminDAO();
+                    List<Order> orders = orderAdminDAO.getAllOrders(); // Lấy danh sách đơn hàng từ database
+                %>
                 <div class="card-single">
                     <div class="box">
-                        <h2 id="doanh-thu"><fmt:formatNumber value="<%= sumRevenue %>" type="number" pattern="#,###"/>&nbsp;₫</h2>
+                        <h2 id="doanh-thu"> <h5><fmt:formatNumber value="<%= orderAdminDAO.getSoldQuantity() %>" pattern="#,###"/> VNĐ</h5>
                         <div class="on-box">
                             <img src="image/admin/s3.png" alt="" style=" width: 200px;">
                             <h3>Doanh thu</h3>

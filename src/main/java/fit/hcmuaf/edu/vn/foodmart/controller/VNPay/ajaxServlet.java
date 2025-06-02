@@ -28,9 +28,9 @@ public class ajaxServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        HttpSession session = req.getSession();
-        double amountDouble = (double) session.getAttribute("orderTotalAmount");
-        int orderId = (int) session.getAttribute("currentOrderId");
+
+        int orderId = (int) req.getAttribute("orderId");
+        double amountDouble = (double) req.getAttribute("totalAmount");
 
         // Các thông số còn lại giữ nguyên
         String vnp_Version = "2.1.0";

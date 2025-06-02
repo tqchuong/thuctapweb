@@ -71,9 +71,10 @@ public class CheckoutServlet extends HttpServlet {
             });
 
 
-            /// Lưu thông tin đơn hàng vào session
-            session.setAttribute("currentOrderId", orderId);
-            session.setAttribute("orderTotalAmount", totalAmount);
+
+            request.setAttribute("orderId", orderId);
+            request.setAttribute("totalAmount", totalAmount);
+
 
             if ("VNPAY".equals(paymentMethod)) {
                 // Thay vì redirect, forward request đến ajaxServlet
@@ -84,7 +85,8 @@ public class CheckoutServlet extends HttpServlet {
 
             // Nếu là COD thì xóa giỏ hàng và chuyển hướng
             session.removeAttribute("cart");
-            response.sendRedirect("home.jsp");
+            response.sendRedirect("bill?orderId=" + orderId);
+
 
         } catch (Exception e) {
             e.printStackTrace();

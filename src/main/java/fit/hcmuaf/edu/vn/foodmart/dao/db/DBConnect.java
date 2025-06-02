@@ -15,6 +15,7 @@ public class DBConnect {
     static {
         try {
             // Cấu hình thông tin kết nối MySQL trực tiếp trong lớp DBConnect
+
             String host = "caboose.proxy.rlwy.net";  // Địa chỉ host MySQL Railway
             int port = 45525;                        // Cổng MySQL Railway
             String dbname = "railway";               // Tên database Railway

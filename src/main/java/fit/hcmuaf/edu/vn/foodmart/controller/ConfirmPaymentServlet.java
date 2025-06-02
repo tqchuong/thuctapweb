@@ -1,25 +1,34 @@
 package fit.hcmuaf.edu.vn.foodmart.controller;
 
 import fit.hcmuaf.edu.vn.foodmart.dao.PaymentDAO;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 @WebServlet("/confirm-payment")
 public class ConfirmPaymentServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
-        PaymentDAO paymentDAO = new PaymentDAO();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        boolean success = paymentDAO.updatePaymentStatus1(orderId, "Đã thanh toán");
+        try {
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+            double totalAmount = Double.parseDouble(request.getParameter("totalAmount"));
 
-        if (success) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            // Lưu thông tin vào request để chuyển tiếp
+            request.setAttribute("orderId", orderId);
+            request.setAttribute("totalAmount", totalAmount);
+
+            // Chuyển tiếp sang VNPay
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/vnpay-payment");
+            dispatcher.forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp?message=Invalid payment request");
         }
     }
 }
