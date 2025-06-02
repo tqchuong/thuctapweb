@@ -11,24 +11,22 @@ public class DBConnect {
 
     private static Jdbi jdbi;
 
-
     static {
         try {
             // Cấu hình thông tin kết nối MySQL trực tiếp trong lớp DBConnect
-
-            String host = "caboose.proxy.rlwy.net";  // Địa chỉ host MySQL Railway
-            int port = 45525;                        // Cổng MySQL Railway
-            String dbname = "railway";               // Tên database Railway
-            String username = "root";                // Username Railway
-            String password = "fjPupexAzPvctaolQiQgfQNTCasoXtQO";  // Password Railway
-            String options = "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+            String host = "localhost";  // Địa chỉ host MySQL
+            int port = 3306;  // Cổng kết nối MySQL
+            String dbname = "luongthuc4";  // Tên cơ sở dữ liệu
+            String username = "root";  // Tên đăng nhập MySQL
+            String password = "123456";
+            String options = "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";  // Các tùy chọn kết nối
 
             // Tạo URL kết nối
             String url = "jdbc:mysql://" + host + ":" + port + "/" + dbname + "?" + options;
             Class.forName("com.mysql.cj.jdbc.Driver");  // Nạp driver MySQL
+            // Tạo đối tượng Jdbi từ thông tin cấu hình
             jdbi = Jdbi.create(url, username, password);
-            System.out.println("Kết nối đến CSDL Railway thành công!");
-
+            System.out.println("Kết nối đến CSDL thành công!");
         } catch (Exception e) {
             System.err.println("Không thể kết nối đến CSDL: " + e.getMessage());
             e.printStackTrace();
