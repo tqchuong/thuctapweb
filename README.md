@@ -36,3 +36,35 @@ src/ └── main/ ├── java/ │ └── fit/hcmuaf/edu/vn/foodmart/ �
 1. Import vào IDE như Maven Project
 2. Cấu hình DB trong file `DBContext.java`
 3. Chạy trên server: Apache Tomcat
+
+## Cấu hình OAuth
+
+Để cấu hình OAuth cho Google và Facebook login, làm theo các bước sau:
+
+1. Sao chép file `IconstantLocal.example.java` thành `IconstantLocal.java`
+2. Thay thế các giá trị mẫu bằng thông tin xác thực thực tế của bạn:
+   - Google Client ID
+   - Google Client Secret
+   - Facebook Client ID
+   - Facebook Client Secret
+
+Lưu ý: File `IconstantLocal.java` chứa thông tin nhạy cảm nên không được commit lên Git.
+
+## Cài đặt và Chạy
+
+1. Clone repository
+2. Cấu hình OAuth như hướng dẫn trên
+3. Chạy lệnh:
+```bash
+mvn clean package -DskipTests
+```
+
+## Deploy
+
+1. Build project:
+```bash
+mvn clean package -DskipTests
+```
+
+2. File WAR sẽ được tạo trong thư mục `target/`
+3. Deploy file WAR lên server

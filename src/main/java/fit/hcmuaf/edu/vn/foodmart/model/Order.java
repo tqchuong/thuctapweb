@@ -23,10 +23,10 @@ public class Order {
     private String orderStatus;
     private Timestamp createdAt;   // Thời gian tạo đơn hàng
     private Timestamp updatedAt;   // Thời gian cập nhật đơn hàng
+    private Shipping shipping;   // hoặc shippingInfo
 
     // Danh sách chi tiết đơn hàng
     private List<OrderDetails> orderDetails = new ArrayList<>();
-
     private Payments payments;
 
     public Timestamp getCreatedAt() {
@@ -43,6 +43,14 @@ public class Order {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Shipping getShipping() {
+        return shipping;
+    }
+
+    public void setShipping(Shipping shipping) {
+        this.shipping = shipping;
     }
 
     // Constructor mặc định

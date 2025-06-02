@@ -17,7 +17,8 @@ public class UserAdminDAO {
 
     // 1. Lấy tất cả người dùng
     public List<Users> getAllUsers() {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users" +
+                " WHERE isDelete = FALSE";
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .mapToBean(Users.class)
@@ -35,20 +36,22 @@ public class UserAdminDAO {
             return false; // Trả về false nếu username đã tồn tại
         }
 
-        String sql = "INSERT INTO users (Username, Phone, Password, Role, UserStatus ) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (Username, Email, Phone, Password, Role, UserStatus ) VALUES (?, ?, ?, ?, ?, ?)";
         try (Handle handle = jdbi.open()) {
-            System.out.println("SQL: INSERT INTO users (username, phone, password, role, user_status)");
+            System.out.println("SQL: INSERT INTO users (username, mail, phone, password, role, user_status)");
             System.out.println("Username: " + user.getUsername());
+            System.out.println("Username: " + user.getEmail());
             System.out.println("Phone: " + user.getPhone());
             System.out.println("Password: " + user.getPassword());
             System.out.println("Role: " + user.getRole());
             System.out.println("User Status: " + user.getUserStatus());
             handle.createUpdate(sql)
                     .bind(0, user.getUsername())   // Tên đầy đủ
-                    .bind(1, user.getPhone())      // Số điện thoại
-                    .bind(2, user.getPassword())   // Mật khẩu
-                    .bind(3, "User")               // Vai trò mặc định là 'User'
-                    .bind(4, "Đang hoạt động")     // Trạng thái mặc định là 'Đang hoạt động'
+                    .bind(1, user.getEmail())   // Tên đầy đủ
+                    .bind(2, user.getPhone())      // Số điện thoại
+                    .bind(3, user.getPassword())   // Mật khẩu
+                    .bind(4, "User")               // Vai trò mặc định là 'User'
+                    .bind(5, "Đang hoạt động")     // Trạng thái mặc định là 'Đang hoạt động'
                     .execute();
             return true;
         } catch (Exception e) {
@@ -79,7 +82,7 @@ public class UserAdminDAO {
 
     // 4. Xóa người dùng
     public boolean deleteUserById(int userId) {
-        String sql = "DELETE FROM users WHERE Id = :userId";
+        String sql = "UPDATE users SET isDelete = TRUE WHERE Id = :userId AND isDelete = FALSE";
         return jdbi.withHandle(handle -> handle.createUpdate(sql)
                 .bind("userId", userId)
                 .execute() > 0);
@@ -118,19 +121,16 @@ public class UserAdminDAO {
 
     // 7. Kiểm tra sự tồn tại của người dùng
     public boolean userExists(String username) {
-        String sql = "SELECT COUNT(*) FROM users WHERE username=?";
-        try (Handle handle = jdbi.open()) {
-            int count = handle.createQuery(sql)
-                    .bind(0, username)
-                    .mapTo(Integer.class)
-                    .findOne()
-                    .orElse(0);
-            return count > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        String sql = "SELECT COUNT(*) FROM users WHERE Username = :username AND isDelete = FALSE";
+        return jdbi.withHandle(handle ->
+                handle.createQuery(sql)
+                        .bind("username", username)
+                        .mapTo(Integer.class)
+                        .findOne()
+                        .orElse(0) > 0
+        );
     }
+
 
     // 8. Tìm kiếm người dùng theo id
     public Users getUserById(int id) {
@@ -148,7 +148,8 @@ public class UserAdminDAO {
     }
     // 9. Đếm số lượng user
     public int getUserCount() {
-        String sql = "SELECT COUNT(*) FROM users";
+        String sql = "SELECT COUNT(*) FROM users" +
+                " Where isDelete = 0";
         try (Handle handle = jdbi.open()) {
             return handle.createQuery(sql)
                     .mapTo(Integer.class)

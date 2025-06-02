@@ -401,12 +401,13 @@ LEFT JOIN sales s ON p.ID = s.ProductID
     }
     public boolean hasUserPurchasedProduct(int userId, int productId) {
         String sql = """
-        SELECT COUNT(*) FROM order_detail od
-        JOIN orders o ON od.order_id = o.id
-        JOIN payments p ON o.id = p.order_id
-        WHERE o.user_id = :userId 
-          AND od.product_id = :productId 
-          AND p.status = 'Đã thanh toán'
+        SELECT COUNT(*) 
+        FROM orderdetails od
+        JOIN orders o ON od.OrderID = o.Id
+        JOIN shipping s ON o.Id = s.OrderID
+        WHERE o.UserID = :userId 
+          AND od.ProductID = :productId 
+          AND s.ShippingStatus = 'Đã giao'
     """;
 
         try (Handle handle = jdbi.open()) {
@@ -418,11 +419,21 @@ LEFT JOIN sales s ON p.ID = s.ProductID
 
             return count > 0;
         } catch (Exception e) {
-            System.out.println("Lỗi khi kiểm tra đã mua hàng: " + e.getMessage());
+            System.out.println("Lỗi khi kiểm tra đã mua hàng theo ShippingStatus: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
+    // Cập nhật số lượng sản phẩm trong kho
+    public void updateProductQuantity(int productId, int quantityPurchased) {
+        jdbi.useHandle(handle -> {
+            handle.createUpdate("UPDATE warehouse SET quantity = quantity - :qty WHERE product_id = :product_id;")
+                    .bind("qty", quantityPurchased)
+                    .bind("product_id", productId)
+                    .execute();
+        });
+    }
+
 
     // Test phương thức getAllProducts() và getProductDetailsById()
     public static void main(String[] args) {

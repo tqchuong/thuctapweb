@@ -18,43 +18,13 @@ public class Products {
     private double averageRating; // Thêm thuộc tính averageRating
     private Warehouse warehouse;
 
-    private Brands brands;
-
     private double discountPercentage; // Thêm thuộc tính discountPercentage
     private Sale sales;
     private int IsSale;
     private int salePrice;
+    private int soldQuantity;
+    private Brands brands;
     private  int BrandID;
-
-    // Constructor mặc định
-    public Products() {
-    }
-
-    // Constructor đầy đủ (thêm discountPercentage)
-
-
-    public Products(int ID, String productName, int categoryID, double price, String imageURL, String shortDescription, int weight, Category category, List<ProductImages> images, ProductsDetail productsDetail, List<Reviews> reviews, int productViews, double averageRating, Warehouse warehouse, Brands brands, double discountPercentage, Sale sales, int isSale, int salePrice, int brandID) {
-        this.ID = ID;
-        this.productName = productName;
-        this.categoryID = categoryID;
-        this.price = price;
-        this.imageURL = imageURL;
-        this.shortDescription = shortDescription;
-        this.weight = weight;
-        this.category = category;
-        this.images = images;
-        this.productsDetail = productsDetail;
-        this.reviews = reviews;
-        this.productViews = productViews;
-        this.averageRating = averageRating;
-        this.warehouse = warehouse;
-        this.brands = brands;
-        this.discountPercentage = discountPercentage;
-        this.sales = sales;
-        IsSale = isSale;
-        this.salePrice = salePrice;
-        BrandID = brandID;
-    }
 
     public Brands getBrands() {
         return brands;
@@ -70,6 +40,54 @@ public class Products {
 
     public void setBrandID(int brandID) {
         BrandID = brandID;
+    }
+
+    public int getSoldQuantity() {
+        return soldQuantity;
+    }
+
+    public void setSoldQuantity(int soldQuantity) {
+        this.soldQuantity = soldQuantity;
+    }
+
+    // Constructor mặc định
+    public Products() {
+    }
+
+    // Constructor đầy đủ (thêm discountPercentage)
+    public Products(int ID,
+                    String productName,
+                    int categoryID,
+                    double price,
+                    String imageURL,
+                    String shortDescription,
+                    int weight,
+                    Category category,
+                    List<ProductImages> images,
+                    ProductsDetail productsDetail,
+                    List<Reviews> reviews,
+                    int productViews,
+                    double averageRating,
+                    int IsSale,
+                    double discountPercentage,
+                    Sale sales) {
+        this.ID = ID;
+        this.productName = productName;
+        this.categoryID = categoryID;
+        this.price = price;
+        this.imageURL = imageURL;
+        this.shortDescription = shortDescription;
+        this.weight = weight;
+        this.category = category;
+        this.images = images;
+        this.productsDetail = productsDetail;
+        this.reviews = reviews;
+        this.productViews = productViews;
+        this.averageRating = averageRating;
+        this.IsSale = IsSale;
+        this.discountPercentage = discountPercentage;
+        this.sales = sales;
+
     }
 
     public int getSalePrice() {

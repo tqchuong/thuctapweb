@@ -1,7 +1,7 @@
 package fit.hcmuaf.edu.vn.foodmart.model;
 
-public class FacebookAccount {
-    private String id,email,name;
+public class FacebookAccount implements Account {
+    private String id,email,name,loginType;
 
     public FacebookAccount(String id, String email, String name) {
         this.id = id;
@@ -33,12 +33,21 @@ public class FacebookAccount {
         this.name = name;
     }
 
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
+    }
+
     @Override
     public String toString() {
         return "FacebookAccount{" +
                 "id='" + id + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
+                ", loginType='" + loginType + '\'' +
                 '}';
     }
 }

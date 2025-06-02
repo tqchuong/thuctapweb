@@ -60,11 +60,37 @@
                 <img alt="" src="image/banner/baner2.png">
 
             </div>
+
             <div class="controls">
                 <button class="prev">❮</button>
                 <button class="next">❯</button>
             </div>
         </div>
+
+        <!-- CTA + Thương hiệu -->
+        <div class="brand-highlight-section">
+            <a href="products" class="cta-button">THƯƠNG HIỆU</a>
+            <div class="brand-logos">
+                <a href="products-by-brand.jsp?brand=ABC" class="brand-logo-item">
+                    <img src="image/brands/hoabanfood.jpg" alt="ABC">
+                </a>
+
+                <a href="products?brand=Acecook" class="brand-logo-item">
+                    <img src="image/brands/acecook.png" alt="Acecook">
+                </a>
+                <a href="products?brand=Vedan" class="brand-logo-item">
+                    <img src="image/brands/vedan.png" alt="Vedan">
+                </a>
+                <a href="products?brand=TH" class="brand-logo-item">
+                    <img src="image/brands/thtrue.png" alt="TH True Milk">
+                </a>
+                <a href="products?brand=HaFarm" class="brand-logo-item">
+                    <img src="image/brands/hafarm.png" alt="HaFarm">
+                </a>
+            </div>
+        </div>
+
+
         <div class="home-service" id="home-service">
             <div class="home-service-item">
                 <div class="home-service-item-icon">
@@ -130,7 +156,6 @@
                 <p>Khởi đầu với mong muốn nâng cao chất lượng lương thực trong từng bữa ăn, FoodMart đã không ngừng phát
                     triển để trở thành đối tác tin cậy của hàng ngàn gia đình và tổ chức trên khắp cả nước.</p>
             </div>
-
 
         </div>
 

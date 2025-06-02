@@ -1,5 +1,34 @@
+# Ignore sensitive configuration files
+.env
+src/main/java/fit/hcmuaf/edu/vn/foodmart/Constant/Iconstant.java
+src/main/java/fit/hcmuaf/edu/vn/foodmart/Constant/IconstantLocal.java
+
+# Maven
 target/
-!.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -9,7 +38,6 @@ target/
 .idea/compiler.xml
 .idea/libraries/
 *.iws
-*.iml
 *.ipr
 
 ### Eclipse ###
@@ -37,7 +65,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-# Bỏ qua file chứa thông tin nhạy cảm
-src/main/java/fit/hcmuaf/edu/vn/foodmart/Constant/IconstantLocal.java
-.env
 config.json

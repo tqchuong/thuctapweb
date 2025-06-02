@@ -77,8 +77,11 @@ public class LoginController extends HttpServlet {
             } else {
                 // Nếu đăng nhập không thành công, thông báo lỗi
                 String errorMessage = "";
-                String level_log ="DANGER";
+                String level_log ="";
                 switch (loginStatus) {
+                    case "ACCOUNT_DELETED":
+                        errorMessage = "Tài khoản của bạn đã bị xóa!";
+                        break;
                     case "ACCOUNT_LOCKED":
                         errorMessage = "Tài khoản của bạn đã bị khóa!";
                         level_log = "DANGER";

@@ -22,7 +22,8 @@ public class ProductAdminDAO {
     public List<Products> getAllProducts() {
         String sql = "SELECT p.*, c.CategoryName, b.name FROM Products p " +
                 "JOIN Categories c ON p.CategoryID = c.CategoryID " +  // Đã sửa lỗi thiếu dấu cách
-                "JOIN brands b ON b.id = p.BrandID";
+                "JOIN brands b ON b.id = p.BrandID" +
+                " WHERE p.isDelete = FALSE";
 
         List<Products> products = jdbi.withHandle(handle ->
                 handle.createQuery(sql)
@@ -119,9 +120,6 @@ public class ProductAdminDAO {
 
 
 
-
-
-
     // 3. Cập nhật sản phẩm
     public boolean updateProduct(Products product) {
         if (product.getCategoryID() <= 0) {
@@ -130,8 +128,9 @@ public class ProductAdminDAO {
         }
 
         String updateProductSql = "UPDATE Products SET ProductName = ?, CategoryID = ?, IsSale = ?, " +
-                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ? , BrandID = ?" +
+                "DiscountPercentage = ?, Price = ?, ImageURL = ?, ShortDescription = ?, Weight = ?, BrandID = ? " + // thêm dấu cách ở đây
                 "WHERE Id = ?";
+
 
         String updateWarehouseSql = "UPDATE warehouse SET quantity = ?, import_date = CURDATE() WHERE product_id = ?";
 
@@ -177,11 +176,14 @@ public class ProductAdminDAO {
 
     // 4. Xóa sản phẩm
     public boolean deleteProductById(int productId) {
-        String sql = "DELETE FROM products WHERE Id = :productId";
-        return jdbi.withHandle(handle -> handle.createUpdate(sql)
-                .bind("productId", productId)
-                .execute() > 0);
+        String sql = "UPDATE products SET isDelete = TRUE WHERE Id = :productId AND isDelete = FALSE";
+        return jdbi.withHandle(handle ->
+                handle.createUpdate(sql)
+                        .bind("productId", productId)
+                        .execute() > 0
+        );
     }
+
 
 
     // 5. Lấy thông tin sản phẩm theo ID

@@ -68,8 +68,9 @@
 
                     <c:forEach var="order" items="${orders}">
                         <div class="order-history-group">
-                            <div class="modal detail-order open" style="display: none;">
-                                <div class="modal-container mdl-cnt" style="width: 550px;">
+                            <div class="modal detail-order open" id="modal-${order.id}" style="display: none;">
+
+                            <div class="modal-container mdl-cnt" style="width: 550px;">
                                     <h3 class="modal-container-title" style="display: inline-block;margin-top: 16px;margin-left: 20px;text-transform: uppercase;">
                                         Thông tin đơn hàng</h3>
                                     <button class="form-close" onclick="closeModal()" ><i class="fa-regular fa-xmark"></i></button>
@@ -115,18 +116,18 @@
                                         <img src="${detail.img}" alt="">
                                         <div class="order-history-info">
                                             <h4>${detail.productName}</h4>
-
                                             <p class="order-history-quantity">x${detail.quantity}</p>
                                         </div>
                                     </div>
                                     <div class="order-history-right">
                                         <div class="order-history-price">
                                             <span class="order-history-current-price"><fmt:formatNumber value="${detail.unitPrice}" type="number" pattern="#,###" />&nbsp;₫</span>
+                                            <a href="productDetails?id=${detail.productID}" class="btn-review">
+                                                <i class="fa-solid fa-star"></i> Đánh giá
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </c:forEach>
 
                             <p class="order-history-note"><i class="fa-light fa-pen"></i>
@@ -150,11 +151,22 @@
                                         </form>
                                     </c:if>
 
-                                    <span class="order-history-status-sp ${order.payments.paymentStatus == 'Chưa thanh toán'  ? 'no-complete' : 'complete'}">${order.payments.paymentStatus}</span>
+                                    <span class="order-history-status-sp ${order.payments.paymentStatus == 'Chưa thanh toán' ? 'no-complete' : 'complete'}">
+                                            ${order.payments.paymentStatus}
+                                    </span>
 
-                                    <button id="order-history-detail" onclick="openModal()"><i class="fa-regular fa-eye"></i>
-                                        Xem chi tiết
-                                    </button>
+                                    <c:if test="${order.payments.paymentStatus eq 'Chưa thanh toán' and order.orderStatus ne 'Đã hủy đơn hàng'}">
+                                        <form action="confirm-payment" method="POST" onsubmit="return confirmPayment(event, this)" style="display:inline;">
+                                            <input type="hidden" name="orderId" value="${order.id}" />
+                                            <button type="submit" class="order-history-status-sp no-complete">
+                                                <i class="fa-solid fa-money-bill-wave"></i> Thanh toán
+                                            </button>
+                                        </form>
+                                    </c:if>
+
+
+                                    <button id="order-history-detail" onclick="openModal('${order.id}')"><i class="fa-regular fa-eye"></i> Xem chi tiết</button>
+
 
 
                                 </div>
@@ -181,15 +193,42 @@
 <script>
 
     // Mở modal
-    function openModal() {
-        document.querySelector('.modal.detail-order').style.display = 'flex';
+    function openModal(orderId) {
+        document.getElementById("modal-" + orderId).style.display = "flex";
     }
 
-    // Đóng modal
     function closeModal() {
-        document.querySelector('.modal.detail-order').style.display = 'none';
+        // Đóng tất cả modal nếu có nhiều
+        document.querySelectorAll(".modal.detail-order").forEach(modal => {
+            modal.style.display = "none";
+        });
     }
+    function confirmPayment(event, form) {
+        event.preventDefault();
 
+        if (confirm("Xác nhận bạn đã thanh toán đơn hàng này?")) {
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: new URLSearchParams(formData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Thanh toán thành công!");
+                        window.location.reload();
+                    } else {
+                        alert("Thanh toán thất bại.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi khi thanh toán:", error);
+                    alert("Đã xảy ra lỗi.");
+                });
+        }
+
+        return false;
+    }
     function confirmCancelOrder(event, form) {
         // Ngăn chặn hành động mặc định của form
         event.preventDefault();

@@ -116,7 +116,8 @@
         fetch('<%=request.getContextPath()%>/checkSession')
             .then(response => response.text())
             .then(result => {
-                if(result.trim() !== 'Admin'){
+                const allowedRoles = ['Admin', 'WarehouseManager', 'OrderConfirmator'];
+                if(!allowedRoles.includes(result.trim())){
                     alert('Vai trò của bạn đã thay đổi hoặc phiên đã hết hạn. Bạn sẽ bị logout ngay!');
                     window.location.href = '<%=request.getContextPath()%>/login.jsp?message=' + encodeURIComponent('Vai trò thay đổi hoặc phiên hết hạn.');
                 }
